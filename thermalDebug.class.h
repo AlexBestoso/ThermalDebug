@@ -73,10 +73,14 @@ class ThermalDebug{
 			return dst;
 		}
 
-		int thermalAnd(){}
-		int thermalOr(){}
-		int thermalXor(){}
-		int thermalNot(){}
-		int thermalRightshift(){}
-		int thermalLeftshift(){}
+		int thermalAdd(){return 0;}
+		int thermalSubtract(){return 0;}
+		int thermalMultiply(){return 0;}
+		int thermalDivide(){return 0;}
+		int thermalAnd(){return 0;}
+		int thermalOr(){return 0;}
+		int thermalXor(){return 0;}
+		int thermalNot(){return 0;}
+		int thermalRightshift(){return 0;}
+		int thermalLeftshift(){return 0;}
 }thermalDbg;
