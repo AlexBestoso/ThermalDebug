@@ -35,14 +35,35 @@ struct thermalAlgorithm{
 
 class ThermalDebugIntegrator{
 	private:
+		bool processingAlgo;
 		ThermalAlgorithm currentAlgo;
 	public:
 	
 		ThermalDebugIntegrator(){
-
+			this->processingAlgo = false;
 		}
 		
 		~ThermalDebugIntegrator(){
 
 		}
+
+		bool newAlgorithm(std::string name, std::string desc, std::string outFile){
+			if(this->processingAlgo) return false;
+			this->processingAlgo = true;
+			this->currentAlgo.reset();
+			this->currentAlgo.setName(name);
+			this->currentAlgo.setDescription(desc);
+			this->currentAlgo.setOutputLoc(outFile);
+			return true;
+		}
+
+		void finishAlgorithm(void){
+			this->processingAlgo = false;
+		}
+
+		bool newStep(std::string name, std::string description, std::string srcFileName, int startingLineNumber, int endingLineNumber){
+			
+			return true;
+		}
+
 };
