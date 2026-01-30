@@ -1,5 +1,4 @@
-#include "./ThermalInput.class.h"
-#include "./ThermalOutput.class.h"
+#include "./ThermalVariable.class.h"
 struct thermalOperation{
 	std::string name;
 	std::string description;
