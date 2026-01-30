@@ -1,1 +1,18 @@
-Step three; Start Development
+We have an algorithm, and we have a step chain.
+
+We want to be able to track every variable involved with a particular step, as well as the actual operations.
+
+So we will have our main output variable, and our sub variables. Which are used to containe the algorithmic process.
+
+For example, we want to output to destination buffer i, that's our main variable. But to get the output data, we need to process a handful of other variables.
+
+So we want to not only track our output changes, but we want to be able to view what our variables equate to at any give moment in the step.
+Then we can go through and start linking these variables to inverse variables in the secondary algorithm streams.
+
+So current steps are: 
+	1) Track main output variable at the algorithm level.
+	2) Track operation variables at the step level.
+	3) Add which operations happened and in what order to each relevant step.
+
+
+Once this is done, we should be ready to start implementing the .ted file generation.
