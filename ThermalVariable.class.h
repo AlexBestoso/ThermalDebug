@@ -5,7 +5,76 @@ class ThermalVariable{
 		std::string value;
 		int dataType;
 	public:
-	
+
+		ThermalVariable(){
+			this->name = "";
+			this->value = "";
+			this->dataType = -1;
+		}
+
+		void create(std::string t, std::string n, std::string v){
+			this->name = n;
+			this->value = v;
+			this->dataType = this->dataTypeByName(t);
+		}
+
+		std::string rawValue(void){
+			return this->value;
+		}
+		std::string getName(void){
+			return this->name;
+		}
+		float castValue_float(void){
+			float ret = 0.0;
+
+			return ret;
+		}
+		void *getValue(void){
+			void *ret = NULL;
+			switch(this->dataType){
+				case 0:{
+					float data = std::stof(this->value);
+					ret = (void *)&data;
+					break;
+				}
+				case 3:{
+					double data = std::stod(this->value);
+					ret = (void *)&data;
+					break;
+				}
+				case 6:{
+					int data = std::stoi(this->value);
+					ret = (void *)&data;
+					break;
+				}
+		/*		case 7:{
+					ret = (void *)&data;
+					break;
+				//	return "char";
+				}
+				case 8:{
+					ret = (void *)&data;
+					break;
+				//	return "signed char";
+				}
+				case 9:{
+					ret = (void *)&data;
+					break;
+				//	return "unsigned char";
+				}
+				case 10:{
+					ret = (void *)&data;
+					break;
+				//	return "signed int";
+				}
+				case 11:{
+					ret = (void *)&data;
+					break;
+				//	return "unsigned int";
+				}*/
+			}
+			return ret;
+		}
 		int dataTypeByName(std::string type){
 			if(type == "float"){return 0;}
 			if(type == "signed float"){return 1;}
