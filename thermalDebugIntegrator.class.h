@@ -73,6 +73,11 @@ class ThermalDebugIntegrator{
 			return this->currentAlgo.newStep(name, description, srcFileName, startingLineNumber, endingLineNumber);
 		}
 
+		bool declareStepVariable(){
+			
+			return true;
+		}
+
 		bool addOperator(){
 			return true;
 		}
