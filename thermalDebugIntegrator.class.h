@@ -23,7 +23,7 @@ struct thermalAlgorithm{
 	std::string name;
 	std::string description;
 	std::string outputLoc;
-	size_t outBufferSize;
+	size_t *outBuffSize;
 	uint8_t *outBuff;
 	size_t stepCount;
 	ThermalStep *stepChain;
@@ -60,8 +60,9 @@ class ThermalDebugIntegrator{
 			return &currentAlgo;
 		}
 		
-		void setOutputBuffer(uint8_t *outAddr, size_t outsize){
-
+		void setOutputBuffer(uint8_t *outAddr, size_t *outsizeAddr){
+			this->currentAlgo.setOutBuffSize(outsizeAddr);
+                        this->currentAlgo.setOutBuff(outAddr);
 		}
 
 		void finishAlgorithm(void){
