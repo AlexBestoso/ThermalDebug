@@ -12,6 +12,24 @@ class ThermalVariable{
 			this->value = NULL;
 		}
 
+		void create(std::string t, std::string n, int *v){
+			this->create(t, n, (void *)v);
+		}
+		void create(std::string t, std::string n, char *v){
+			this->create(t, n, (void *)v);
+		}
+		void create(std::string t, std::string n, float *v){
+			this->create(t, n, (void *)v);
+		}
+		void create(std::string t, std::string n, double *v){
+			this->create(t, n, (void *)v);
+		}
+		void create(std::string t, std::string n, size_t *v){
+			this->create(t, n, (void *)v);
+		}
+		void create(std::string t, std::string n, long *v){
+			this->create(t, n, (void *)v);
+		}
 		void create(std::string t, std::string n, void *v){
 			this->name = n;
 			this->value = v;
@@ -27,5 +45,31 @@ class ThermalVariable{
 		void *getValue(void){
 			return this->value;
 		}
+		int getValueInt(void){
+			int ret = ((int *)this->value)[0];
+			return ret;
+		}
+		char getValueChar(void){
+			char ret = ((char *)this->value)[0];
+			return ret;
+		}
+		float getValueFloat(void){
+			float ret = ((float *)this->value)[0];
+			return ret;
+		}
+		double getValueDouble(void){
+			double ret = ((double *)this->value)[0];
+			return ret;
+		}
+		size_t getValueSize_t(void){
+			size_t ret = ((size_t *)this->value)[0];
+			return ret;
+		}
+		long getValueLong(void){
+			long ret = ((long *)this->value)[0];
+			return ret;
+		}
+		
+		
 	
 };

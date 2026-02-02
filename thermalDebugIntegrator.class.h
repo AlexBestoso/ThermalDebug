@@ -7,16 +7,6 @@ struct thermalOperation{
 };
 #include "./ThermalOperation.class.h"
 
-struct thermalStep{
-	std::string name;
-	std::string description;
-	std::string srcFileName;
-	int startingLineNumber;
-	int endingLineNumber;
-	size_t operationCount;
-	ThermalOperation *operationChain;
-	
-};
 #include "./ThermalStep.class.h"
 
 struct thermalAlgorithm{
