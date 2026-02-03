@@ -46,19 +46,20 @@ class ThermalVariable{
 			return this->value;
 		}
 		int getValueInt(void){
-			int ret = ((int *)this->value)[0];
+			int ret = static_cast<int *>(this->value)[0];
 			return ret;
 		}
 		char getValueChar(void){
-			char ret = ((char *)this->value)[0];
+			char ret = static_cast<char *>(this->value)[0];
 			return ret;
 		}
 		float getValueFloat(void){
-			float ret = ((float *)this->value)[0];
-			return ret;
+
+			float *ret = static_cast<float*>(this->value);
+			return ret[0];
 		}
 		double getValueDouble(void){
-			double ret = ((double *)this->value)[0];
+			double ret = static_cast<double *>(this->value)[0];
 			return ret;
 		}
 		size_t getValueSize_t(void){

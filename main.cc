@@ -6,14 +6,14 @@
 int main(int argc, char *argv[]){
 	printf("Hello\n");
 	ThermalVariable variable;
-	int val = 1234567;
+	float val = 123.145666f;
 	variable.create("float", "val", &val);
-	int data = variable.getValueInt();//((int *)variable.getValue())[0];
-	printf("Variable: %s %s %d\n", variable.getDataType().c_str(), variable.getName().c_str(), data);
+	float data = variable.getValueFloat();//((int *)variable.getValue())[0];
+	printf("Variable: %s %s %lf\n", variable.getDataType().c_str(), variable.getName().c_str(), data);
 
-	val = 987654321;
-	data = variable.getValueInt();
-	printf("updated Variable: %s %s %d\n", variable.getDataType().c_str(), variable.getName().c_str(), data);
+	val = 5.123;
+	data = variable.getValueFloat();
+	printf("updated Variable: %s %s %f\n", variable.getDataType().c_str(), variable.getName().c_str(), data);
 
 	return 0;
 }
