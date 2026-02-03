@@ -51,6 +51,17 @@ class ThermalAlgorithm{
 		ThermalStep *getStepChain(void){
 			return this->data.stepChain;
 		}
+		ThermalStep getStep(int idx){
+			ThermalStep ret;
+			if(this->data.stepChain != NULL && (idx < this->data.stepCount && idx >= 0))
+				ret = this->data.stepChain[idx];
+			return ret;
+		}
+		void setStep(int idx, ThermalStep v){
+			if(this->data.stepChain != NULL && (idx < this->data.stepCount && idx >= 0))
+				return;
+			this->data.stepChain[idx] = v;
+		}
 
 		void init(void){
 			this->data.name = "";
@@ -114,15 +125,7 @@ class ThermalAlgorithm{
 			return this->data.stepChain[this->data.stepCount-1].newStep(name, description, srcFileName, startingLineNumber, endingLineNumber);
 		}
 
-		ThermalStep *getStep(int idx){
-			if(idx < 0 || idx >= this->data.stepCount){
-				return NULL;
-			}
-
-			return &this->data.stepChain[idx];
-		}
-
-		ThermalStep *getCurrentStep(void){
+		ThermalStep getCurrentStep(void){
 			return getStep(this->data.stepCount - 1);
 		}
 		

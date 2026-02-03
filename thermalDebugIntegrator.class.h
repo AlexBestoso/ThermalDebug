@@ -30,6 +30,7 @@ class ThermalDebugIntegrator{
 	
 		ThermalDebugIntegrator(){
 			this->processingAlgo = false;
+			this->stepIdx = -1;
 		}
 		
 		~ThermalDebugIntegrator(){
@@ -49,6 +50,10 @@ class ThermalDebugIntegrator{
 		ThermalAlgorithm *getAlgorithm(void){
 			return &currentAlgo;
 		}
+
+		void setStepIdx(int idx){
+			this->stepIdx = idx;
+		}
 		
 		void setOutputBuffer(uint8_t *outAddr, size_t *outsizeAddr){
 			this->currentAlgo.setOutBuffSize(outsizeAddr);
@@ -60,11 +65,37 @@ class ThermalDebugIntegrator{
 		}
 
 		bool newStep(std::string name, std::string description, std::string srcFileName, int startingLineNumber, int endingLineNumber){
-			return this->currentAlgo.newStep(name, description, srcFileName, startingLineNumber, endingLineNumber);
+			bool ret = this->currentAlgo.newStep(name, description, srcFileName, startingLineNumber, endingLineNumber);
+			this->stepIdx = this->currentAlgo.getStepCount() - 1;
+			return ret;
 		}
 
-		bool declareStepVariable(){
-			
+		ThermalStep getCurrentStep(void){
+			ThermalStep ret;
+			if(this->stepIdx < 0 || this->stepIdx >= this->currentAlgo.getStepCount()){
+				return ret;
+			}
+
+			ret = this->currentAlgo.getStep(this->stepIdx);
+			return ret;
+		}
+
+		void setCurrentStep(ThermalStep v){
+			if(this->stepIdx < 0 || this->stepIdx >= this->currentAlgo.getStepCount()){
+				return;
+			}
+			this->currentAlgo.setStep(this->stepIdx, v);
+		}
+
+
+		bool declareStepVariable(std::string type, std::string name, void *value){
+			int v = ((int *)value)[0];
+			ThermalStep step = this->getCurrentStep();
+
+			if(!step.newVariable(type, name, value))
+				return false;
+
+			this->setCurrentStep(step);
 			return true;
 		}
 

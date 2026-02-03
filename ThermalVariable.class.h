@@ -11,6 +11,10 @@ class ThermalVariable{
 			this->dataType = "";
 			this->value = NULL;
 		}
+		
+		~ThermalVariable(){
+
+		}
 
 		void create(std::string t, std::string n, int *v){
 			this->create(t, n, (void *)v);

@@ -116,7 +116,7 @@ class ThermalStep{
 		}
 		
 		~ThermalStep(){
-			this->reset();
+			//this->reset(); causes a segfault for some reason.
 		}
 
 		bool newStep(std::string name, std::string desc, std::string srcFileLoc, int lineNumStart, int lineNumEnd){
