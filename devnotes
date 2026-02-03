@@ -1,1 +1,5 @@
-Create the variable allocator in the step class.
+i'm able to use the variable class alone.
+
+But there's some memory bug when using it directly in the step.
+
+So I need to update the code so that the variables are properly accessible from the algorithm -> step -> variable pipeline.
