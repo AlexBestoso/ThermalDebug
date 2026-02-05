@@ -49,8 +49,14 @@ class ThermalVariable{
 		void *getValue(void){
 			return this->value;
 		}
-		void setValue(void *val){
-			this->value = val;
+		bool setValue(void *val){
+			if(this->value == NULL){
+				return false;
+			}
+			uint64_t *memory = (uint64_t *)this->value;
+			uint64_t *data = (uint64_t *)val;
+			*memory = *data;
+			return true;
 		}
 		int getValueInt(void){
 			int ret = static_cast<int *>(this->value)[0];
@@ -59,7 +65,6 @@ class ThermalVariable{
 		bool setValueInt(int val){
 			// set the contents of the address this->value to val
 			if(this->value == NULL){
-				printf("NULL value.\n");
 				return false;
 			}
 			int *memory = (int *)this->value;

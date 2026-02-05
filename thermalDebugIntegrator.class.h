@@ -106,10 +106,39 @@ class ThermalDebugIntegrator{
 			return true;
 		}
 		bool operationEquals(std::string varA, void *value){
+			ThermalStep step = this->getCurrentStep();
+			ThermalVariable variable = step.getVariableByName(varA);
+			variable.setValue(value);
 			return true;
 		}
 		bool operation(std::string varA, std::string operation, std::string varB, std::string outputVar){
+			ThermalOperation thermalOperation;
+			int operationIndex = thermalOperation.stringToOperation(operation);
+			switch(operationIndex){
+				case THERMAL_OPERATOR_INVALID:
+					return false;
+				case THERMAL_OPERATOR_EQUALS:
+				case THERMAL_OPERATOR_PLUS:
+				case THERMAL_OPERATOR_MINUS:
+				case THERMAL_OPERATOR_MULTIPLY:
+				case THERMAL_OPERATOR_DIVIDE:
+				case THERMAL_OPERATOR_XOR:
+				case THERMAL_OPERATOR_OR:
+				case THERMAL_OPERATOR_AND:
+				case THERMAL_OPERATOR_SHIFT_LEFT:
+				case THERMAL_OPERATOR_SHIFT_RIGHT:
+				case THERMAL_OPERATOR_MOD:
+				case THERMAL_OPERATOR_PLUS_EQUALS:
+				case THERMAL_OPERATOR_MINUS_EQUALS:
+				case THERMAL_OPERATOR_MULTIPLY_EQUALS:
+				case THERMAL_OPERATOR_DIVIDE_EQUALS:
+				case THERMAL_OPERATOR_XOR_EQUALS:
+				case THERMAL_OPERATOR_OR_EQUALS:
+				case THERMAL_OPERATOR_AND_EQUALS:
+				case THERMAL_OPERATOR_SHIFT_LEFT_EQUALS:
+				case THERMAL_OPERATOR_SHIFT_RIGHT_EQUALS:
+				case THERMAL_OPERATOR_MOD_EQUALS:
+			}
 			return true;
 		}
-
 };
