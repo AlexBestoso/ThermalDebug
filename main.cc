@@ -4,7 +4,7 @@
 #include "thermalDebugIntegrator.class.h"
 
 int main(int argc, char *argv[]){
-	int a, b, x, y, z;
+	int a=0, b=0, x, y, z;
 	ThermalDebugIntegrator tdi;
 
 	printf("Creating Algorithm...\n");
@@ -21,7 +21,8 @@ int main(int argc, char *argv[]){
 	tdi.declareStepVariable("int", "y", (void *)&y);
 	tdi.declareStepVariable("int", "z", (void *)&z);
 
-	tdi.operationEquals("a", 5);//a=5;
+	tdi.operation("a", "=", 5);//a=5;
+	printf("A: %d\n", a);
 	tdi.operationEquals("b", 4);//b=4;
 	tdi.operation("a", "+", "b", "x");//x = a + b;
 	y = x * a;

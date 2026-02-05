@@ -86,6 +86,10 @@ class ThermalOperation{
 			if(this->data.variables != NULL) delete[] this->data.variables;
 			this->data.variables = NULL;
 		}
+
+		void equals(ThermalVariable thisEquals, ThermalVariable that){
+			thisEquals.setValue(that.getValue());
+		}
 		ThermalOperation(){
 			this->init();
 		}

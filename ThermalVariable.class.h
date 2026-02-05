@@ -1,9 +1,40 @@
-// NOTE: We may want to use static_cast<type>(this->value) to handle returning values.
+#define THERMAL_DATATYPE_UNKNOWN -1
+#define THERMAL_DATATYPE_INT 0
+#define THERMAL_DATATYPE_CHAR 1
+#define THERMAL_DATATYPE_UINT32 2
+#define THERMAL_DATATYPE_UINT64 3
+#define THERMAL_DATATYPE_LONG 5
+#define THERMAL_DATATYPE_LONGINT 6
+#define THERMAL_DATATYPE_SIZE 7
+#define THERMAL_DATATYPE_FLOAT 8
+#define THERMAL_DATATYPE_DOUBLE 9
 class ThermalVariable{
 	private:
 		std::string name;
 		std::string dataType;
 		void *value;
+
+		int dataTypeToId(void){
+			if(this->dataType == "int")
+				return THERMAL_DATATYPE_INT;
+			if(this->dataType == "char")
+				return THERMAL_DATATYPE_CHAR;
+			if(this->dataType == "uint32_t")
+				return THERMAL_DATATYPE_UINT32;
+			if(this->dataType == "uint64_t")
+				return THERMAL_DATATYPE_UINT64;
+			if(this->dataType == "long")
+				return THERMAL_DATATYPE_LONG;
+			if(this->dataType == "long int")
+				return THERMAL_DATATYPE_LONGINT;
+			if(this->dataType == "size_t")
+				return THERMAL_DATATYPE_SIZE;
+			if(this->dataType == "float")
+				return THERMAL_DATATYPE_FLOAT;
+			if(this->dataType == "double")
+				return THERMAL_DATATYPE_DOUBLE;
+			return THERMAL_DATATYPE_UNKNOWN;
+		}
 	public:
 
 		ThermalVariable(){
@@ -53,9 +84,68 @@ class ThermalVariable{
 			if(this->value == NULL){
 				return false;
 			}
-			uint64_t *memory = (uint64_t *)this->value;
-			uint64_t *data = (uint64_t *)val;
-			*memory = *data;
+			switch(this->dataTypeToId()){
+				case THERMAL_DATATYPE_INT:{
+					int *memory = (int *)this->value;
+					int *data = (int *)val;
+					*memory = *data;
+					return true;
+				}
+				case THERMAL_DATATYPE_CHAR:{
+					char *memory = (char *)this->value;
+					char *data = (char *)val;
+					*memory = *data;
+					return true;
+				}
+				case THERMAL_DATATYPE_UINT32:{
+					uint32_t *memory = (uint32_t *)this->value;
+					uint32_t *data = (uint32_t *)val;
+					*memory = *data;
+					return true;
+				}
+				case THERMAL_DATATYPE_UINT64:{
+					uint64_t *memory = (uint64_t *)this->value;
+					uint64_t *data = (uint64_t *)val;
+					*memory = *data;
+					return true;
+				}
+				case THERMAL_DATATYPE_LONG:{
+					long *memory = (long *)this->value;
+					long *data = (long *)val;
+					*memory = *data;
+					return true;
+				}
+				case THERMAL_DATATYPE_LONGINT:{
+					long int *memory = (long int *)this->value;
+					long int *data = (long int *)val;
+					*memory = *data;
+					return true;
+				}
+				case THERMAL_DATATYPE_SIZE:{
+					size_t *memory = (size_t *)this->value;
+					size_t *data = (size_t *)val;
+					*memory = *data;
+					return true;
+				}
+				case THERMAL_DATATYPE_FLOAT:{
+					float *memory = (float *)this->value;
+					float *data = (float *)val;
+					*memory = *data;
+					return true;
+				}
+				case THERMAL_DATATYPE_DOUBLE:{
+					double *memory = (double *)this->value;
+					double *data = (double *)val;
+					*memory = *data;
+					return true;
+				}
+				default:{
+					uint64_t *memory = (uint64_t *)this->value;
+					uint64_t *data = (uint64_t *)val;
+					*memory = *data;
+					return true;
+				}
+			}
 			return true;
 		}
 		int getValueInt(void){
@@ -92,7 +182,4 @@ class ThermalVariable{
 			long ret = ((long *)this->value)[0];
 			return ret;
 		}
-		
-		
-	
 };
