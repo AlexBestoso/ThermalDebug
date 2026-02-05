@@ -58,7 +58,7 @@ class ThermalAlgorithm{
 			return ret;
 		}
 		void setStep(int idx, ThermalStep v){
-			if(this->data.stepChain != NULL && (idx < this->data.stepCount && idx >= 0))
+			if(this->data.stepChain == NULL || !(idx < this->data.stepCount && idx >= 0))
 				return;
 			this->data.stepChain[idx] = v;
 		}

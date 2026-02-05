@@ -89,17 +89,26 @@ class ThermalDebugIntegrator{
 
 
 		bool declareStepVariable(std::string type, std::string name, void *value){
-			int v = ((int *)value)[0];
 			ThermalStep step = this->getCurrentStep();
 
 			if(!step.newVariable(type, name, value))
 				return false;
 
 			this->setCurrentStep(step);
+			step = this->getCurrentStep();
 			return true;
 		}
 
-		bool addOperator(){
+		bool operationEquals(std::string varA, int val){
+			ThermalStep step = this->getCurrentStep();
+			ThermalVariable variable = step.getVariableByName(varA);
+			variable.setValueInt(val);
+			return true;
+		}
+		bool operationEquals(std::string varA, void *value){
+			return true;
+		}
+		bool operation(std::string varA, std::string operation, std::string varB, std::string outputVar){
 			return true;
 		}
 

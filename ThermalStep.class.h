@@ -17,6 +17,16 @@ class ThermalStep{
 	private:
 		struct thermalStep data;
 		bool stepOpen;
+
+		bool validateNewVariable(std::string t, std::string n, void *v){
+			for(int i=0; i<this->data.variableCount; i++){
+				ThermalVariable var = this->data.variables[i];
+				if(var.getName() == n && var.getDataType() == t && (v == var.getValue())){
+					return false;
+				}	
+			}
+			return true;
+		}
 	public:
 		void init(void){
 			this->data.name = "";
@@ -133,6 +143,7 @@ class ThermalStep{
 
 		bool newVariable(std::string dataType, std::string variableName, void *data){
 			if(this->data.variables == NULL){
+				printf("poop\n");
 				this->data.variableCount = 1;
 				this->data.variables = new (std::nothrow) ThermalVariable[this->data.variableCount];
 				if(this->data.variables == NULL) return false;
@@ -142,6 +153,10 @@ class ThermalStep{
 				this->data.variables = new (std::nothrow) ThermalVariable[this->data.variableCount];
 				if(this->data.variables == NULL) return false;
 			}else{
+				if(!this->validateNewVariable(dataType, variableName, data)){
+					printf("Duplicate variable entry.\n");
+					return false;
+				}
 				ThermalVariable *tmp = new (std::nothrow) ThermalVariable[this->data.variableCount];
 				if(tmp == NULL) return false;
 				for(int i=0; i<this->data.variableCount; i++)
@@ -157,8 +172,23 @@ class ThermalStep{
 				this->data.variableCount++;
 			}
 
+			printf("Creating newly allocated variable...\n");
 			this->data.variables[this->data.variableCount-1].create(dataType, variableName, data);
 			return true;
+		}
+
+		ThermalVariable getVariableByName(std::string var){
+			ThermalVariable ret;
+			ThermalVariable *variables = this->getVariables();
+			size_t variableCount = this->getVariableCount();
+			if(variableCount > 0 && variables != NULL){
+				for(int i=0; i<variableCount; i++){
+					if(variables[i].getName() == var){
+						return variables[i];
+					}
+				}
+			}
+			return ret;
 		}
 		
 		void newOperation(){

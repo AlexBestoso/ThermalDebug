@@ -5,16 +5,24 @@
 
 int main(int argc, char *argv[]){
 	ThermalDebugIntegrator tdi;
-	int a=5;
-	int b=4;
+	int a, b, x, y, z;
 	printf("Creating Algorithm...\n");
 	tdi.newAlgorithm("Test Algo", "An algorithm to test the core functionality of thermal debug.", "./sample.ted");
 	printf("Creating step.\n");
 	tdi.newStep("Random Step", "A step that does something so we can test.", "main.cc", 10, 10);
-	printf("Declaring variable A.\n");
+	printf("Declaring variables.\n");
 	tdi.declareStepVariable("int", "a", (void *)&a);
-	printf("Declaring variable B.\n");
 	tdi.declareStepVariable("int", "b", (void *)&b);
+	tdi.declareStepVariable("int", "b", (void *)&b);
+	tdi.declareStepVariable("int", "x", (void *)&x);
+	tdi.declareStepVariable("int", "y", (void *)&y);
+	tdi.declareStepVariable("int", "z", (void *)&z);
+
+	tdi.operationEquals("a", 5);//a=5;
+	tdi.operationEquals("b", 4);//b=4;
+	x = a + b;
+	y = x * a;
+	z = y ^ b;
 	
 	return 0;
 }
