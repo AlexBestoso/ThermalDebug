@@ -21,6 +21,14 @@
 #define THERMAL_OPERATOR_SHIFT_RIGHT_EQUALS 19
 #define THERMAL_OPERATOR_MOD_EQUALS 20
 
+struct thermalOperation{
+	std::string name;
+	std::string description;
+	size_t variableCount;
+	ThermalVariable *variables;
+};
+
+
 class ThermalOperation{
 	private:
 		struct thermalOperation data;

@@ -1,6 +1,17 @@
+struct thermalAlgorithm{
+	std::string name;
+	std::string description;
+	std::string outputLoc;
+	size_t *outBuffSize;
+	uint8_t *outBuff;
+	size_t stepCount;
+	ThermalStep *stepChain;
+};
+
 class ThermalAlgorithm{
 	private:
 		struct thermalAlgorithm data;
+		ThermalEmissionDump thermalIO;
 	public:
 		void setName(std::string v){
 			this->data.name = v;
