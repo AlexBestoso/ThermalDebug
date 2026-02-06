@@ -1,10 +1,13 @@
 #include <string>
 #include <stdio.h>
 #include <typeinfo>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "thermalDebugIntegrator.class.h"
 
 int main(int argc, char *argv[]){
-	int a=0, b=0, x, y, z;
+	int a, b, x, y, z;
 	ThermalDebugIntegrator tdi;
 
 	printf("Creating Algorithm...\n");
@@ -21,16 +24,11 @@ int main(int argc, char *argv[]){
 	tdi.declareStepVariable("int", "y", (void *)&y);
 	tdi.declareStepVariable("int", "z", (void *)&z);
 
-	tdi.operation("a", "=", 5);//a=5;
-	tdi.operation("b", "=", 4);//b=4;
-	printf("A: %d\n", a);
-	printf("B: %d\n", b);
-	tdi.operation("a", "+", "b", "x");//x = a + b;
-	printf("X: %d\n", x);
-	tdi.operation("x", "*", "a", "y");//y = x * a;
-	printf("Y: %d\n", y);
-	tdi.operation("y", "^", "b", "z");//z = y ^ b;
-	printf("Z: %d\n", z);
+	tdi.operation("a", "=", 5);
+	tdi.operation("b", "=", 4);
+	tdi.operation("a", "+", "b", /*=*/ "x");
+	tdi.operation("x", "*", "a", /*=*/ "y");
+	tdi.operation("y", "^", "b", /*=*/ "z");
 	
 	return 0;
 }
