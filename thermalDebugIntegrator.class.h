@@ -42,22 +42,31 @@ class ThermalDebugIntegrator{
 					break;
 				}
 				case THERMAL_OPERATOR_MINUS:
+					thermalOperation.subtract(a, b, c);
 					break;
 				case THERMAL_OPERATOR_MULTIPLY:
+					thermalOperation.multiply(a, b, c);
 					break;
 				case THERMAL_OPERATOR_DIVIDE:
+					thermalOperation.divide(a, b, c);
 					break;
 				case THERMAL_OPERATOR_XOR:
+					thermalOperation.XOR(a, b, c);
 					break;
 				case THERMAL_OPERATOR_OR:
+					thermalOperation.OR(a, b, c);
 					break;
 				case THERMAL_OPERATOR_AND:
+					thermalOperation.AND(a, b, c);
 					break;
 				case THERMAL_OPERATOR_SHIFT_LEFT:
+					thermalOperation.shiftLeft(a, b, c);
 					break;
 				case THERMAL_OPERATOR_SHIFT_RIGHT:
+					thermalOperation.shiftRight(a, b, c);
 					break;
 				case THERMAL_OPERATOR_MOD:
+					thermalOperation.mod(a, b, c);
 					break;
 				case THERMAL_OPERATOR_PLUS_EQUALS:
 					break;
@@ -156,21 +165,6 @@ class ThermalDebugIntegrator{
 			return true;
 		}
 
-		[[deprecated("operationEquals() is strictly for niggers. Move on, fellow why angel.")]]
-		bool operationEquals(std::string varA, int val){
-			ThermalStep step = this->getCurrentStep();
-			ThermalVariable variable = step.getVariableByName(varA);
-			variable.setValueInt(val);
-			return true;
-		}
-		[[deprecated("operationEquals() is strictly for niggers. Move on, fellow why angel.")]]
-		bool operationEquals(std::string varA, void *value){
-			ThermalStep step = this->getCurrentStep();
-			ThermalVariable variable = step.getVariableByName(varA);
-			variable.setValue(value);
-			return true;
-		}
-		
 		bool operation(std::string varA, std::string operation, int integer){
 			ThermalStep step = this->getCurrentStep();
 			ThermalVariable a = step.getVariableByName(varA);

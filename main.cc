@@ -27,8 +27,10 @@ int main(int argc, char *argv[]){
 	printf("B: %d\n", b);
 	tdi.operation("a", "+", "b", "x");//x = a + b;
 	printf("X: %d\n", x);
-	y = x * a;
-	z = y ^ b;
+	tdi.operation("x", "*", "a", "y");//y = x * a;
+	printf("Y: %d\n", y);
+	tdi.operation("y", "^", "b", "z");//z = y ^ b;
+	printf("Z: %d\n", z);
 	
 	return 0;
 }
