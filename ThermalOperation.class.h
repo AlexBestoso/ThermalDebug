@@ -91,6 +91,38 @@ class ThermalOperation{
 			return thisEquals.setValue(that.getValue());
 		}
 
+		bool addEqual(ThermalVariable a, ThermalVariable b){
+			return this->add(a, b, a);
+		}
+		bool subtractEqual(ThermalVariable a, ThermalVariable b){
+			return this->subtract(a, b, a);
+		}
+		bool multiplyEqual(ThermalVariable a, ThermalVariable b){
+			return this->multiply(a, b, a);
+		}
+		bool divideEqual(ThermalVariable a, ThermalVariable b){
+			return this->divide(a, b, a);
+		}
+		bool xorEqual(ThermalVariable a, ThermalVariable b){
+			return this->XOR(a, b, a);
+		}
+		bool orEqual(ThermalVariable a, ThermalVariable b){
+			return this->OR(a, b, a);
+		}
+		bool andEqual(ThermalVariable a, ThermalVariable b){
+			return this->AND(a, b, a);
+		}
+		bool shiftLeftEqual(ThermalVariable a, ThermalVariable b){
+			return this->shiftLeft(a, b, a);
+		}
+		bool shiftRightEqual(ThermalVariable a, ThermalVariable b){
+			return this->shiftRight(a, b, a);
+		}
+		bool modEqual(ThermalVariable a, ThermalVariable b){
+			return this->mod(a, b, a);
+		}
+
+
 		bool mod(ThermalVariable a, ThermalVariable b, ThermalVariable out){
 			switch(out.dataTypeToId()){
 				case THERMAL_DATATYPE_INT:{

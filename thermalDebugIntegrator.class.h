@@ -69,24 +69,34 @@ class ThermalDebugIntegrator{
 					thermalOperation.mod(a, b, c);
 					break;
 				case THERMAL_OPERATOR_PLUS_EQUALS:
+					thermalOperation.addEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_MINUS_EQUALS:
+					thermalOperation.subtractEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_MULTIPLY_EQUALS:
+					thermalOperation.multiplyEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_DIVIDE_EQUALS:
+					thermalOperation.divideEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_XOR_EQUALS:
+					thermalOperation.xorEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_OR_EQUALS:
+					thermalOperation.orEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_AND_EQUALS:
+					thermalOperation.andEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_SHIFT_LEFT_EQUALS:
+					thermalOperation.shiftLeftEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_SHIFT_RIGHT_EQUALS:
+					thermalOperation.shiftRightEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_MOD_EQUALS:
+					thermalOperation.modEqual(a, b);
 					break;
 			}
 
