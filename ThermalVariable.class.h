@@ -14,6 +14,18 @@ class ThermalVariable{
 		std::string dataType;
 		void *value;
 
+	public:
+
+		ThermalVariable(){
+			this->name = "";
+			this->dataType = "";
+			this->value = NULL;
+		}
+		
+		~ThermalVariable(){
+
+		}
+		
 		int dataTypeToId(void){
 			if(this->dataType == "int")
 				return THERMAL_DATATYPE_INT;
@@ -35,17 +47,7 @@ class ThermalVariable{
 				return THERMAL_DATATYPE_DOUBLE;
 			return THERMAL_DATATYPE_UNKNOWN;
 		}
-	public:
 
-		ThermalVariable(){
-			this->name = "";
-			this->dataType = "";
-			this->value = NULL;
-		}
-		
-		~ThermalVariable(){
-
-		}
 
 		void create(std::string t, std::string n, int *v){
 			this->create(t, n, (void *)v);
@@ -77,9 +79,17 @@ class ThermalVariable{
 		std::string getDataType(void){
 			return this->dataType;
 		}
+		int getDataTypeMacro(void){
+			return this->dataTypeToId();
+		}
 		void *getValue(void){
 			return this->value;
 		}
+
+		/*\
+		 *  Void will be type casted into whatever type the memory is 
+		 *  automatically detected to be.
+		* *   */
 		bool setValue(void *val){
 			if(this->value == NULL){
 				return false;

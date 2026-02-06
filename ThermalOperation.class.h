@@ -87,8 +87,79 @@ class ThermalOperation{
 			this->data.variables = NULL;
 		}
 
-		void equals(ThermalVariable thisEquals, ThermalVariable that){
-			thisEquals.setValue(that.getValue());
+		bool equals(ThermalVariable thisEquals, ThermalVariable that){
+			return thisEquals.setValue(that.getValue());
+		}
+
+		bool add(ThermalVariable a, ThermalVariable b, ThermalVariable out){
+			switch(out.dataTypeToId()){
+				case THERMAL_DATATYPE_INT:{
+					int *varA = (int *)a.getValue();
+					int *varB = (int *)b.getValue();
+					int sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+				case THERMAL_DATATYPE_CHAR:{
+					char *varA = (char *)a.getValue();
+					char *varB = (char *)b.getValue();
+					char sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+				case THERMAL_DATATYPE_UINT32:{
+					uint32_t *varA = (uint32_t *)a.getValue();
+					uint32_t *varB = (uint32_t *)b.getValue();
+					uint32_t sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+				case THERMAL_DATATYPE_UINT64:{
+					uint64_t *varA = (uint64_t *)a.getValue();
+					uint64_t *varB = (uint64_t *)b.getValue();
+					uint64_t sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+				case THERMAL_DATATYPE_LONG:{
+					long *varA = (long *)a.getValue();
+					long *varB = (long *)b.getValue();
+					long sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+				case THERMAL_DATATYPE_LONGINT:{
+					long int *varA = (long int *)a.getValue();
+					long int *varB = (long int *)b.getValue();
+					long int sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+				case THERMAL_DATATYPE_SIZE:{
+					size_t *varA = (size_t *)a.getValue();
+					size_t *varB = (size_t *)b.getValue();
+					size_t sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+				case THERMAL_DATATYPE_FLOAT:{
+					float *varA = (float *)a.getValue();
+					float *varB = (float *)b.getValue();
+					float sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+				case THERMAL_DATATYPE_DOUBLE:{
+					double *varA = (double *)a.getValue();
+					double *varB = (double *)b.getValue();
+					double sum = (*varA) + (*varB);
+					out.setValue((void *)&sum);
+					break;
+				}
+
+			
+			}
+			return true;
 		}
 		ThermalOperation(){
 			this->init();

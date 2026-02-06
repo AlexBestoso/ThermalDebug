@@ -22,9 +22,11 @@ int main(int argc, char *argv[]){
 	tdi.declareStepVariable("int", "z", (void *)&z);
 
 	tdi.operation("a", "=", 5);//a=5;
+	tdi.operation("b", "=", 4);//b=4;
 	printf("A: %d\n", a);
-	tdi.operationEquals("b", 4);//b=4;
+	printf("B: %d\n", b);
 	tdi.operation("a", "+", "b", "x");//x = a + b;
+	printf("X: %d\n", x);
 	y = x * a;
 	z = y ^ b;
 	

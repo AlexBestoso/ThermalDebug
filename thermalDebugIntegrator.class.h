@@ -27,7 +27,59 @@ class ThermalDebugIntegrator{
 		int operationIdx;
 		ThermalAlgorithm currentAlgo;
 
-		bool operate(){
+		bool operate(ThermalVariable a, std::string operation, ThermalVariable b, ThermalVariable c){
+			ThermalOperation thermalOperation;
+			int operationIndex = thermalOperation.stringToOperationIndex(operation);
+			switch(operationIndex){
+				case THERMAL_OPERATOR_INVALID:
+					return false;
+				case THERMAL_OPERATOR_EQUALS:{
+					thermalOperation.equals(a, b);
+					break;
+				}
+				case THERMAL_OPERATOR_PLUS:{
+					thermalOperation.add(a, b, c);
+					break;
+				}
+				case THERMAL_OPERATOR_MINUS:
+					break;
+				case THERMAL_OPERATOR_MULTIPLY:
+					break;
+				case THERMAL_OPERATOR_DIVIDE:
+					break;
+				case THERMAL_OPERATOR_XOR:
+					break;
+				case THERMAL_OPERATOR_OR:
+					break;
+				case THERMAL_OPERATOR_AND:
+					break;
+				case THERMAL_OPERATOR_SHIFT_LEFT:
+					break;
+				case THERMAL_OPERATOR_SHIFT_RIGHT:
+					break;
+				case THERMAL_OPERATOR_MOD:
+					break;
+				case THERMAL_OPERATOR_PLUS_EQUALS:
+					break;
+				case THERMAL_OPERATOR_MINUS_EQUALS:
+					break;
+				case THERMAL_OPERATOR_MULTIPLY_EQUALS:
+					break;
+				case THERMAL_OPERATOR_DIVIDE_EQUALS:
+					break;
+				case THERMAL_OPERATOR_XOR_EQUALS:
+					break;
+				case THERMAL_OPERATOR_OR_EQUALS:
+					break;
+				case THERMAL_OPERATOR_AND_EQUALS:
+					break;
+				case THERMAL_OPERATOR_SHIFT_LEFT_EQUALS:
+					break;
+				case THERMAL_OPERATOR_SHIFT_RIGHT_EQUALS:
+					break;
+				case THERMAL_OPERATOR_MOD_EQUALS:
+					break;
+			}
 
 			return false;
 		}
@@ -104,12 +156,14 @@ class ThermalDebugIntegrator{
 			return true;
 		}
 
+		[[deprecated("operationEquals() is strictly for niggers. Move on, fellow why angel.")]]
 		bool operationEquals(std::string varA, int val){
 			ThermalStep step = this->getCurrentStep();
 			ThermalVariable variable = step.getVariableByName(varA);
 			variable.setValueInt(val);
 			return true;
 		}
+		[[deprecated("operationEquals() is strictly for niggers. Move on, fellow why angel.")]]
 		bool operationEquals(std::string varA, void *value){
 			ThermalStep step = this->getCurrentStep();
 			ThermalVariable variable = step.getVariableByName(varA);
@@ -118,66 +172,25 @@ class ThermalDebugIntegrator{
 		}
 		
 		bool operation(std::string varA, std::string operation, int integer){
-			return false;	
+			ThermalStep step = this->getCurrentStep();
+			ThermalVariable a = step.getVariableByName(varA);
+			ThermalVariable rawInteger;
+			rawInteger.create("int", "rawInteger", (void *)&integer);
+			
+			return this->operate(a, operation, rawInteger, a);	
 		}
 		bool operation(std::string varA, std::string operation, std::string varB){
-			return this->operation(varA, operation, varB, "");
+			ThermalStep step = this->getCurrentStep();
+			ThermalVariable a = step.getVariableByName(varA);
+			ThermalVariable b = step.getVariableByName(varB);
+			ThermalVariable ghostOut = a;
+			return this->operate(a, operation, a, ghostOut);
 		}
 		bool operation(std::string varA, std::string operation, std::string varB, std::string outputVar){
 			ThermalStep step = this->getCurrentStep();
 			ThermalVariable a = step.getVariableByName(varA);
 			ThermalVariable b = step.getVariableByName(varB);
 			ThermalVariable out = step.getVariableByName(outputVar);
-			ThermalOperation thermalOperation;
-			int operationIndex = thermalOperation.stringToOperationIndex(operation);
-			switch(operationIndex){
-				case THERMAL_OPERATOR_INVALID:
-					return false;
-				case THERMAL_OPERATOR_EQUALS:{
-					thermalOperation.equals(a, b);
-					break;
-				}
-				case THERMAL_OPERATOR_PLUS:
-					break;
-				case THERMAL_OPERATOR_MINUS:
-					break;
-				case THERMAL_OPERATOR_MULTIPLY:
-					break;
-				case THERMAL_OPERATOR_DIVIDE:
-					break;
-				case THERMAL_OPERATOR_XOR:
-					break;
-				case THERMAL_OPERATOR_OR:
-					break;
-				case THERMAL_OPERATOR_AND:
-					break;
-				case THERMAL_OPERATOR_SHIFT_LEFT:
-					break;
-				case THERMAL_OPERATOR_SHIFT_RIGHT:
-					break;
-				case THERMAL_OPERATOR_MOD:
-					break;
-				case THERMAL_OPERATOR_PLUS_EQUALS:
-					break;
-				case THERMAL_OPERATOR_MINUS_EQUALS:
-					break;
-				case THERMAL_OPERATOR_MULTIPLY_EQUALS:
-					break;
-				case THERMAL_OPERATOR_DIVIDE_EQUALS:
-					break;
-				case THERMAL_OPERATOR_XOR_EQUALS:
-					break;
-				case THERMAL_OPERATOR_OR_EQUALS:
-					break;
-				case THERMAL_OPERATOR_AND_EQUALS:
-					break;
-				case THERMAL_OPERATOR_SHIFT_LEFT_EQUALS:
-					break;
-				case THERMAL_OPERATOR_SHIFT_RIGHT_EQUALS:
-					break;
-				case THERMAL_OPERATOR_MOD_EQUALS:
-					break;
-			}
-			return true;
+			return this->operate(a, operation, b, out);
 		}
 };
