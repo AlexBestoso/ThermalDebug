@@ -134,6 +134,12 @@ class ThermalDebugIntegrator{
 		bool newStep(std::string name, std::string description, std::string srcFileName, int startingLineNumber, int endingLineNumber){
 			bool ret = this->currentAlgo.newStep(name, description, srcFileName, startingLineNumber, endingLineNumber);
 			this->stepIdx = this->currentAlgo.getStepCount() - 1;
+			ThermalStep *stepChain = this->currentAlgo.getStepChain();
+			if(stepChain == NULL || this->stepIdx < 0 || !ret ) return false;
+			
+			ThermalStep step = stepChain[this->stepIdx];
+			ret = this->currentAlgo.dumpStep(step);
+			
 			return ret;
 		}
 

@@ -146,5 +146,9 @@ class ThermalAlgorithm{
 		ThermalStep getCurrentStep(void){
 			return getStep(this->data.stepCount - 1);
 		}
+
+		bool dumpStep(ThermalStep step){
+			return this->thermalIO.addStep(step);
+		}
 		
 };

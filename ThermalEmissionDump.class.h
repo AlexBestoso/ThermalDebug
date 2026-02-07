@@ -45,6 +45,7 @@ class ThermalEmissionDump{
 		int descriptor;
 		std::string outputLoc;
 		ted_t data;
+		bool dumpStarted;
 
 		bool fileExists(std::string f){
 			struct stat st;
@@ -55,6 +56,7 @@ class ThermalEmissionDump{
 	public:
 		ThermalEmissionDump(){
 			this->data.steps = NULL;
+			this->dumpStarted = false;
 		}
 		std::string getOutFileName(void){
 			return this->outputLoc;
@@ -63,6 +65,7 @@ class ThermalEmissionDump{
 			return this->data;
 		}
 		void startAlgorithm(struct thermalAlgorithm algoData){
+			this->dumpStarted = true;
 			this->data.magic=0xd5245511;
 			for(int i=0; i<1024; i++){
 				if(i<128)
@@ -80,5 +83,56 @@ class ThermalEmissionDump{
 				this->data.steps = NULL;
 			}
 			this->outputLoc = algoData.outputLoc;
+		}
+
+		bool addStep(ThermalStep step){
+			if(!dumpStarted) return false;
+			size_t startSize = this->data.stepCount;
+			this->data.stepCount++;
+			tedstep_t *tmp = new (std::nothrow) tedstep_t[startSize];
+			if(tmp == NULL){
+				this->data.stepCount--;
+				return false;
+			}
+			for(int i=0; i<startSize; i++)
+				tmp[i] = this->data.steps[i];
+
+			if(this->data.steps != NULL) delete[] this->data.steps;
+			this->data.steps = new (std::nothrow) tedstep_t[this->data.stepCount];
+			for(int i=0; i<startSize; i++)
+				this->data.steps[i] = tmp[i];
+			delete[] tmp;
+
+			tedstep_t *ptr = &this->data.steps[this->data.stepCount-1];
+			ptr->startLine = step.getStartingLineNumber();
+			ptr->endLine = step.getEndingLineNumber();
+			ptr->variableCount = step.getVariableCount();
+			ptr->operationCount = step.getOperationCount();
+			std::string name = step.getName();
+			for(int i=0, nameMax=name.length(); i<64; i++){
+				if(i<nameMax)
+					ptr->stepName[i] = name[i];
+				else
+					ptr->stepName[i] = 0x00;
+			}
+			name = step.getSrcFileName();
+			for(int i=0, srcMax=name.length(); i<256; i++){
+				if(i<srcMax)
+					ptr->sourceFile[i] = name[i];
+				else
+					ptr->sourceFile[i] = 0x00;
+			}
+			name = step.getDescription();
+			for(int i=0, descMax=name.length(); i<1024; i++){
+				if(i<descMax)
+					ptr->stepDescription[i] = name[i];
+				else
+					ptr->stepDescription[i] = 0x00;
+			}
+
+			ptr->variables = NULL;
+			ptr->operations = NULL;
+			
+			return true;
 		}
 };

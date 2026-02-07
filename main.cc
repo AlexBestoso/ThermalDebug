@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 	tdi.newAlgorithm("Test Algo", "An algorithm to test the core functionality of thermal debug.", "./sample.ted");
 	
 	printf("Creating step.\n");
-	tdi.newStep("Random Step", "A step that does something so we can test.", "main.cc", 10, 10);
+	tdi.newStep("Random Step", "A step that does something so we can test.", "main.cc", 17, 31);
 	
 	printf("Declaring variables.\n");
 	tdi.declareStepVariable("int", "a", (void *)&a);
@@ -34,6 +34,11 @@ int main(int argc, char *argv[]){
 	printf("Generated .ted file to %s:\n", Ted.getOutFileName().c_str());
 	ted_t ted = Ted.getData();
 	printf("Maigic Number: 0x%lx\nAlgorithm Name : %s\nAlgorithm Description: %s\nAlgorithm Step Count: %ld\n", ted.magic, ted.algorithmName, ted.description, ted.stepCount);
+	printf("\n\t...Steps...\n\n");
+	for(int i=0; i<ted.stepCount; i++){
+		tedstep_t s = ted.steps[i];
+		printf("Step Name: %s\n\tStep Description: %s\n\tSource File: %s\n\tLine range: %ld to %ld\n\tVariable Count: %ld\n\tOperation Count: %ld\n", s.stepName, s.stepDescription, s.sourceFile, s.startLine, s.endLine, s.variableCount, s.operationCount);
+	}
 	
 	return 0;
 }
