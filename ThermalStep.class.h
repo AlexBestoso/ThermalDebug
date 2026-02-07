@@ -188,6 +188,14 @@ class ThermalStep{
 			}
 			return ret;
 		}
+
+		ThermalVariable getVariableByIndex(int idx){
+			ThermalVariable ret;
+			if(idx < 0 || idx >= this->getVariableCount()) return ret;
+			ThermalVariable *variables = this->getVariables();
+			ret = variables[idx];
+			return ret;
+		}
 		
 		void newOperation(){
 

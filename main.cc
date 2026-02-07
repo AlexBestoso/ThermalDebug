@@ -37,7 +37,12 @@ int main(int argc, char *argv[]){
 	printf("\n\t...Steps...\n\n");
 	for(int i=0; i<ted.stepCount; i++){
 		tedstep_t s = ted.steps[i];
-		printf("Step Name: %s\n\tStep Description: %s\n\tSource File: %s\n\tLine range: %ld to %ld\n\tVariable Count: %ld\n\tOperation Count: %ld\n", s.stepName, s.stepDescription, s.sourceFile, s.startLine, s.endLine, s.variableCount, s.operationCount);
+		printf("Step Name: %s\n\tStep Description: %s\n\tSource File: %s\n\tLine range: %ld to %ld\n\tVariable Count: %ld\n", s.stepName, s.stepDescription, s.sourceFile, s.startLine, s.endLine, s.variableCount);
+		for(int j=0; j<s.variableCount; j++){
+			tedvar_t v = s.variables[j];
+			printf("\t\t%s %s\n", v.variableType, v.variableName);
+		}
+		printf("\tOperation Count: %ld\n", s.operationCount);
 	}
 	
 	return 0;

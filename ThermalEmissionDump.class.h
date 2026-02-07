@@ -46,6 +46,7 @@ class ThermalEmissionDump{
 		std::string outputLoc;
 		ted_t data;
 		bool dumpStarted;
+		bool hasSteps;
 
 		bool fileExists(std::string f){
 			struct stat st;
@@ -57,6 +58,7 @@ class ThermalEmissionDump{
 		ThermalEmissionDump(){
 			this->data.steps = NULL;
 			this->dumpStarted = false;
+			this->hasSteps = false;
 		}
 		std::string getOutFileName(void){
 			return this->outputLoc;
@@ -66,6 +68,7 @@ class ThermalEmissionDump{
 		}
 		void startAlgorithm(struct thermalAlgorithm algoData){
 			this->dumpStarted = true;
+			this->hasSteps = false;
 			this->data.magic=0xd5245511;
 			for(int i=0; i<1024; i++){
 				if(i<128)
@@ -89,7 +92,7 @@ class ThermalEmissionDump{
 			if(!dumpStarted) return false;
 			size_t startSize = this->data.stepCount;
 			this->data.stepCount++;
-			tedstep_t *tmp = new (std::nothrow) tedstep_t[startSize];
+			tedstep_t *tmp = new (std::nothrow) tedstep_t[startSize+1];
 			if(tmp == NULL){
 				this->data.stepCount--;
 				return false;
@@ -99,6 +102,11 @@ class ThermalEmissionDump{
 
 			if(this->data.steps != NULL) delete[] this->data.steps;
 			this->data.steps = new (std::nothrow) tedstep_t[this->data.stepCount];
+			if(this->data.steps == NULL){
+				this->data.stepCount = 0;
+				delete[] tmp;
+				return false;
+			}
 			for(int i=0; i<startSize; i++)
 				this->data.steps[i] = tmp[i];
 			delete[] tmp;
@@ -133,6 +141,56 @@ class ThermalEmissionDump{
 			ptr->variables = NULL;
 			ptr->operations = NULL;
 			
+			this->hasSteps = true;
+			return true;
+		}
+
+		bool addVariable(int stepIndex, ThermalVariable variable){
+			if(!this->hasSteps)
+				return false;
+			if(stepIndex < 0 || stepIndex >= this->data.stepCount){
+				return false;
+			}
+			tedstep_t *step = &this->data.steps[stepIndex];
+			int startingVariableCount = step->variableCount;
+			step->variableCount++;
+			tedvar_t *tmp = new (std::nothrow) tedvar_t[startingVariableCount+1];
+			if(tmp == NULL){
+				step->variableCount--;
+				return false;
+			}
+
+			for(int i=0; i<startingVariableCount; i++)
+				tmp[i] = step->variables[i];
+
+			if(step->variables != NULL) delete[] step->variables;
+			step->variables = new (std::nothrow) tedvar_t[step->variableCount];
+			if(step->variables == NULL){
+				step->variableCount = 0;
+				delete[] tmp;
+				return false;
+			}
+			
+			for(int i=0; i<startingVariableCount; i++)
+				step->variables[i] = tmp[i];
+			delete[] tmp;
+
+			tedvar_t *ptr = &step->variables[step->variableCount-1];
+			
+			std::string type = variable.getDataType();
+			std::string name = variable.getName();
+			for(int i=0, t=type.length(), n=name.length(); i<32; i++){
+				if(i<t)
+					ptr->variableType[i] = type[i];
+				else
+					ptr->variableType[i] = 0x00;
+
+				if(i<n)
+					ptr->variableName[i] = name[i];
+				else
+					ptr->variableName[i] = 0x00;
+			}
+
 			return true;
 		}
 };
