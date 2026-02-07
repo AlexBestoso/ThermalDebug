@@ -150,5 +150,10 @@ class ThermalAlgorithm{
 		bool dumpStep(ThermalStep step){
 			return this->thermalIO.addStep(step);
 		}
+
+		bool dumpStepVariable(int stepIndex, ThermalVariable variable){
+			return this->thermalIO.addVariable(stepIndex, variable);
+			
+		}
 		
 };

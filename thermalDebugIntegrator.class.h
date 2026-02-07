@@ -168,7 +168,8 @@ class ThermalDebugIntegrator{
 				return false;
 
 			this->setCurrentStep(step);
-			step = this->getCurrentStep();
+			ThermalVariable variable = step.getVariableByIndex(step.getVariableCount()-1);
+			this->currentAlgo.dumpStepVariable(this->stepIdx, variable);
 			return true;
 		}
 
