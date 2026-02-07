@@ -1,4 +1,3 @@
-#include "./ThermalEmissionDump.class.h"
 
 #include "./ThermalVariable.class.h"
 #include "./ThermalOperation.class.h"
@@ -100,6 +99,10 @@ class ThermalDebugIntegrator{
 
 		}
 
+		ThermalEmissionDump getTed(void){
+			return this->currentAlgo.getDump();
+		}
+
 		bool newAlgorithm(std::string name, std::string desc, std::string outFile){
 			if(this->processingAlgo) return false;
 			this->processingAlgo = true;
@@ -107,6 +110,7 @@ class ThermalDebugIntegrator{
 			this->currentAlgo.setName(name);
 			this->currentAlgo.setDescription(desc);
 			this->currentAlgo.setOutputLoc(outFile);
+			this->currentAlgo.initDump();
 			return true;
 		}
 
