@@ -1,23 +1,9 @@
+
 #include "./ThermalVariable.class.h"
-struct thermalOperation{
-	std::string name;
-	std::string description;
-	size_t variableCount;
-	ThermalVariable *variables;
-};
 #include "./ThermalOperation.class.h"
 
 #include "./ThermalStep.class.h"
 
-struct thermalAlgorithm{
-	std::string name;
-	std::string description;
-	std::string outputLoc;
-	size_t *outBuffSize;
-	uint8_t *outBuff;
-	size_t stepCount;
-	ThermalStep *stepChain;
-};
 #include "./ThermalAlgorithm.class.h"
 
 class ThermalDebugIntegrator{
@@ -113,6 +99,10 @@ class ThermalDebugIntegrator{
 
 		}
 
+		ThermalEmissionDump getTed(void){
+			return this->currentAlgo.getDump();
+		}
+
 		bool newAlgorithm(std::string name, std::string desc, std::string outFile){
 			if(this->processingAlgo) return false;
 			this->processingAlgo = true;
@@ -120,6 +110,7 @@ class ThermalDebugIntegrator{
 			this->currentAlgo.setName(name);
 			this->currentAlgo.setDescription(desc);
 			this->currentAlgo.setOutputLoc(outFile);
+			this->currentAlgo.initDump();
 			return true;
 		}
 

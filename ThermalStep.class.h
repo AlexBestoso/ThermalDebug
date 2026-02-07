@@ -143,7 +143,6 @@ class ThermalStep{
 
 		bool newVariable(std::string dataType, std::string variableName, void *data){
 			if(this->data.variables == NULL){
-				printf("poop\n");
 				this->data.variableCount = 1;
 				this->data.variables = new (std::nothrow) ThermalVariable[this->data.variableCount];
 				if(this->data.variables == NULL) return false;
@@ -172,7 +171,6 @@ class ThermalStep{
 				this->data.variableCount++;
 			}
 
-			printf("Creating newly allocated variable...\n");
 			this->data.variables[this->data.variableCount-1].create(dataType, variableName, data);
 			return true;
 		}
