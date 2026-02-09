@@ -42,7 +42,17 @@ int main(int argc, char *argv[]){
 			tedvar_t v = s.variables[j];
 			printf("\t\t%s %s\n", v.variableType, v.variableName);
 		}
+		
 		printf("\tOperation Count: %ld\n", s.operationCount);
+		for(int j=0; j<s.operationCount; j++){
+			tedop_t o = s.operations[j];
+			if(Ted.specialEquals((int)o.operation)){
+				printf("\t\t%ld %s %ld (= %ld)\n", o.variableCValue, Ted.operationMacroToString((int)o.operation).c_str(), o.variableBValue, o.variableAValue);
+			}else{
+				printf("\t\t%ld %s %ld = %ld\n", o.variableAValue, Ted.operationMacroToString((int)o.operation).c_str(), o.variableBValue, o.variableCValue);
+			}
+
+		}
 	}
 	
 	return 0;

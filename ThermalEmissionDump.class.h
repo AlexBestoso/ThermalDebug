@@ -54,7 +54,63 @@ class ThermalEmissionDump{
 				return false;
 			return true;
 		}
+
+		int getStepVariableIndex(int stepIdx, ThermalVariable variable){
+			int ret=-1;
+			
+			return ret;
+		}
 	public:
+		bool specialEquals(int macro){
+			return macro >= THERMAL_OPERATOR_COMBINED_OFFSET;
+		}
+		std::string operationMacroToString(int macro){
+			switch(macro){
+				case THERMAL_OPERATOR_EQUALS:
+					return "=";
+				case THERMAL_OPERATOR_PLUS:
+					return "+";
+				case THERMAL_OPERATOR_MINUS:
+					return "-";
+				case THERMAL_OPERATOR_MULTIPLY:
+					return "*";
+				case THERMAL_OPERATOR_DIVIDE:
+					return "/";
+				case THERMAL_OPERATOR_XOR:
+					return "^";
+				case THERMAL_OPERATOR_OR:
+					return "|";
+				case THERMAL_OPERATOR_AND:
+					return "&";
+				case THERMAL_OPERATOR_SHIFT_LEFT:
+					return "<<";
+				case THERMAL_OPERATOR_SHIFT_RIGHT:
+					return ">>";
+				case THERMAL_OPERATOR_MOD:
+					return "%";
+				case THERMAL_OPERATOR_PLUS_EQUALS:
+					return "+=";
+				case THERMAL_OPERATOR_MINUS_EQUALS:
+					return "-=";
+				case THERMAL_OPERATOR_MULTIPLY_EQUALS:
+					return "*=";
+				case THERMAL_OPERATOR_DIVIDE_EQUALS:
+					return "/=";
+				case THERMAL_OPERATOR_XOR_EQUALS:
+					return "^=";
+				case THERMAL_OPERATOR_OR_EQUALS:
+					return "|=";
+				case THERMAL_OPERATOR_AND_EQUALS:
+					return "&=";
+				case THERMAL_OPERATOR_SHIFT_LEFT_EQUALS:
+					return "<<=";
+				case THERMAL_OPERATOR_SHIFT_RIGHT_EQUALS:
+					return ">>=";
+				case THERMAL_OPERATOR_MOD_EQUALS:
+					return "%=";
+			}
+			return "";
+		}
 		ThermalEmissionDump(){
 			this->data.steps = NULL;
 			this->dumpStarted = false;
@@ -195,7 +251,58 @@ class ThermalEmissionDump{
 		}
 
 		bool addOperation(int stepIndex, ThermalVariable a, ThermalVariable b, ThermalVariable c, int opMacro){
+			if(stepIndex < 0 || stepIndex >= this->data.stepCount)
+				return false;
+			if(this->data.steps == NULL){
+				return false;
+			}
 			
+			tedstep_t *step = &this->data.steps[stepIndex];
+			int startingOperationCount = step->operationCount;
+			step->operationCount++;
+			if(step == NULL) return false;
+
+			tedop_t *tmp = new (std::nothrow) tedop_t[startingOperationCount+1];
+			if(tmp == NULL){
+				step->operationCount--;
+				return false;
+			}
+
+			for(int i=0; i<startingOperationCount; i++)
+				tmp[i] = step->operations[i];
+
+			if(step->operations != NULL) delete[] step->operations;
+			step->operations = new (std::nothrow) tedop_t[step->operationCount];
+			if(step->operations == NULL){
+				step->operationCount = 0;
+				delete[] tmp;
+				return false;
+			}
+			
+			for(int i=0; i<startingOperationCount; i++)
+				step->operations[i] = tmp[i];
+			delete[] tmp;
+
+			tedop_t *ptr = &step->operations[step->operationCount-1];
+			ptr->operation = (char)opMacro;
+
+			/*if(opMacro > THERMAL_OPERATOR_COMBINED_OFFSET){ // a ?= b
+				ptr->variableAIndex = this->getStepVariableIndex(stepIndex, a);
+				ptr->variableAValue = a.getValueUint64();
+				ptr->variableBIndex = this->getStepVariableIndex(stepIndex, b);
+				ptr->variableBValue b.getValueUint64();
+				ptr->variableCIndex = = this->getStepVariableIndex(stepIndex, c);
+				ptr->variableCValue c.getValueUint64();
+			}else{ // a ? b = c*/
+				ptr->variableAIndex = this->getStepVariableIndex(stepIndex, a);
+				ptr->variableAValue = a.getValueUint64();
+				ptr->variableBIndex = this->getStepVariableIndex(stepIndex, b);
+				ptr->variableBValue = b.getValueUint64();
+				ptr->variableCIndex = this->getStepVariableIndex(stepIndex, c);
+				ptr->variableCValue = c.getValueUint64();
+			//}
+
+
 			return true;
 		}
 };
