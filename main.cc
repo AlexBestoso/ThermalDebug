@@ -7,7 +7,7 @@
 #include "thermalDebugIntegrator.class.h"
 
 int main(int argc, char *argv[]){
-	int a=0, b=0, x=0, y=0, z=0;
+	uint64_t a=0, b=0, x=0, y=0, z=0;
 	ThermalDebugIntegrator tdi;
 
 	printf("Creating Algorithm...\n");
@@ -17,12 +17,12 @@ int main(int argc, char *argv[]){
 	tdi.newStep("Random Step", "A step that does something so we can test.", "main.cc", 17, 31);
 	
 	printf("Declaring variables.\n");
-	tdi.declareStepVariable("int", "a", (void *)&a);
-	tdi.declareStepVariable("int", "b", (void *)&b);
-	tdi.declareStepVariable("int", "b", (void *)&b);
-	tdi.declareStepVariable("int", "x", (void *)&x);
-	tdi.declareStepVariable("int", "y", (void *)&y);
-	tdi.declareStepVariable("int", "z", (void *)&z);
+	tdi.declareStepVariable("uint64_t", "a", (void *)&a);
+	tdi.declareStepVariable("uint64_t", "b", (void *)&b);
+	tdi.declareStepVariable("uint64_t", "b", (void *)&b);
+	tdi.declareStepVariable("uint64_t", "x", (void *)&x);
+	tdi.declareStepVariable("uint64_t", "y", (void *)&y);
+	tdi.declareStepVariable("uint64_t", "z", (void *)&z);
 
 	tdi.operation("a", "=", 5);
 	tdi.operation("b", "=", 4);

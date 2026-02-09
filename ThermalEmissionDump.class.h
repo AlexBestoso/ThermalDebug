@@ -297,13 +297,17 @@ class ThermalEmissionDump{
 			// Requires a switch to account for each variables specific datatype.
 			// We need to fetch the pointer data as the proper datatype, and then typecast to uint64_t.
 			// this should ensure that all of the variable data is stored in the same variable.
+			uint64_t varA = a.getValueAutocast();
+			uint64_t varB = b.getValueAutocast();
+			uint64_t varC = c.getValueAutocast();
+			
 
 				ptr->variableAIndex = this->getStepVariableIndex(stepIndex, a);
-				ptr->variableAValue = a.getValueUint64();
+				ptr->variableAValue = varA;
 				ptr->variableBIndex = this->getStepVariableIndex(stepIndex, b);
-				ptr->variableBValue = b.getValueUint64();
+				ptr->variableBValue = varB;
 				ptr->variableCIndex = this->getStepVariableIndex(stepIndex, c);
-				ptr->variableCValue = c.getValueUint64();
+				ptr->variableCValue = varC;
 
 
 			return true;

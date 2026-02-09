@@ -92,6 +92,50 @@ class ThermalVariable{
 			return this->value;
 		}
 
+		uint64_t getValueAutocast(void){
+			uint64_t ret = 0;
+			switch(this->dataTypeToId()){
+				case THERMAL_DATATYPE_INT:{
+					int value = this->getValueInt();
+					ret = (uint64_t)value;
+				}
+				case THERMAL_DATATYPE_CHAR:{
+					char value = this->getValueChar();
+					ret = (uint64_t)value;
+				}
+				case THERMAL_DATATYPE_UINT32:{
+					uint32_t value = this->getValueUint32();
+					ret = (uint64_t)value;
+				}
+				case THERMAL_DATATYPE_UINT64:{
+					ret = this->getValueUint64();
+				}
+				case THERMAL_DATATYPE_LONG:{
+					long value = this->getValueLong();
+					ret = (uint64_t)value;
+				}
+				case THERMAL_DATATYPE_LONGINT:{
+					ret = this->getValueUint64();
+				}
+				case THERMAL_DATATYPE_SIZE:{
+					ret = this->getValueUint64();
+				}
+				case THERMAL_DATATYPE_FLOAT:{
+					float value = this->getValueFloat();
+					ret = (uint64_t)value;
+				}
+				case THERMAL_DATATYPE_DOUBLE:{
+					double value = this->getValueDouble();
+					ret = (uint64_t)value;
+				}
+				default:{
+					ret = this->getValueUint64();
+				}
+			}
+
+			return ret;
+		}
+
 		/*\
 		 *  Void will be type casted into whatever type the memory is 
 		 *  automatically detected to be.
