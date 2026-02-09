@@ -193,4 +193,9 @@ class ThermalEmissionDump{
 
 			return true;
 		}
+
+		bool addOperation(int stepIndex, ThermalVariable a, ThermalVariable b, ThermalVariable c, int opMacro){
+			
+			return true;
+		}
 };

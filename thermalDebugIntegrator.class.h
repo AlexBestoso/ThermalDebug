@@ -16,10 +16,12 @@ class ThermalDebugIntegrator{
 		bool operate(ThermalVariable a, std::string operation, ThermalVariable b, ThermalVariable c){
 			ThermalOperation thermalOperation;
 			int operationIndex = thermalOperation.stringToOperationIndex(operation);
+			uint64_t ghostStorage = a.getValueUint64();
 			switch(operationIndex){
 				case THERMAL_OPERATOR_INVALID:
 					return false;
 				case THERMAL_OPERATOR_EQUALS:{
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.equals(a, b);
 					break;
 				}
@@ -55,36 +57,49 @@ class ThermalDebugIntegrator{
 					thermalOperation.mod(a, b, c);
 					break;
 				case THERMAL_OPERATOR_PLUS_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.addEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_MINUS_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.subtractEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_MULTIPLY_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.multiplyEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_DIVIDE_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.divideEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_XOR_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.xorEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_OR_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.orEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_AND_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.andEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_SHIFT_LEFT_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.shiftLeftEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_SHIFT_RIGHT_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.shiftRightEqual(a, b);
 					break;
 				case THERMAL_OPERATOR_MOD_EQUALS:
+					c.create(a.getDataType(), a.getName(), &ghostStorage);
 					thermalOperation.modEqual(a, b);
 					break;
 			}
+
+			
+			this->currentAlgo.dumpOperation(this->stepIdx, a, b, c, operationIndex);
 
 			return false;
 		}
@@ -177,16 +192,17 @@ class ThermalDebugIntegrator{
 			ThermalStep step = this->getCurrentStep();
 			ThermalVariable a = step.getVariableByName(varA);
 			ThermalVariable rawInteger;
+			ThermalVariable ghostVar;
 			rawInteger.create("int", "rawInteger", (void *)&integer);
 			
-			return this->operate(a, operation, rawInteger, a);	
+			return this->operate(a, operation, rawInteger, ghostVar);	
 		}
 		bool operation(std::string varA, std::string operation, std::string varB){
 			ThermalStep step = this->getCurrentStep();
 			ThermalVariable a = step.getVariableByName(varA);
 			ThermalVariable b = step.getVariableByName(varB);
-			ThermalVariable ghostOut = a;
-			return this->operate(a, operation, a, ghostOut);
+			ThermalVariable ghostOut;
+			return this->operate(a, operation, b, ghostOut);
 		}
 		bool operation(std::string varA, std::string operation, std::string varB, std::string outputVar){
 			ThermalStep step = this->getCurrentStep();

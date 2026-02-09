@@ -61,10 +61,16 @@ class ThermalVariable{
 		void create(std::string t, std::string n, double *v){
 			this->create(t, n, (void *)v);
 		}
-		void create(std::string t, std::string n, size_t *v){
+		//void create(std::string t, std::string n, size_t *v){
+		//	this->create(t, n, (void *)v);
+		//}
+		void create(std::string t, std::string n, long *v){
 			this->create(t, n, (void *)v);
 		}
-		void create(std::string t, std::string n, long *v){
+		void create(std::string t, std::string n, uint32_t *v){
+			this->create(t, n, (void *)v);
+		}
+		void create(std::string t, std::string n, uint64_t *v){
 			this->create(t, n, (void *)v);
 		}
 		void create(std::string t, std::string n, void *v){
@@ -159,6 +165,8 @@ class ThermalVariable{
 			return true;
 		}
 		int getValueInt(void){
+			if(this->value == NULL)
+				return 0;
 			int ret = static_cast<int *>(this->value)[0];
 			return ret;
 		}
@@ -172,24 +180,45 @@ class ThermalVariable{
 			return true;
 		}
 		char getValueChar(void){
+			if(this->value == NULL)
+				return 0x00;
 			char ret = static_cast<char *>(this->value)[0];
 			return ret;
 		}
 		float getValueFloat(void){
-
+			if(this->value == NULL)
+				return 0.0;
 			float *ret = static_cast<float*>(this->value);
 			return ret[0];
 		}
 		double getValueDouble(void){
+			if(this->value == NULL)
+				return 0.0;
 			double ret = static_cast<double *>(this->value)[0];
 			return ret;
 		}
 		size_t getValueSize_t(void){
+			if(this->value == NULL)
+				return 0;
 			size_t ret = ((size_t *)this->value)[0];
 			return ret;
 		}
 		long getValueLong(void){
+			if(this->value == NULL)
+				return 0;
 			long ret = ((long *)this->value)[0];
+			return ret;
+		}
+		uint32_t getValueUint32(void){
+			if(this->value == NULL)
+				return 0;
+			uint32_t ret = static_cast<uint32_t *>(this->value)[0];
+			return ret;
+		}
+		uint64_t getValueUint64(void){
+			if(this->value == NULL)
+				return 0;
+			uint64_t ret = static_cast<uint64_t *>(this->value)[0];
 			return ret;
 		}
 };
