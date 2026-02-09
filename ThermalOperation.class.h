@@ -1,5 +1,4 @@
 #define THERMAL_OPERATOR_INVALID -1
-#define THERMAL_OPERATOR_EQUALS 0
 #define THERMAL_OPERATOR_PLUS 1
 #define THERMAL_OPERATOR_MINUS 2
 #define THERMAL_OPERATOR_MULTIPLY 3
@@ -13,6 +12,7 @@
 
 #define THERMAL_OPERATOR_COMBINED_OFFSET 2000
 
+#define THERMAL_OPERATOR_EQUALS (THERMAL_OPERATOR_COMBINED_OFFSET + 1)
 #define THERMAL_OPERATOR_PLUS_EQUALS THERMAL_OPERATOR_COMBINED_OFFSET + 11
 #define THERMAL_OPERATOR_MINUS_EQUALS THERMAL_OPERATOR_COMBINED_OFFSET + 12
 #define THERMAL_OPERATOR_MULTIPLY_EQUALS THERMAL_OPERATOR_COMBINED_OFFSET + 13
@@ -781,9 +781,9 @@ class ThermalOperation{
 		bool add(ThermalVariable a, ThermalVariable b, ThermalVariable out){
 			switch(out.dataTypeToId()){
 				case THERMAL_DATATYPE_INT:{
-					int *varA = (int *)a.getValue();
-					int *varB = (int *)b.getValue();
-					int sum = (*varA) + (*varB);
+					int varA = a.getValueInt();
+					int varB = b.getValueInt();
+					uint64_t sum = (uint64_t)(varA + varB);
 					out.setValue((void *)&sum);
 					break;
 				}

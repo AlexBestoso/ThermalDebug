@@ -8,7 +8,7 @@ struct thermalOperationDump{
 	uint64_t variableAIndex;
 	uint64_t variableAValue;
 
-	char operation;
+	uint64_t operation;
 	
 	uint64_t variableBIndex;
 	uint64_t variableBValue;
@@ -56,9 +56,18 @@ class ThermalEmissionDump{
 		}
 
 		int getStepVariableIndex(int stepIdx, ThermalVariable variable){
-			int ret=-1;
+			if(stepIdx < 0 || stepIdx >= this->data.stepCount) return -1;
+			tedstep_t step = this->data.steps[stepIdx];
+			std::string target = variable.getName();
 			
-			return ret;
+			for(int i=0; i<step.variableCount; i++){
+				tedvar_t v = step.variables[i];
+				std::string name = v.variableName;
+				if(target == name){
+					return i;
+				}
+			}
+			return -1;
 		}
 	public:
 		bool specialEquals(int macro){
@@ -109,7 +118,7 @@ class ThermalEmissionDump{
 				case THERMAL_OPERATOR_MOD_EQUALS:
 					return "%=";
 			}
-			return "";
+			return "?";
 		}
 		ThermalEmissionDump(){
 			this->data.steps = NULL;
@@ -284,23 +293,17 @@ class ThermalEmissionDump{
 			delete[] tmp;
 
 			tedop_t *ptr = &step->operations[step->operationCount-1];
-			ptr->operation = (char)opMacro;
+			ptr->operation = opMacro;
+			// Requires a switch to account for each variables specific datatype.
+			// We need to fetch the pointer data as the proper datatype, and then typecast to uint64_t.
+			// this should ensure that all of the variable data is stored in the same variable.
 
-			/*if(opMacro > THERMAL_OPERATOR_COMBINED_OFFSET){ // a ?= b
-				ptr->variableAIndex = this->getStepVariableIndex(stepIndex, a);
-				ptr->variableAValue = a.getValueUint64();
-				ptr->variableBIndex = this->getStepVariableIndex(stepIndex, b);
-				ptr->variableBValue b.getValueUint64();
-				ptr->variableCIndex = = this->getStepVariableIndex(stepIndex, c);
-				ptr->variableCValue c.getValueUint64();
-			}else{ // a ? b = c*/
 				ptr->variableAIndex = this->getStepVariableIndex(stepIndex, a);
 				ptr->variableAValue = a.getValueUint64();
 				ptr->variableBIndex = this->getStepVariableIndex(stepIndex, b);
 				ptr->variableBValue = b.getValueUint64();
 				ptr->variableCIndex = this->getStepVariableIndex(stepIndex, c);
 				ptr->variableCValue = c.getValueUint64();
-			//}
 
 
 			return true;
