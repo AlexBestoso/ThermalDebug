@@ -213,4 +213,8 @@ class ThermalDebugIntegrator{
 			ThermalVariable out = step.getVariableByName(outputVar);
 			return this->operate(a, operation, b, out);
 		}
+
+		bool finish(void){
+			return this->currentAlgo.finishDump();
+		}
 };

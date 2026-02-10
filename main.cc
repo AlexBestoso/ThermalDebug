@@ -31,6 +31,8 @@ int main(int argc, char *argv[]){
 	tdi.operation("x", "*", "a", /*=*/ "y");
 	tdi.operation("y", "^", "b", /*=*/ "z");
 
+	tdi.finish();
+
 	ThermalEmissionDump Ted = tdi.getTed();
 	printf("Generated .ted file to %s:\n", Ted.getOutFileName().c_str());
 	ted_t ted = Ted.getData();

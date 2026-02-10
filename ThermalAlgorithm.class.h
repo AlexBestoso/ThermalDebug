@@ -158,5 +158,9 @@ class ThermalAlgorithm{
 		bool dumpOperation(int stepIndex, ThermalVariable a, ThermalVariable b, ThermalVariable c, int operationMacro){
 			return this->thermalIO.addOperation(stepIndex, a, b, c, operationMacro);
 		}
+
+		bool finishDump(void){
+			return thermalIO.writeData();
+		}
 		
 };
