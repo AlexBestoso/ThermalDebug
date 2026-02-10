@@ -7,7 +7,7 @@
 #include "thermalDebugIntegrator.class.h"
 
 int main(int argc, char *argv[]){
-	int a, b, x, y, z;
+	int a=0, b=0, x=0, y=0, z=0;
 	ThermalDebugIntegrator tdi;
 
 	printf("Creating Algorithm...\n");
@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
 
 	tdi.operation("a", "=", 5);
 	tdi.operation("b", "=", 4);
+	tdi.operation("b", "+=", 1);
 	tdi.operation("a", "+", "b", /*=*/ "x");
 	tdi.operation("x", "*", "a", /*=*/ "y");
 	tdi.operation("y", "^", "b", /*=*/ "z");
@@ -42,7 +43,17 @@ int main(int argc, char *argv[]){
 			tedvar_t v = s.variables[j];
 			printf("\t\t%s %s\n", v.variableType, v.variableName);
 		}
+		
 		printf("\tOperation Count: %ld\n", s.operationCount);
+		for(int j=0; j<s.operationCount; j++){
+			tedop_t o = s.operations[j];
+			if(Ted.specialEquals(o.operation)){
+				printf("\t\t%ld %s %ld  (=%ld)\n", o.variableCValue, Ted.operationMacroToString((int)o.operation).c_str(), o.variableBValue, o.variableAValue);
+			}else{
+				printf("\t\t%ld %s %ld  = %ld\n", o.variableAValue, Ted.operationMacroToString((int)o.operation).c_str(), o.variableBValue, o.variableCValue);
+			}
+
+		}
 	}
 	
 	return 0;

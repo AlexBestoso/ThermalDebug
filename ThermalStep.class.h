@@ -189,6 +189,20 @@ class ThermalStep{
 			return ret;
 		}
 
+		int getVariableIndexByName(std::string var){
+			ThermalVariable *variables = this->getVariables();
+			size_t variableCount = this->getVariableCount();
+			if(variableCount > 0 && variables != NULL){
+				for(int i=0; i<variableCount; i++){
+					if(variables[i].getName() == var){
+						return i;
+					}
+				}
+			}
+			return -1;
+		}
+
+
 		ThermalVariable getVariableByIndex(int idx){
 			ThermalVariable ret;
 			if(idx < 0 || idx >= this->getVariableCount()) return ret;
