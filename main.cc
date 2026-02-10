@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
 
 	tdi.operation("a", "=", 5);
 	tdi.operation("b", "=", 4);
+	tdi.operation("b", "+=", 1);
 	tdi.operation("a", "+", "b", /*=*/ "x");
 	tdi.operation("x", "*", "a", /*=*/ "y");
 	tdi.operation("y", "^", "b", /*=*/ "z");
