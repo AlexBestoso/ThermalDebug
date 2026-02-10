@@ -27,6 +27,7 @@ class ThermalDebugIntegrator{
 				}
 				case THERMAL_OPERATOR_PLUS:{
 					thermalOperation.add(a, b, c);
+					uint64_t dbg = a.getValueAutocast();
 					break;
 				}
 				case THERMAL_OPERATOR_MINUS:
@@ -195,7 +196,6 @@ class ThermalDebugIntegrator{
 			ThermalVariable ghostVar;
 			uint64_t ghostInt = (uint64_t)integer;
 			rawInteger.create("uint64_t", "rawInteger", (void *)&ghostInt);
-			printf("Raw Integer : %ld, original integer : %d\n", rawInteger.getValueUint64(), integer);
 			
 			return this->operate(a, operation, rawInteger, ghostVar);	
 		}

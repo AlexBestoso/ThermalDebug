@@ -13,6 +13,7 @@ class ThermalVariable{
 		std::string name;
 		std::string dataType;
 		void *value;
+		uint64_t valueCache;
 
 	public:
 
@@ -20,11 +21,35 @@ class ThermalVariable{
 			this->name = "";
 			this->dataType = "";
 			this->value = NULL;
+			this->valueCache = 0;
 		}
 		
 		~ThermalVariable(){
 
 		}
+
+		int dataTypeToId(std::string type){
+			if(type == "int")
+				return THERMAL_DATATYPE_INT;
+			if(type == "char")
+				return THERMAL_DATATYPE_CHAR;
+			if(type == "uint32_t")
+				return THERMAL_DATATYPE_UINT32;
+			if(type == "uint64_t")
+				return THERMAL_DATATYPE_UINT64;
+			if(type == "long")
+				return THERMAL_DATATYPE_LONG;
+			if(type == "long int")
+				return THERMAL_DATATYPE_LONGINT;
+			if(type == "size_t")
+				return THERMAL_DATATYPE_SIZE;
+			if(type == "float")
+				return THERMAL_DATATYPE_FLOAT;
+			if(type == "double")
+				return THERMAL_DATATYPE_DOUBLE;
+			return THERMAL_DATATYPE_UNKNOWN;
+		}
+
 		
 		int dataTypeToId(void){
 			if(this->dataType == "int")
@@ -50,27 +75,53 @@ class ThermalVariable{
 
 
 		void create(std::string t, std::string n, int *v){
-			this->create(t, n, (void *)v);
+			if(v == NULL)
+				return;
+
+			int V = v[0];
+			this->valueCache = (uint64_t)V;
+			this->create(t, n, (void *)&this->valueCache);
 		}
 		void create(std::string t, std::string n, char *v){
-			this->create(t, n, (void *)v);
+			if(v != NULL){
+				char V = v[0];
+				this->valueCache = (char)V;
+			}
+			this->create(t, n, (void *)&this->valueCache);
 		}
 		void create(std::string t, std::string n, float *v){
-			this->create(t, n, (void *)v);
+			if(v != NULL){
+				float V = v[0];
+				this->valueCache = (uint64_t)V;
+			}
+			this->create(t, n, (void *)&this->valueCache);
 		}
 		void create(std::string t, std::string n, double *v){
-			this->create(t, n, (void *)v);
+			if(v != NULL){
+				double V = v[0];
+				this->valueCache = (uint64_t)V;
+			}
+			this->create(t, n, (void *)&this->valueCache);
 		}
-		//void create(std::string t, std::string n, size_t *v){
-		//	this->create(t, n, (void *)v);
-		//}
 		void create(std::string t, std::string n, long *v){
-			this->create(t, n, (void *)v);
+			if(v != NULL){
+				long V = v[0];
+				this->valueCache = (uint64_t)V;
+			}
+			this->create(t, n, (void *)&this->valueCache);
 		}
 		void create(std::string t, std::string n, uint32_t *v){
-			this->create(t, n, (void *)v);
+			if(v != NULL){
+				uint32_t V = v[0];
+				this->valueCache = (uint64_t)V;
+			}
+			this->create(t, n, (void *)&this->valueCache);
 		}
 		void create(std::string t, std::string n, uint64_t *v){
+			if(v != NULL){
+				uint64_t V = v[0];
+				this->valueCache = (uint64_t)V;
+			}
 			this->create(t, n, (void *)v);
 		}
 		void create(std::string t, std::string n, void *v){
@@ -98,38 +149,48 @@ class ThermalVariable{
 				case THERMAL_DATATYPE_INT:{
 					int value = this->getValueInt();
 					ret = (uint64_t)value;
+					return ret;
 				}
 				case THERMAL_DATATYPE_CHAR:{
 					char value = this->getValueChar();
 					ret = (uint64_t)value;
+					return ret;
 				}
 				case THERMAL_DATATYPE_UINT32:{
 					uint32_t value = this->getValueUint32();
 					ret = (uint64_t)value;
+					return ret;
 				}
 				case THERMAL_DATATYPE_UINT64:{
 					ret = this->getValueUint64();
+					return ret;
 				}
 				case THERMAL_DATATYPE_LONG:{
 					long value = this->getValueLong();
 					ret = (uint64_t)value;
+					return ret;
 				}
 				case THERMAL_DATATYPE_LONGINT:{
 					ret = this->getValueUint64();
+					return ret;
 				}
 				case THERMAL_DATATYPE_SIZE:{
 					ret = this->getValueUint64();
+					return ret;
 				}
 				case THERMAL_DATATYPE_FLOAT:{
 					float value = this->getValueFloat();
 					ret = (uint64_t)value;
+					return ret;
 				}
 				case THERMAL_DATATYPE_DOUBLE:{
 					double value = this->getValueDouble();
 					ret = (uint64_t)value;
+					return ret;
 				}
 				default:{
 					ret = this->getValueUint64();
+					return ret;
 				}
 			}
 
