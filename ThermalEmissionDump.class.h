@@ -362,9 +362,9 @@ class ThermalEmissionDump{
 				for(int v=0; v<step.variableCount; v++){
 					tedvar_t variable = step.variables[v];
 					for(int i=0; i<32; i++, oi++)
-						out[oi] = variable.variableType[32];
+						out[oi] = variable.variableType[i];
 					for(int i=0; i<32; i++, oi++)
-						out[oi] = variable.variableName[32];
+						out[oi] = variable.variableName[i];
 				}
 
 				for(int o=0; o<step.operationCount; o++){
@@ -386,6 +386,17 @@ class ThermalEmissionDump{
 				}
 			}
 
+			int fd = open(this->outputLoc.c_str(), O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR);
+			if(fd < 0){
+				printf("Failed to open.\n");
+				return false;
+			}
+			printf("Writing %ld bytes.\n", outSize);
+			if(write(fd, out, outSize) != outSize){
+				close(fd);
+				return false;
+			}
+			close(fd);
 			return true;
 		}
 		bool readData(std::string target){
