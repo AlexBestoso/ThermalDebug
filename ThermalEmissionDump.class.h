@@ -388,10 +388,8 @@ class ThermalEmissionDump{
 
 			int fd = open(this->outputLoc.c_str(), O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR);
 			if(fd < 0){
-				printf("Failed to open.\n");
 				return false;
 			}
-			printf("Writing %ld bytes.\n", outSize);
 			if(write(fd, out, outSize) != outSize){
 				close(fd);
 				return false;
@@ -402,10 +400,118 @@ class ThermalEmissionDump{
 		bool readData(std::string target){
 			uint8_t *buffer = NULL;
 			size_t bufferSize = 0;
+			struct stat st;
+			
+			if(stat(target.c_str(), &st) != 0) return false;
+
+			bufferSize = st.st_size;
+			buffer = new (std::nothrow) uint8_t[bufferSize];
+			this->outputLoc = target;
 			return this->readData(buffer, bufferSize);
 		}
 		bool readData(uint8_t *buffer, size_t bufferSize){
+			if(!this->fileExists(this->outputLoc)) return false;
+			int fd;
+			struct stat st;
+			stat(this->outputLoc.c_str(), &st);
+			if(st.st_size != bufferSize) return false;
+		
+			fd = open(this->outputLoc.c_str(), O_RDONLY);
+			if(read(fd, buffer, bufferSize) != bufferSize){
+				close(fd);
+				return false;
+			}
+			close(fd);
 			
+			int oi=0;
+			this->data.magic = 0;
+			for(int i=0; i<4; i++, oi++)
+				this->data.magic += (buffer[i] << ((3-i)*8));
+
+			for(int i=0; i<128; i++, oi++)
+				buffer[oi] = this->data.algorithmName[i];
+			for(int i=0; i<1024; i++, oi++)
+				buffer[oi] = this->data.description[i];
+
+			this->data.stepCount = 0;
+			for(int i=0; i<4; i++, oi++)
+				this->data.stepCount += (buffer[i] << ((3-i)*8));
+			if(this->data.stepCount <= 0) return true;
+			// allocate space for steps.
+			if(this->data.steps != NULL) delete[] this->data.steps;
+			this->data.steps = new (std::nothrow) tedstep_t[this->data.stepCount];
+			if(this->data.steps == NULL)
+				return false;
+
+			for(int s=0; s<this->data.stepCount; s++){
+				tedstep_t *step = &this->data.steps[s];
+				step->startLine = 0;
+				for(int i=0; i<4; i++, oi++)
+					step->startLine += (buffer[i] << ((3-i)*8));
+				step->endLine = 0;
+				for(int i=0; i<4; i++, oi++)
+					step->endLine += (buffer[i] << ((3-i)*8));
+				step->variableCount = 0;
+				for(int i=0; i<4; i++, oi++)
+					step->variableCount += (buffer[i] << ((3-i)*8));
+				step->operationCount = 0;
+				for(int i=0; i<4; i++, oi++)
+					step->operationCount += (buffer[i] << ((3-i)*8));
+
+				for(int i=0; i<64; i++, oi++)
+					step->stepName[i] = buffer[oi];
+				for(int i=0; i<256; i++, oi++)
+					step->sourceFile[i] = buffer[oi];
+				for(int i=0; i<1024; i++, oi++)
+					step->stepDescription[i] = buffer[oi];
+
+				// allocate space for variables.
+				if(step->variableCount > 0){
+					if(step->variables != NULL)
+						delete[] step->variables;
+					step->variables = new (std::nothrow) tedvar_t[step->variableCount];
+					if(step->variables == NULL) return false;
+					for(int v=0; v<step->variableCount; v++){
+						tedvar_t *variable = &step->variables[v];
+						for(int i=0; i<32; i++, oi++)
+							variable->variableType[i] = buffer[oi];
+						for(int i=0; i<32; i++, oi++)
+							variable->variableName[i] = buffer[oi];
+					}
+				}
+
+				// allocate space for operations.
+				if(step->operationCount > 0){
+					if(step->operations != NULL) delete[] step->operations;
+					step->operations = new (std::nothrow) tedop_t[step->operationCount];
+					if(step->operations == NULL) return false;
+					for(int o=0; o<step->operationCount; o++){
+						tedop_t *operation = &step->operations[o];
+						operation->variableAIndex = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableAIndex += (buffer[i] << ((3-i)*8));
+						operation->variableAValue = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableAValue += (buffer[i] << ((3-i)*8));
+						operation->operation = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->operation += (buffer[i] << ((3-i)*8));
+						operation->variableBIndex = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableBIndex += (buffer[i] << ((3-i)*8));
+						operation->variableBValue = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableBValue += (buffer[i] << ((3-i)*8));
+						operation->variableCIndex = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableCIndex += (buffer[i] << ((3-i)*8));
+						operation->variableCValue = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableCValue += (buffer[i] << ((3-i)*8));
+					}
+				}
+			}
+
 			return true;
 		}
 		
