@@ -398,18 +398,19 @@ class ThermalEmissionDump{
 			return true;
 		}
 		bool readData(std::string target){
-			uint8_t *buffer = NULL;
+			char *buffer = NULL;
 			size_t bufferSize = 0;
 			struct stat st;
 			
 			if(stat(target.c_str(), &st) != 0) return false;
 
 			bufferSize = st.st_size;
-			buffer = new (std::nothrow) uint8_t[bufferSize];
+			buffer = new (std::nothrow) char[bufferSize];
+			if(buffer == NULL) return false;
 			this->outputLoc = target;
 			return this->readData(buffer, bufferSize);
 		}
-		bool readData(uint8_t *buffer, size_t bufferSize){
+		bool readData(char *buffer, size_t bufferSize){
 			if(!this->fileExists(this->outputLoc)) return false;
 			int fd;
 			struct stat st;
@@ -423,23 +424,29 @@ class ThermalEmissionDump{
 			}
 			close(fd);
 			
+			printf("Debug A\n");
 			int oi=0;
 			this->data.magic = 0;
 			for(int i=0; i<4; i++, oi++)
-				this->data.magic += (buffer[i] << ((3-i)*8));
+				this->data.magic += (buffer[oi] << ((3-i)*8)) & 0xffffff;
+			printf("Magic Number : %lx\n", this->data.magic);
 
 			for(int i=0; i<128; i++, oi++)
-				buffer[oi] = this->data.algorithmName[i];
+				this->data.algorithmName[i] = buffer[oi];
 			for(int i=0; i<1024; i++, oi++)
-				buffer[oi] = this->data.description[i];
+				this->data.description[i] = buffer[oi];
 
 			this->data.stepCount = 0;
-			for(int i=0; i<4; i++, oi++)
-				this->data.stepCount += (buffer[i] << ((3-i)*8));
+			for(int i=0; i<4; i++, oi++){
+				this->data.stepCount += (buffer[oi] << ((3-i)*8));
+			}
+			printf("\nDebug B : Step Count : %lx\n", this->data.stepCount);
 			if(this->data.stepCount <= 0) return true;
+
 			// allocate space for steps.
 			if(this->data.steps != NULL) delete[] this->data.steps;
 			this->data.steps = new (std::nothrow) tedstep_t[this->data.stepCount];
+			printf("Debug C\n");
 			if(this->data.steps == NULL)
 				return false;
 
@@ -447,16 +454,16 @@ class ThermalEmissionDump{
 				tedstep_t *step = &this->data.steps[s];
 				step->startLine = 0;
 				for(int i=0; i<4; i++, oi++)
-					step->startLine += (buffer[i] << ((3-i)*8));
+					step->startLine += (buffer[oi] << ((3-i)*8));
 				step->endLine = 0;
 				for(int i=0; i<4; i++, oi++)
-					step->endLine += (buffer[i] << ((3-i)*8));
+					step->endLine += (buffer[oi] << ((3-i)*8));
 				step->variableCount = 0;
 				for(int i=0; i<4; i++, oi++)
-					step->variableCount += (buffer[i] << ((3-i)*8));
+					step->variableCount += (buffer[oi] << ((3-i)*8));
 				step->operationCount = 0;
 				for(int i=0; i<4; i++, oi++)
-					step->operationCount += (buffer[i] << ((3-i)*8));
+					step->operationCount += (buffer[oi] << ((3-i)*8));
 
 				for(int i=0; i<64; i++, oi++)
 					step->stepName[i] = buffer[oi];
@@ -489,25 +496,25 @@ class ThermalEmissionDump{
 						tedop_t *operation = &step->operations[o];
 						operation->variableAIndex = 0;
 						for(int i=0; i<4; i++, oi++)
-							operation->variableAIndex += (buffer[i] << ((3-i)*8));
+							operation->variableAIndex += (buffer[oi] << ((3-i)*8));
 						operation->variableAValue = 0;
 						for(int i=0; i<4; i++, oi++)
-							operation->variableAValue += (buffer[i] << ((3-i)*8));
+							operation->variableAValue += (buffer[oi] << ((3-i)*8));
 						operation->operation = 0;
 						for(int i=0; i<4; i++, oi++)
-							operation->operation += (buffer[i] << ((3-i)*8));
+							operation->operation += (buffer[oi] << ((3-i)*8));
 						operation->variableBIndex = 0;
 						for(int i=0; i<4; i++, oi++)
-							operation->variableBIndex += (buffer[i] << ((3-i)*8));
+							operation->variableBIndex += (buffer[oi] << ((3-i)*8));
 						operation->variableBValue = 0;
 						for(int i=0; i<4; i++, oi++)
-							operation->variableBValue += (buffer[i] << ((3-i)*8));
+							operation->variableBValue += (buffer[oi] << ((3-i)*8));
 						operation->variableCIndex = 0;
 						for(int i=0; i<4; i++, oi++)
-							operation->variableCIndex += (buffer[i] << ((3-i)*8));
+							operation->variableCIndex += (buffer[oi] << ((3-i)*8));
 						operation->variableCValue = 0;
 						for(int i=0; i<4; i++, oi++)
-							operation->variableCValue += (buffer[i] << ((3-i)*8));
+							operation->variableCValue += (buffer[oi] << ((3-i)*8));
 					}
 				}
 			}
