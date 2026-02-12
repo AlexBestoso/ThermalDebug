@@ -31,7 +31,10 @@ int main(int argc, char *argv[]){
 	tdi.operation("x", "*", "a", /*=*/ "y");
 	tdi.operation("y", "^", "b", /*=*/ "z");
 
-	ThermalEmissionDump Ted = tdi.getTed();
+	tdi.finish();
+
+	ThermalEmissionDump Ted;// = //tdi.getTed();
+	Ted.readData("./sample.ted");
 	printf("Generated .ted file to %s:\n", Ted.getOutFileName().c_str());
 	ted_t ted = Ted.getData();
 	printf("Maigic Number: 0x%lx\nAlgorithm Name : %s\nAlgorithm Description: %s\nAlgorithm Step Count: %ld\n", ted.magic, ted.algorithmName, ted.description, ted.stepCount);

@@ -1,9 +1,11 @@
+#define TEDVAR_T_SIZE 32 + 32
 struct thermalVariableDump{
 	char variableType[32];
 	char variableName[32];
 };
 typedef struct thermalVariableDump tedvar_t;
 
+#define TEDOP_T_SIZE 4 + 4 + 4 + 4 + 4 + 4 + 4
 struct thermalOperationDump{
 	uint64_t variableAIndex;
 	uint64_t variableAValue;
@@ -18,6 +20,7 @@ struct thermalOperationDump{
 };
 typedef struct thermalOperationDump tedop_t;
 
+#define TEDSTEP_T_SIZE (4 + 4 + 4 + 4 + 64 + 256 + 1024)
 struct thermalStepDump{
 	uint64_t startLine;
 	uint64_t endLine;
@@ -29,8 +32,9 @@ struct thermalStepDump{
 	tedvar_t *variables;
 	tedop_t *operations;
 };
-
 typedef struct thermalStepDump tedstep_t;
+
+#define TED_T_SIZE (4 + 128 + 1024 + 4)
 struct thermalEmissionDump{
 	uint64_t magic = 0xd5245511;
 	char algorithmName[128];
@@ -294,22 +298,228 @@ class ThermalEmissionDump{
 
 			tedop_t *ptr = &step->operations[step->operationCount-1];
 			ptr->operation = opMacro;
-			// Requires a switch to account for each variables specific datatype.
-			// We need to fetch the pointer data as the proper datatype, and then typecast to uint64_t.
-			// this should ensure that all of the variable data is stored in the same variable.
+
 			uint64_t varA = a.getValueAutocast();
 			uint64_t varB = b.getValueAutocast();
 			uint64_t varC = c.getValueAutocast();
 			
-
-				ptr->variableAIndex = this->getStepVariableIndex(stepIndex, a);
-				ptr->variableAValue = varA;
-				ptr->variableBIndex = this->getStepVariableIndex(stepIndex, b);
-				ptr->variableBValue = varB;
-				ptr->variableCIndex = this->getStepVariableIndex(stepIndex, c);
-				ptr->variableCValue = varC;
-
+			ptr->variableAIndex = this->getStepVariableIndex(stepIndex, a);
+			ptr->variableAValue = varA;
+			ptr->variableBIndex = this->getStepVariableIndex(stepIndex, b);
+			ptr->variableBValue = varB;
+			ptr->variableCIndex = this->getStepVariableIndex(stepIndex, c);
+			ptr->variableCValue = varC;
 
 			return true;
 		}
+
+		bool generateTed(void){
+			
+			return true;
+		}
+
+		bool writeData(void){
+			// Allocate buffer
+			size_t outSize = TED_T_SIZE;
+			for(int s=0; s<this->data.stepCount; s++){
+				outSize += TEDSTEP_T_SIZE;
+				for(int v=0; v<this->data.steps[s].variableCount; v++)
+					outSize += TEDVAR_T_SIZE;
+				for(int o=0; o<this->data.steps[s].operationCount; o++)
+				outSize += TEDOP_T_SIZE;
+			}
+			char *out = new (std::nothrow) char[outSize];
+			if(out == NULL) return false;
+			
+			// Populate buffer.
+			int oi=0;
+			for(int i=0; i<4; i++, oi++)
+				out[oi] = (this->data.magic & (0xff<<((3-i)*8))) >> ((3-i)*8);
+			for(int i=0; i<128; i++, oi++)
+				out[oi] = this->data.algorithmName[i];
+			for(int i=0; i<1024; i++, oi++)
+				out[oi] = this->data.description[i];
+			for(int i=0; i<4; i++, oi++)
+				out[oi] = (this->data.stepCount & (0xff<<((3-i)*8))) >> ((3-i)*8);
+
+			for(int s=0; s<this->data.stepCount; s++){
+				tedstep_t step = this->data.steps[s];
+				for(int i=0; i<4; i++, oi++)
+					out[oi] = (step.startLine & (0xff<<((3-i)*8))) >> ((3-i)*8);
+				for(int i=0; i<4; i++, oi++)
+					out[oi] = (step.endLine & (0xff<<((3-i)*8))) >> ((3-i)*8);
+				for(int i=0; i<4; i++, oi++)
+					out[oi] = (step.variableCount & (0xff<<((3-i)*8))) >> ((3-i)*8);
+				for(int i=0; i<4; i++, oi++)
+					out[oi] = (step.operationCount & (0xff<<((3-i)*8))) >> ((3-i)*8);
+				for(int i=0; i<64; i++, oi++)
+					out[oi] = step.stepName[i];
+				for(int i=0; i<256; i++, oi++)
+					out[oi] = step.sourceFile[i];
+				for(int i=0; i<1024; i++, oi++)
+					out[oi] = step.stepDescription[i];
+
+				for(int v=0; v<step.variableCount; v++){
+					tedvar_t variable = step.variables[v];
+					for(int i=0; i<32; i++, oi++)
+						out[oi] = variable.variableType[i];
+					for(int i=0; i<32; i++, oi++)
+						out[oi] = variable.variableName[i];
+				}
+
+				for(int o=0; o<step.operationCount; o++){
+					tedop_t operation = step.operations[o];
+					for(int i=0; i<4; i++, oi++)
+						out[oi] = (operation.variableAIndex & (0xff<<((3-i)*8))) >> ((3-i)*8);
+					for(int i=0; i<4; i++, oi++)
+						out[oi] = (operation.variableAValue & (0xff<<((3-i)*8))) >> ((3-i)*8);
+					for(int i=0; i<4; i++, oi++)
+						out[oi] = (operation.operation & (0xff<<((3-i)*8))) >> ((3-i)*8);
+					for(int i=0; i<4; i++, oi++)
+						out[oi] = (operation.variableBIndex & (0xff<<((3-i)*8))) >> ((3-i)*8);
+					for(int i=0; i<4; i++, oi++)
+						out[oi] = (operation.variableBValue & (0xff<<((3-i)*8))) >> ((3-i)*8);
+					for(int i=0; i<4; i++, oi++)
+						out[oi] = (operation.variableCIndex & (0xff<<((3-i)*8))) >> ((3-i)*8);
+					for(int i=0; i<4; i++, oi++)
+						out[oi] = (operation.variableCValue & (0xff<<((3-i)*8))) >> ((3-i)*8);
+				}
+			}
+
+			int fd = open(this->outputLoc.c_str(), O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR);
+			if(fd < 0){
+				return false;
+			}
+			if(write(fd, out, outSize) != outSize){
+				close(fd);
+				return false;
+			}
+			close(fd);
+			return true;
+		}
+		bool readData(std::string target){
+			char *buffer = NULL;
+			size_t bufferSize = 0;
+			struct stat st;
+			
+			if(stat(target.c_str(), &st) != 0) return false;
+
+			bufferSize = st.st_size;
+			buffer = new (std::nothrow) char[bufferSize];
+			if(buffer == NULL) return false;
+			this->outputLoc = target;
+			return this->readData(buffer, bufferSize);
+		}
+		bool readData(char *buffer, size_t bufferSize){
+			if(!this->fileExists(this->outputLoc)) return false;
+			int fd;
+			struct stat st;
+			stat(this->outputLoc.c_str(), &st);
+			if(st.st_size != bufferSize) return false;
+		
+			fd = open(this->outputLoc.c_str(), O_RDONLY);
+			if(read(fd, buffer, bufferSize) != bufferSize){
+				close(fd);
+				return false;
+			}
+			close(fd);
+			
+			printf("Debug A\n");
+			int oi=0;
+			this->data.magic = 0;
+			for(int i=0; i<4; i++, oi++)
+				this->data.magic += (buffer[oi] << ((3-i)*8)) & 0xffffff;
+			printf("Magic Number : %lx\n", this->data.magic);
+
+			for(int i=0; i<128; i++, oi++)
+				this->data.algorithmName[i] = buffer[oi];
+			for(int i=0; i<1024; i++, oi++)
+				this->data.description[i] = buffer[oi];
+
+			this->data.stepCount = 0;
+			for(int i=0; i<4; i++, oi++){
+				this->data.stepCount += (buffer[oi] << ((3-i)*8));
+			}
+			printf("\nDebug B : Step Count : %lx\n", this->data.stepCount);
+			if(this->data.stepCount <= 0) return true;
+
+			// allocate space for steps.
+			if(this->data.steps != NULL) delete[] this->data.steps;
+			this->data.steps = new (std::nothrow) tedstep_t[this->data.stepCount];
+			printf("Debug C\n");
+			if(this->data.steps == NULL)
+				return false;
+
+			for(int s=0; s<this->data.stepCount; s++){
+				tedstep_t *step = &this->data.steps[s];
+				step->startLine = 0;
+				for(int i=0; i<4; i++, oi++)
+					step->startLine += (buffer[oi] << ((3-i)*8));
+				step->endLine = 0;
+				for(int i=0; i<4; i++, oi++)
+					step->endLine += (buffer[oi] << ((3-i)*8));
+				step->variableCount = 0;
+				for(int i=0; i<4; i++, oi++)
+					step->variableCount += (buffer[oi] << ((3-i)*8));
+				step->operationCount = 0;
+				for(int i=0; i<4; i++, oi++)
+					step->operationCount += (buffer[oi] << ((3-i)*8));
+
+				for(int i=0; i<64; i++, oi++)
+					step->stepName[i] = buffer[oi];
+				for(int i=0; i<256; i++, oi++)
+					step->sourceFile[i] = buffer[oi];
+				for(int i=0; i<1024; i++, oi++)
+					step->stepDescription[i] = buffer[oi];
+
+				// allocate space for variables.
+				if(step->variableCount > 0){
+					if(step->variables != NULL)
+						delete[] step->variables;
+					step->variables = new (std::nothrow) tedvar_t[step->variableCount];
+					if(step->variables == NULL) return false;
+					for(int v=0; v<step->variableCount; v++){
+						tedvar_t *variable = &step->variables[v];
+						for(int i=0; i<32; i++, oi++)
+							variable->variableType[i] = buffer[oi];
+						for(int i=0; i<32; i++, oi++)
+							variable->variableName[i] = buffer[oi];
+					}
+				}
+
+				// allocate space for operations.
+				if(step->operationCount > 0){
+					if(step->operations != NULL) delete[] step->operations;
+					step->operations = new (std::nothrow) tedop_t[step->operationCount];
+					if(step->operations == NULL) return false;
+					for(int o=0; o<step->operationCount; o++){
+						tedop_t *operation = &step->operations[o];
+						operation->variableAIndex = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableAIndex += (buffer[oi] << ((3-i)*8));
+						operation->variableAValue = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableAValue += (buffer[oi] << ((3-i)*8));
+						operation->operation = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->operation += (buffer[oi] << ((3-i)*8));
+						operation->variableBIndex = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableBIndex += (buffer[oi] << ((3-i)*8));
+						operation->variableBValue = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableBValue += (buffer[oi] << ((3-i)*8));
+						operation->variableCIndex = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableCIndex += (buffer[oi] << ((3-i)*8));
+						operation->variableCValue = 0;
+						for(int i=0; i<4; i++, oi++)
+							operation->variableCValue += (buffer[oi] << ((3-i)*8));
+					}
+				}
+			}
+
+			return true;
+		}
+		
 };
