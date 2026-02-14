@@ -1,6 +1,8 @@
 # ThermalDebug - Work In Progress
+Proclaimed Version <code>-0.0.0 Alpha</code>
 
-description:
+
+About:
 This class and program work to gether to generate a "thermel exposure dump" or .ted file out of the programs that you're working on.
 
 A .ted file in this instance is a yet to be defined format.
