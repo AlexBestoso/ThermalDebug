@@ -424,12 +424,10 @@ class ThermalEmissionDump{
 			}
 			close(fd);
 			
-			printf("Debug A\n");
 			int oi=0;
 			this->data.magic = 0;
 			for(int i=0; i<4; i++, oi++)
 				this->data.magic += (buffer[oi] << ((3-i)*8)) & 0xffffff;
-			printf("Magic Number : %lx\n", this->data.magic);
 
 			for(int i=0; i<128; i++, oi++)
 				this->data.algorithmName[i] = buffer[oi];
@@ -440,13 +438,11 @@ class ThermalEmissionDump{
 			for(int i=0; i<4; i++, oi++){
 				this->data.stepCount += (buffer[oi] << ((3-i)*8));
 			}
-			printf("\nDebug B : Step Count : %lx\n", this->data.stepCount);
 			if(this->data.stepCount <= 0) return true;
 
 			// allocate space for steps.
 			if(this->data.steps != NULL) delete[] this->data.steps;
 			this->data.steps = new (std::nothrow) tedstep_t[this->data.stepCount];
-			printf("Debug C\n");
 			if(this->data.steps == NULL)
 				return false;
 

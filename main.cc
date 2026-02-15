@@ -8,8 +8,6 @@
 #include "./ThermalDebug.class.h"
 
 int main(int argc, char *argv[]){
-	thermalDbg.color_greenFg();
-	printf("We're currently under construction. Please use the other sidewalk.\n");	
-	thermalDbg.color_reset();
+	if(thermalDbg.loadAlgorithms(argc, argv) == false) return 1;
 	return 0;
 }

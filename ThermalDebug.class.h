@@ -23,12 +23,21 @@ class ThermalDebug{
 		thermdisp_t display;
 		thermerr_t error;
 		thermalgo_t algoCache;
+		ThermalEmissionDump dumper;
 
 		void setError(int code, std::string func, std::string msg){
 			this->error.id = code;
 			this->error.functionName = func;
 			this->error.msg = msg;
 			this->error.failed = true;
+		}
+
+		bool inputIsFile(const char *src){
+			// check if src is a command
+			struct stat st;
+			if(stat(src, &st) == -1)
+				return false;
+			return true;
 		}
 	public:
 		bool hasError(thermerr_t *out){
@@ -68,6 +77,10 @@ class ThermalDebug{
 			for(int i=0; i<argc; i++){
 				const char *fileName = argv[i];
 				// validate file names
+				if(this->inputIsFile(fileName) == false){
+					printf("%s is an invalid input.\n", fileName);
+					return false;
+				}
 				// ... create a ted_t object.
 				// add object via reallocating to the cache.
 			}
