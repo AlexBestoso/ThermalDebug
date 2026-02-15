@@ -74,15 +74,39 @@ class ThermalDebug{
 
 		bool loadAlgorithms(int argc, char *argv[]){
 			if(argc <= 0 || argv == NULL) return true;
-			for(int i=0; i<argc; i++){
+			for(int i=1; i<argc; i++){
 				const char *fileName = argv[i];
 				// validate file names
 				if(this->inputIsFile(fileName) == false){
 					printf("%s is an invalid input.\n", fileName);
 					return false;
 				}
-				// ... create a ted_t object.
+				if(!this->dumper.readData(fileName)){
+					printf("%s may not be a ted file.\n", fileName);
+					return false;
+				}
+				ted_t ted = this->dumper.getData();
+				
 				// add object via reallocating to the cache.
+				if(this->algoCache.algorithmsCount < 0) this->algoCache.algorithmsCount = 0;
+				int prevCount = this->algoCache.algorithmsCount;
+				this->algoCache.algorithmsCount++;
+				ted_t *tmp = new (std::nothrow) ted_t[prevCount+1];
+				if(tmp == NULL){
+					printf("Allocation failure.\n");
+					return false;
+				}
+				
+				for(int a=0; a<prevCount && this->algoCache.algorithms != NULL; a++)
+					tmp[a] = this->algoCache.algorithms[a];
+				if(this->algoCache.algorithms != NULL) delete[] this->algoCache.algorithms;
+				this->algoCache.algorithms = new ted_t[this->algoCache.algorithmsCount];
+				for(int a=0; a<prevCount; a++)
+					this->algoCache.algorithms[a] = tmp[a];
+				delete[] tmp;
+				
+				this->algoCache.algorithms[this->algoCache.algorithmsCount-1] = ted;
+				printf("Loaded Algorithm : %s\n", this->algoCache.algorithms[this->algoCache.algorithmsCount-1].algorithmName);
 			}
 			return true;
 		}
