@@ -1,0 +1,114 @@
+#define THERMAL_BOXLINE_HOR_LIGHT 0
+#define THERMAL_BOXLINE_HOR_DARK 1
+#define THERMAL_BOXLINE_HOR_LIGHT3DOT 2
+#define THERMAL_BOXLINE_HOR_DARK3DOT 3
+#define THERMAL_BOXLINE_HOR_LIGHT4DOT 4
+#define THERMAL_BOXLINE_HOR_DARK4DOT 5
+#define THERMAL_BOXLINE_HOR_DOUBLLINE 6
+#define THERMAL_BOXLINE_HOR_LIGHT2DOT 7
+#define THERMAL_BOXLINE_HOR_DARK2DOT 8
+#define THERMAL_BOXLINE_HOR_LIGHTLEFT 9
+#define THERMAL_BOXLINE_HOR_LIGHTRIGHT 10
+#define THERMAL_BOXLINE_HOR_DARKLEFT 11
+#define THERMAL_BOXLINE_HOR_DARKRIGHT 12
+#define THERMAL_BOXLINE_HOR_TEARRIGHT 13
+#define THERMAL_BOXLINE_HOR_TEARLEFT 14
+
+#define THERMAL_BOXLINE_VER_LIGHT 0
+#define THERMAL_BOXLINE_VER_DARK 1
+#define THERMAL_BOXLINE_VER_LIGHT3DOT 2
+#define THERMAL_BOXLINE_VER_DARK3DOT 3
+#define THERMAL_BOXLINE_VER_LIGHT4DOT 4
+#define THERMAL_BOXLINE_VER_DARK4DOT 5
+#define THERMAL_BOXLINE_VER_LIGHT2DOT 6
+#define THERMAL_BOXLINE_VER_DARK2DOT 7
+#define THERMAL_BOXLINE_VER_DOUBLELINE 8
+#define THERMAL_BOXLINE_VER_LIGHTTOP 9
+#define THERMAL_BOXLINE_VER_LIGHTBOTTOM 10
+#define THERMAL_BOXLINE_VER_DARKTOP 11
+#define THERMAL_BOXLINE_VER_DARK_BOTTOM 12
+#define THERMAL_BOXLINE_VER_TEARDOWN 13
+#define THERMAL_BOXLINE_VER_TEARUP 14
+
+class ThermalBox{
+	private:
+
+	public:
+		ThermalBox(){
+
+		}
+
+		~ThermalBox(){
+
+		}
+		const wchar_t *horizontalLine(int style){
+			switch(style){
+				case THERMAL_BOXLINE_HOR_DARK:
+					return L"━";
+				case THERMAL_BOXLINE_HOR_LIGHT3DOT:
+					return L"┄";
+				case THERMAL_BOXLINE_HOR_DARK3DOT:
+					return L"┅";
+				case THERMAL_BOXLINE_HOR_LIGHT4DOT:
+					return L"┈";
+				case THERMAL_BOXLINE_HOR_DARK4DOT:
+					return L"┉";
+				case THERMAL_BOXLINE_HOR_DOUBLLINE:
+					return L"═";
+				case THERMAL_BOXLINE_HOR_LIGHT2DOT:
+					return L"╌";
+				case THERMAL_BOXLINE_HOR_DARK2DOT:
+					return L"╍";
+				case THERMAL_BOXLINE_HOR_LIGHTLEFT:
+					return L"╴";
+				case THERMAL_BOXLINE_HOR_LIGHTRIGHT:
+					return L"╶";
+				case THERMAL_BOXLINE_HOR_DARKLEFT:
+					return L"╸";
+				case THERMAL_BOXLINE_HOR_DARKRIGHT:
+					return L"╺";
+				case THERMAL_BOXLINE_HOR_TEARRIGHT:
+					return L"╼";
+				case THERMAL_BOXLINE_HOR_TEARLEFT:
+					return L"╾";
+				default: // THERMAL_BOXLINE_HOR_LIGHT
+					return L"─";
+			}
+		}
+
+		const wchar_t *verticalLine(int style){
+			switch(style){
+				case THERMAL_BOXLINE_VER_DARK:
+					return L"┃";
+				case THERMAL_BOXLINE_VER_LIGHT3DOT:
+					return L"┆";
+				case THERMAL_BOXLINE_VER_DARK3DOT:
+					return L"┇";
+				case THERMAL_BOXLINE_VER_LIGHT4DOT:
+					return L"┊";
+				case THERMAL_BOXLINE_VER_DARK4DOT:
+					return L"┋";
+				case THERMAL_BOXLINE_VER_LIGHT2DOT:
+					return L"╎";
+				case THERMAL_BOXLINE_VER_DARK2DOT:
+					return L"╏";
+				case THERMAL_BOXLINE_VER_DOUBLELINE:
+					return L"║";
+				case THERMAL_BOXLINE_VER_LIGHTTOP:
+					return L"╵";
+				case THERMAL_BOXLINE_VER_LIGHTBOTTOM:
+					return L"╷";
+				case THERMAL_BOXLINE_VER_DARKTOP:
+					return L"╹";
+				case THERMAL_BOXLINE_VER_DARK_BOTTOM:
+					return L"╻";
+				case THERMAL_BOXLINE_VER_TEARDOWN:
+					return L"╽";
+				case THERMAL_BOXLINE_VER_TEARUP:
+					return L"╿";
+				default: // THERMAL_BOXLINE_VER_LIGHT
+					return L"│";
+			}
+		}
+
+};

@@ -1,26 +1,10 @@
-struct thermalDebugDisplayStruct{
-	char *display_buffer;
-	size_t display_buffer_size;
-};
-typedef struct thermalDebugDisplayStruct thermdisp_t;
-
-struct thermalDebugErrorStruct{
-	int id;
-	std::string msg;
-	std::string functionName;
-	bool failed;
-};
-typedef struct thermalDebugErrorStruct thermerr_t;
-
-struct thermalDebugAlgorithmCache{
-	ted_t *algorithms;
-	size_t algorithmsCount;
-};
-typedef struct thermalDebugAlgorithmCache thermalgo_t;
+#include "./ThermalDebugErrorStruct.class.h"
+#include "./ThermalDebugDisplay.class.h"
+#include "./ThermalDebugAlgorithmCache.class.h"
 
 class ThermalDebug{
 	private:
-		thermdisp_t display;
+		ThermalDebugDisplay display;
 		thermerr_t error;
 		thermalgo_t algoCache;
 		ThermalEmissionDump dumper;
@@ -52,9 +36,6 @@ class ThermalDebug{
 		}
 
 		ThermalDebug(){
-			this->display.display_buffer = NULL;
-			this->display.display_buffer_size = 0;
-			
 			this->algoCache.algorithms = NULL;
 			this->algoCache.algorithmsCount = 0;
 		
@@ -62,10 +43,6 @@ class ThermalDebug{
 		}
 
 		~ThermalDebug(){
-			if(this->display.display_buffer != NULL){
-				delete[] this->display.display_buffer;
-				this->display.display_buffer = NULL;
-			}
 
 			if(this->algoCache.algorithms != NULL){
 				delete[] this->algoCache.algorithms;
@@ -106,7 +83,6 @@ class ThermalDebug{
 				delete[] tmp;
 				
 				this->algoCache.algorithms[this->algoCache.algorithmsCount-1] = ted;
-				printf("Loaded Algorithm : %s\n", this->algoCache.algorithms[this->algoCache.algorithmsCount-1].algorithmName);
 			}
 			return true;
 		}

@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <typeinfo>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <wchar.h>
+#include <locale.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include "./ThermalDebugIntegrator.class.h"
