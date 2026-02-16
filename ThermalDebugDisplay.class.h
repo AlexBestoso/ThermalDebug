@@ -31,7 +31,7 @@ class ThermalDebugDisplay{
 			this->data.display_buffer_size = 0;
 			this->fetchWidthHeight();
 			for(int i=0; i<4; i++)
-			wprintf(L"%ls", this->box.verticalLine(THERMAL_BOXLINE_HOR_LIGHT));
+			wprintf(L"%ls", this->box.cornerLine(THERMAL_BOXLINE_CORNER_TL_ROUND));
 
 		}
 
