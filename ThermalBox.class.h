@@ -133,6 +133,55 @@
 #define THERMAL_BOXLINE_MISC_BACKSLASH 1
 #define THERMAL_BOXLINE_MISC_X 2
 
+#define THERMAL_BOXFILL_UPPER_HALF 0
+#define THERMAL_BOXFILL_LOWER_EIGHTH 1
+#define THERMAL_BOXFILL_LOWER_QUARTER 2
+#define THERMAL_BOXFILL_LOWER_3EIGHTH 3
+#define THERMAL_BOXFILL_LOWER_HALF 4
+#define THERMAL_BOXFILL_LOWER_5EIGHTH 5
+#define THERMAL_BOXFILL_LOWER_3QUARTER 6
+#define THERMAL_BOXFILL_LOWER_7EIGHTH 7
+#define THERMAL_BOXFILL_FULL 8
+#define THERMAL_BOXFILL_LEFT_7EIGHTH 9
+#define THERMAL_BOXFILL_LEFT_3QUARTER 10
+#define THERMAL_BOXFILL_LEFT_5EIGHTH 11
+#define THERMAL_BOXFILL_LEFT_HALF 12
+#define THERMAL_BOXFILL_LEFT_3EIGHTH 13
+#define THERMAL_BOXFILL_LEFT_EIGHTH 14
+#define THERMAL_BOXFILL_RIGHT_HALF 15
+#define THERMAL_BOXFILL_SHADE_LIGHT 16
+#define THERMAL_BOXFILL_SHADE_MEDIUM 17
+#define THERMAL_BOXFILL_SHADE_DARK 18
+#define THERMAL_BOXFILL_UPPER_EIGHTH 19
+#define THERMAL_BOXFILL_RIGHT_EIGHTH 20
+#define THERMAL_BOXFILL_QUAD_LEFT_LOWER 21
+#define THERMAL_BOXFILL_QUAD_RIGHT_LOWER 22
+#define THERMAL_BOXFILL_QUAD_LEFT_UPPER 23
+#define THERMAL_BOXFILL_QUAD_NO_RIGHT_TOP 24
+#define THERMAL_BOXFILL_QUAD_LEFT_DIAG 25
+#define THERMAL_BOXFILL_QUAD_NO_RIGHT_BOTTOM 26
+#define THERMAL_BOXFILL_QUAD_NO_LEFT_BOTTOM 27
+#define THERMAL_BOXFILL_QUAD_RIGHT_UPPER 28
+#define THERMAL_BOXFILL_QUAD_RIGHT_DIAG 29
+#define THERMAL_BOXFILL_QUAD_NO_LEFT_TOP 30
+
+
+struct thermalBoxStruct{
+	int corner_top_left;
+	int corner_top_right;
+	int corner_bottom_left;
+	int corner_bottom_right;
+	int edge_top;
+	int edge_bottom;
+	int edge_left;
+	int edge_right;
+	int fill;
+	int width;
+	int height;
+	size_t data_size;
+	wchar_t *data;
+};
+typedef struct thermalBoxStruct thermbox_t;
 
 class ThermalBox{
 	private:
@@ -145,289 +194,401 @@ class ThermalBox{
 		~ThermalBox(){
 
 		}
-		const wchar_t *horizontalLine(int style){
+		wchar_t horizontalLine(int style){
 			switch(style){
 				case THERMAL_BOXLINE_HOR_DARK:
-					return L"━";
+					return L'━';
 				case THERMAL_BOXLINE_HOR_LIGHT3DOT:
-					return L"┄";
+					return L'┄';
 				case THERMAL_BOXLINE_HOR_DARK3DOT:
-					return L"┅";
+					return L'┅';
 				case THERMAL_BOXLINE_HOR_LIGHT4DOT:
-					return L"┈";
+					return L'┈';
 				case THERMAL_BOXLINE_HOR_DARK4DOT:
-					return L"┉";
+					return L'┉';
 				case THERMAL_BOXLINE_HOR_DOUBLLINE:
-					return L"═";
+					return L'═';
 				case THERMAL_BOXLINE_HOR_LIGHT2DOT:
-					return L"╌";
+					return L'╌';
 				case THERMAL_BOXLINE_HOR_DARK2DOT:
-					return L"╍";
+					return L'╍';
 				case THERMAL_BOXLINE_HOR_LIGHTLEFT:
-					return L"╴";
+					return L'╴';
 				case THERMAL_BOXLINE_HOR_LIGHTRIGHT:
-					return L"╶";
+					return L'╶';
 				case THERMAL_BOXLINE_HOR_DARKLEFT:
-					return L"╸";
+					return L'╸';
 				case THERMAL_BOXLINE_HOR_DARKRIGHT:
-					return L"╺";
+					return L'╺';
 				case THERMAL_BOXLINE_HOR_TEARRIGHT:
-					return L"╼";
+					return L'╼';
 				case THERMAL_BOXLINE_HOR_TEARLEFT:
-					return L"╾";
+					return L'╾';
 				default: // THERMAL_BOXLINE_HOR_LIGHT
-					return L"─";
+					return L'─';
 			}
 		}
 
-		const wchar_t *verticalLine(int style){
+		wchar_t verticalLine(int style){
 			switch(style){
 				case THERMAL_BOXLINE_VER_DARK:
-					return L"┃";
+					return L'┃';
 				case THERMAL_BOXLINE_VER_LIGHT3DOT:
-					return L"┆";
+					return L'┆';
 				case THERMAL_BOXLINE_VER_DARK3DOT:
-					return L"┇";
+					return L'┇';
 				case THERMAL_BOXLINE_VER_LIGHT4DOT:
-					return L"┊";
+					return L'┊';
 				case THERMAL_BOXLINE_VER_DARK4DOT:
-					return L"┋";
+					return L'┋';
 				case THERMAL_BOXLINE_VER_LIGHT2DOT:
-					return L"╎";
+					return L'╎';
 				case THERMAL_BOXLINE_VER_DARK2DOT:
-					return L"╏";
+					return L'╏';
 				case THERMAL_BOXLINE_VER_DOUBLELINE:
-					return L"║";
+					return L'║';
 				case THERMAL_BOXLINE_VER_LIGHTTOP:
-					return L"╵";
+					return L'╵';
 				case THERMAL_BOXLINE_VER_LIGHTBOTTOM:
-					return L"╷";
+					return L'╷';
 				case THERMAL_BOXLINE_VER_DARKTOP:
-					return L"╹";
+					return L'╹';
 				case THERMAL_BOXLINE_VER_DARK_BOTTOM:
-					return L"╻";
+					return L'╻';
 				case THERMAL_BOXLINE_VER_TEARDOWN:
-					return L"╽";
+					return L'╽';
 				case THERMAL_BOXLINE_VER_TEARUP:
-					return L"╿";
+					return L'╿';
 				default: // THERMAL_BOXLINE_VER_LIGHT
-					return L"│";
+					return L'│';
 			}
 		}
 
-		const wchar_t *cornerLine(int style){
+		wchar_t cornerLine(int style){
 			switch(style){
 				case THERMAL_BOXLINE_CORNER_TL_LVERDHOR:
-					return L"┍";
+					return L'┍';
 				case THERMAL_BOXLINE_CORNER_TL_DVERLHOR:
-					return L"┎";
+					return L'┎';
 				case THERMAL_BOXLINE_CORNER_TL_DARK:
-					return L"┏";
+					return L'┏';
 				case THERMAL_BOXLINE_CORNER_TR_LIGHT:
-					return L"┐";
+					return L'┐';
 				case THERMAL_BOXLINE_CORNER_TR_LVERDHOR:
-					return L"┑";
+					return L'┑';
 				case THERMAL_BOXLINE_CORNER_TR_DVERLHOR:
-					return L"┒";
+					return L'┒';
 				case THERMAL_BOXLINE_CORNER_TR_DARK:
-					return L"┓";
+					return L'┓';
 				case THERMAL_BOXLINE_CORNER_BL_LIGHT:
-					return L"└";
+					return L'└';
 				case THERMAL_BOXLINE_CORNER_BL_LVERDHOR:
-					return L"┕";
+					return L'┕';
 				case THERMAL_BOXLINE_CORNER_BL_DVERLHOR:
-					return L"┖";
+					return L'┖';
 				case THERMAL_BOXLINE_CORNER_BL_DARK:
-					return L"┗";
+					return L'┗';
 				case THERMAL_BOXLINE_CORNER_BR_LIGHT:
-					return L"┘";
+					return L'┘';
 				case THERMAL_BOXLINE_CORNER_BR_LVERDHOR:
-					return L"┙";
+					return L'┙';
 				case THERMAL_BOXLINE_CORNER_BR_DVERLHOR:
-					return L"┚";
+					return L'┚';
 				case THERMAL_BOXLINE_CORNER_BR_DARK:
-					return L"┛";
+					return L'┛';
 				case THERMAL_BOXLINE_CORNER_TL_1VER2HOR:
-					return L"╒";
+					return L'╒';
 				case THERMAL_BOXLINE_CORNER_TL_2VER1HOR:
-					return L"╓";
+					return L'╓';
 				case THERMAL_BOXLINE_CORNER_TL_DOUBLE:
-					return L"╔";
+					return L'╔';
 				case THERMAL_BOXLINE_CORNER_TR_1VER_2HOR:
-					return L"╕";
+					return L'╕';
 				case THERMAL_BOXLINE_CORNER_TR_2VER1HOR:
-					return L"╖";
+					return L'╖';
 				case THERMAL_BOXLINE_CORNER_TR_DOUBLE:
-					return L"╗";
+					return L'╗';
 				case THERMAL_BOXLINE_CORNER_BL_1VER2HOR:
-					return L"╘";
+					return L'╘';
 				case THERMAL_BOXLINE_CORNER_BL_2VER1HOR:
-					return L"╙";
+					return L'╙';
 				case THERMAL_BOXLINE_CORNER_BL_DOUBLE:
-					return L"╚";
+					return L'╚';
 				case THERMAL_BOXLINE_CORNER_BR_1VER2HOR:
-					return L"╛";
+					return L'╛';
 				case THERMAL_BOXLINE_CORNER_BR_2VER1HOR:
-					return L"╜";
+					return L'╜';
 				case THERMAL_BOXLINE_CORNER_BR_DOUBLE:
-					return L"╝";
+					return L'╝';
 				case THERMAL_BOXLINE_CORNER_TL_ROUND:
-					return L"╭";
+					return L'╭';
 				case THERMAL_BOXLINE_CORNER_TR_ROUND:
-					return L"╮";
+					return L'╮';
 				case THERMAL_BOXLINE_CORNER_BR_ROUND:
-					return L"╯";
+					return L'╯';
 				case THERMAL_BOXLINE_CORNER_BL_ROUND:
-					return L"╰";
+					return L'╰';
 				default: // THERMAL_BOXLINE_CORNER_TL_LIGHT
-					return L"┌";
+					return L'┌';
 			}
 		}
 		
-		const wchar_t *tLine(int style){
+		wchar_t tLine(int style){
 			switch(style){
 				case THERMAL_BOXLINE_T_LEFT_LIGHT_RD:
-					return L"┝";
+					return L'┝';
 				case THERMAL_BOXLINE_T_LEFT_LIGHT_TD:
-					return L"┞";
+					return L'┞';
 				case THERMAL_BOXLINE_T_LEFT_LGHT_BD:
-					return L"┟";
+					return L'┟';
 				case THERMAL_BOXLINE_T_LEFT_DARK_RL:
-					return L"┠";
+					return L'┠';
 				case THERMAL_BOXLINE_T_LEFT_DARK_BL:
-					return L"┡";
+					return L'┡';
 				case THERMAL_BOXLINE_T_LEFT_DARK_TL:
-					return L"┢";
+					return L'┢';
 				case THERMAL_BOXLINE_T_LEFT_DARK:
-					return L"┣";
+					return L'┣';
 				case THERMAL_BOXLINE_T_RIGHT_LIGHT:
-					return L"┤";
+					return L'┤';
 				case THERMAL_BOXLINE_T_RIGHT_LIGHT_LD:
-					return L"┥";
+					return L'┥';
 				case THERMAL_BOXLINE_T_RIGHT_LIGHT_TD:
-					return L"┦";
+					return L'┦';
 				case THERMAL_BOXLINE_T_RIGHT_LIGHT_BD:
-					return L"┧";
+					return L'┧';
 				case THERMAL_BOXLINE_T_RIGHT_DARK_LL:
-					return L"┨";
+					return L'┨';
 				case THERMAL_BOXLINE_T_RIGHT_DARK_BL:
-					return L"┩";
+					return L'┩';
 				case THERMAL_BOXLINE_T_RIGHT_DARK_TL:
-					return L"┪";
+					return L'┪';
 				case THERMAL_BOXLINE_T_RIGHT_DARK:
-					return L"┫";
+					return L'┫';
 				case THERMAL_BOXLINE_T_TOP_LIGHT:
-					return L"┬";
+					return L'┬';
 				case THERMAL_BOXLINE_T_TOP_LIGHT_LD:
-					return L"┭";
+					return L'┭';
 				case THERMAL_BOXLINE_T_TOP_LIGHT_RD:
-					return L"┮";
+					return L'┮';
 				case THERMAL_BOXLINE_T_TOP_TD_BL:
-					return L"┯";
+					return L'┯';
 				case THERMAL_BOXLINE_T_TOP_TL_BD:
-					return L"┰";
+					return L'┰';
 				case THERMAL_BOXLINE_T_TOP_DARK_RL:
-					return L"┱";
+					return L'┱';
 				case THERMAL_BOXLINE_T_TOP_DARK_LL:
-					return L"┲";
+					return L'┲';
 				case THERMAL_BOXLINE_T_TOP_DARK:
-					return L"┳";
+					return L'┳';
 				case THERMAL_BOXLINE_T_BOTTOM_LIGHT:
-					return L"┴";
+					return L'┴';
 				case THERMAL_BOXLINE_T_BOTTOM_LIGHT_LD:
-					return L"┵";
+					return L'┵';
 				case THERMAL_BOXLINE_T_BOTTOM_LUIGHT_RD:
-					return L"┶";
+					return L'┶';
 				case THERMAL_BOXLINE_T_BOTTOM_TL_BD:
-					return L"┷";
+					return L'┷';
 				case THERMAL_BOXLINE_T_BOTTOM_TD_BL:
-					return L"┸";
+					return L'┸';
 				case THERMAL_BOXLINE_T_BOTTOM_DARK_RL:
-					return L"┹";
+					return L'┹';
 				case THERMAL_BOXLINE_T_BOTTOM_DARK_LL:
-					return L"┺";
+					return L'┺';
 				case THERMAL_BOXLINE_T_BOTTOM_DARK:
-					return L"┻";
+					return L'┻';
 				case THERMAL_BOXLINE_T_LEFT_LL_RDUB:
-					return L"╞";
+					return L'╞';
 				case THERMAL_BOXLINE_T_LEFT_LDUB_RL:
-					return L"╟";
+					return L'╟';
 				case THERMAL_BOXLINE_T_LEFT_DOUBLE:
-					return L"╠";
+					return L'╠';
 				case THERMAL_BOXLINE_T_RIGHT_LDUB_RL:
-					return L"╡";
+					return L'╡';
 				case THERMAL_BOXLINE_T_RIGHT_LL_RDUB:
-					return L"╢";
+					return L'╢';
 				case THERMAL_BOXLINE_T_RIGHT_DOUBLE:
-					return L"╣";
+					return L'╣';
 				case THERMAL_BOXLINE_T_TOP_TDUB_BL:
-					return L"╤";
+					return L'╤';
 				case THERMAL_BOXLINE_T_TOP_TL_BDUB:
-					return L"╥";
+					return L'╥';
 				case THERMAL_BOXLINE_T_TOP_DOUBLE:
-					return L"╦";
+					return L'╦';
 				case THERMAL_BOXLINE_T_BOTTOM_TL_BDUB:
-					return L"╧";
+					return L'╧';
 				case THERMAL_BOXLINE_T_BOTTOM_TDUB_BL:
-					return L"╨";
+					return L'╨';
 				case THERMAL_BOXLINE_T_BOTTOM_DOUBLE:
-					return L"╩";
+					return L'╩';
 				default: //THERMAL_BOXLINE_T_LEFT_LIGHT:
-					return L"├";
+					return L'├';
 			}
 		}
 
-		const wchar_t *crossLine(int style){
+		wchar_t crossLine(int style){
 			switch(style){
 				case THERMAL_BOXLINE_CROSS_LIGHT_LD:
-					return L"┽";
+					return L'┽';
 				case THERMAL_BOXLINE_CROSS_LIGHT_RD:
-					return L"┾";
+					return L'┾';
 				case THERMAL_BOXLINE_CROSS_LIGHT_HD:
-					return L"┿";
+					return L'┿';
 				case THERMAL_BOXLINE_CROSS_LIGHT_TD:
-					return L"╀";
+					return L'╀';
 				case THERMAL_BOXLINE_CROSS_LIGHT_BD:
-					return L"╁";
+					return L'╁';
 				case THERMAL_BOXLINE_CROSS_LIGHT_VD:
-					return L"╂";
+					return L'╂';
 				case THERMAL_BOXLINE_CROSS_LIGHTBR_DARKTL:
-					return L"╃";
+					return L'╃';
 				case THERMAL_BOXLINE_CROSS_LIGHTBL_DARKTR:
-					return L"╄";
+					return L'╄';
 				case THERMAL_BOXLINE_CROSS_LIGHTTL_DARKBR:
-					return L"╅";
+					return L'╅';
 				case THERMAL_BOXLINE_CROSS_LIGHTTR_DARK_BL:
-					return L"╆";
+					return L'╆';
 				case THERMAL_BOXLINE_CROSS_DARK_BL:
-					return L"╇";
+					return L'╇';
 				case THERMAL_BOXLINE_CROSS_DARK_TL:
-					return L"╈";
+					return L'╈';
 				case THERMAL_BOXLINE_CROSS_DARK_RL:
-					return L"╉";
+					return L'╉';
 				case THERMAL_BOXLINE_CROSS_DARK_LL:
-					return L"╊";
+					return L'╊';
 				case THERMAL_BOXLINE_CROSS_DARK:
-					return L"╋";
+					return L'╋';
 				case THERMAL_BOXLINE_CROSS_LIGHT_DUBHOR:
-					return L"╪";
+					return L'╪';
 				case THERMAL_BOXLINE_CROSS_LIGHT_DUBVER:
-					return L"╫";
+					return L'╫';
 				case THERMAL_BOXLINE_CROSS_DOUBLE:
-					return L"╬";
+					return L'╬';
 				default: //THERMAL_BOXLINE_CROSS_LIGHT:
-					return L"┼";
+					return L'┼';
+			}
+		}
+		
+		wchar_t blockFill(int style){
+			switch(style){
+				case THERMAL_BOXFILL_LOWER_EIGHTH:
+					return L'▁';
+				case THERMAL_BOXFILL_LOWER_QUARTER:
+					return L'▂';
+				case THERMAL_BOXFILL_LOWER_3EIGHTH:
+					return L'▃';
+				case THERMAL_BOXFILL_LOWER_HALF:
+					return L'▄';
+				case THERMAL_BOXFILL_LOWER_5EIGHTH:
+					return L'▆';
+				case THERMAL_BOXFILL_LOWER_3QUARTER:
+					return L'▇';
+				case THERMAL_BOXFILL_LOWER_7EIGHTH:
+					return L'█';
+				case THERMAL_BOXFILL_FULL:
+					return L'▉';
+				case THERMAL_BOXFILL_LEFT_7EIGHTH:
+					return L'▊';
+				case THERMAL_BOXFILL_LEFT_3QUARTER:
+					return L'▋';
+				case THERMAL_BOXFILL_LEFT_5EIGHTH:
+					return L'▌';
+				case THERMAL_BOXFILL_LEFT_HALF:
+					return L'▍';
+				case THERMAL_BOXFILL_LEFT_3EIGHTH:
+					return L'▎';
+				case THERMAL_BOXFILL_LEFT_EIGHTH:
+					return L'▏';
+				case THERMAL_BOXFILL_RIGHT_HALF:
+					return L'▐';
+				case THERMAL_BOXFILL_SHADE_LIGHT:
+					return L'░';
+				case THERMAL_BOXFILL_SHADE_MEDIUM:
+					return L'▒';
+				case THERMAL_BOXFILL_SHADE_DARK:
+					return L'▓';
+				case THERMAL_BOXFILL_UPPER_EIGHTH:
+					return L'▔';
+				case THERMAL_BOXFILL_RIGHT_EIGHTH:
+					return L'▕';
+				case THERMAL_BOXFILL_QUAD_LEFT_LOWER:
+					return L'▖';
+				case THERMAL_BOXFILL_QUAD_RIGHT_LOWER:
+					return L'▗';
+				case THERMAL_BOXFILL_QUAD_LEFT_UPPER:
+					return L'▘';
+				case THERMAL_BOXFILL_QUAD_NO_RIGHT_TOP:
+					return L'▙';
+				case THERMAL_BOXFILL_QUAD_LEFT_DIAG:
+					return L'▚';
+				case THERMAL_BOXFILL_QUAD_NO_RIGHT_BOTTOM:
+					return L'▛';
+				case THERMAL_BOXFILL_QUAD_NO_LEFT_BOTTOM:
+					return L'▜';
+				case THERMAL_BOXFILL_QUAD_RIGHT_UPPER:
+					return L'▝';
+				case THERMAL_BOXFILL_QUAD_RIGHT_DIAG:
+					return L'▞';
+				case THERMAL_BOXFILL_QUAD_NO_LEFT_TOP:
+					return L'▟';
+				default: //THERMAL_BOXFILL_UPPER_HALF:
+					return L'▀';
 			}
 		}
 
-		const wchar_t *miscLine(int style){	
+		wchar_t miscLine(int style){	
 			switch(style){
 				case THERMAL_BOXLINE_MISC_BACKSLASH:
-					return L"╲";
+					return L'╲';
 				case THERMAL_BOXLINE_MISC_X:
-					return L"╳";
+					return L'╳';
 				default: //THERMAL_BOXLINE_MISC_FORWARDSLASH:
-					return L"╱";
+					return L'╱';
 			}
+		}
+	
+		bool generateBoxData(thermbox_t *box){
+			if(box == NULL) return false;
+			if(box->data == NULL || box->data_size <= 0) return false;
+
+			wchar_t *dst = box->data;
+			size_t dst_s = box->data_size;
+			int w = box->width;
+			int h = box->height;
+			
+			int pos_corner_tl=0; 		// top left
+			int pos_corner_tr=w-1;		// top right
+			int pos_corner_bl=dst_s-w;	// bot left
+			int pos_corner_br=dst_s-1;	// bot right
+			
+			if( !(pos_corner_tr < dst_s) ||
+			    pos_corner_tr < 0 	     ||
+			    !(pos_corner_bl < dst_s) ||
+			    pos_corner_bl < 0 
+			)return false;
+
+			for(int i=0; i<dst_s; i++)
+				dst[i] = this->blockFill(box->fill);
+			
+			dst[pos_corner_tl] = this->cornerLine(box->corner_top_left);
+			dst[pos_corner_tr] = this->cornerLine(box->corner_top_right);
+			dst[pos_corner_bl] = this->cornerLine(box->corner_bottom_left);
+			dst[pos_corner_br] = this->cornerLine(box->corner_bottom_right);
+
+			for(int i=1; i<w-1; i++)
+				dst[i] = this->horizontalLine(box->edge_top);
+			for(int i=dst_s-w+1; i<dst_s-1; i++)
+				dst[i] = this->horizontalLine(box->edge_bottom);
+			for(int i=w; i<dst_s-w; i+=w)
+				dst[i] = this->verticalLine(box->edge_left);
+			for(int i=(w*2)-1; i<dst_s-w; i+=w)
+				dst[i] = this->verticalLine(box->edge_left);
+
+			for(int i=0; i<dst_s; i++){
+				wprintf(L"%lc", dst[i]);
+			}
+			
+		
+			return true;
 		}
 };
