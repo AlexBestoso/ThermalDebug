@@ -1,26 +1,11 @@
-struct thermalDebugDisplayStruct{
-	char *display_buffer;
-	size_t display_buffer_size;
-};
-typedef struct thermalDebugDisplayStruct thermdisp_t;
-
-struct thermalDebugErrorStruct{
-	int id;
-	std::string msg;
-	std::string functionName;
-	bool failed;
-};
-typedef struct thermalDebugErrorStruct thermerr_t;
-
-struct thermalDebugAlgorithmCache{
-	ted_t *algorithms;
-	size_t algorithmsCount;
-};
-typedef struct thermalDebugAlgorithmCache thermalgo_t;
+#include "./ThermalDebugErrorStruct.class.h"
+#include "./ThermalDebugDisplay.class.h"
+#include "./ThermalDebugAlgorithmCache.class.h"
 
 class ThermalDebug{
 	private:
-		thermdisp_t display;
+		ThermalDebugDisplay display;
+		thermbox_t backgroundBox;
 		thermerr_t error;
 		thermalgo_t algoCache;
 		ThermalEmissionDump dumper;
@@ -39,6 +24,27 @@ class ThermalDebug{
 				return false;
 			return true;
 		}
+
+		bool initBackgroundBox(void){
+			// TODO: Add xml config file loading here.
+			this->backgroundBox.corner_top_left = THERMAL_BOXLINE_CORNER_TL_LIGHT;
+			this->backgroundBox.corner_top_right = THERMAL_BOXLINE_CORNER_TR_LIGHT;
+			this->backgroundBox.corner_bottom_left = THERMAL_BOXLINE_CORNER_BL_LIGHT;
+			this->backgroundBox.corner_bottom_right = THERMAL_BOXLINE_CORNER_BR_LIGHT;
+			this->backgroundBox.edge_top = THERMAL_BOXLINE_HOR_LIGHT;
+			this->backgroundBox.edge_bottom = THERMAL_BOXLINE_HOR_LIGHT;
+			this->backgroundBox.edge_left = THERMAL_BOXLINE_VER_LIGHT;
+			this->backgroundBox.edge_right = THERMAL_BOXLINE_VER_LIGHT;
+			this->backgroundBox.fill = THERMAL_BOXFILL_SHADE_DARK;
+			this->backgroundBox.width = display.getWidth();
+			this->backgroundBox.height = display.getHeight();
+
+			this->backgroundBox.data_size = this->backgroundBox.width * this->backgroundBox.height;
+			if(this->backgroundBox.data != NULL) delete[] this->backgroundBox.data;
+			this->backgroundBox.data = new (std::nothrow) wchar_t[this->backgroundBox.data_size];
+			if(this->backgroundBox.data == NULL) return false;
+			return true;
+		}
 	public:
 		bool hasError(thermerr_t *out){
 			out = &this->error;
@@ -52,20 +58,31 @@ class ThermalDebug{
 		}
 
 		ThermalDebug(){
-			this->display.display_buffer = NULL;
-			this->display.display_buffer_size = 0;
-			
 			this->algoCache.algorithms = NULL;
 			this->algoCache.algorithmsCount = 0;
+
+			this->backgroundBox.corner_top_left = 0;
+			this->backgroundBox.corner_top_right = 0;
+			this->backgroundBox.corner_bottom_left = 0;
+			this->backgroundBox.corner_bottom_right = 0;
+			this->backgroundBox.edge_top = 0;
+			this->backgroundBox.edge_bottom = 0;
+			this->backgroundBox.edge_left = 0;
+			this->backgroundBox.edge_right = 0;
+			this->backgroundBox.fill = 0;
+			this->backgroundBox.width = 0;
+			this->backgroundBox.height = 0;
+
+			this->backgroundBox.data_size = 0;
+			this->backgroundBox.data = NULL;
+	
 		
 			this->clearError();
 		}
 
 		~ThermalDebug(){
-			if(this->display.display_buffer != NULL){
-				delete[] this->display.display_buffer;
-				this->display.display_buffer = NULL;
-			}
+			if(this->backgroundBox.data != NULL)
+				delete[] this->backgroundBox.data;
 
 			if(this->algoCache.algorithms != NULL){
 				delete[] this->algoCache.algorithms;
@@ -106,8 +123,15 @@ class ThermalDebug{
 				delete[] tmp;
 				
 				this->algoCache.algorithms[this->algoCache.algorithmsCount-1] = ted;
-				printf("Loaded Algorithm : %s\n", this->algoCache.algorithms[this->algoCache.algorithmsCount-1].algorithmName);
 			}
+			return true;
+		}
+
+		bool loadDisplay(void){
+			if(!this->initBackgroundBox()) return false;
+			if(!this->display.initBackground(&this->backgroundBox))
+				return false;
+
 			return true;
 		}
 
