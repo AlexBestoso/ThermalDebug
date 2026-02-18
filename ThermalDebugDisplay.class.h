@@ -30,8 +30,6 @@ class ThermalDebugDisplay{
 			this->data.display_buffer = NULL;
 			this->data.display_buffer_size = 0;
 			this->fetchWidthHeight();
-			//for(int i=0; i<4; i++)
-			//wprintf(L"%ls", this->box.crossLine(THERMAL_BOXLINE_CROSS_LIGHT));
 
 		}
 	
@@ -66,6 +64,24 @@ class ThermalDebugDisplay{
 				return false;
 			}
 
+
+			
 			return true;
+		}
+
+		bool mapString(thermbox_t *box, int x, int y, std::string str){
+			if(!this->thermalBox.mapString(box, x, y, str)){
+				printf("ThermalBox::mapString() failed to map string to box.\n");
+				return false;
+			}
+			return true;
+		}
+
+		void printBox(thermbox_t *box){
+			if(box == NULL) return;
+			if(box->data == NULL || box->data_size <= 0) return;
+			for(int i=0; i<box->data_size; i++){
+				wprintf(L"%lc", box->data[i]);
+			}
 		}
 };
