@@ -43,6 +43,7 @@ class ThermalDebug{
 			if(this->backgroundBox.data != NULL) delete[] this->backgroundBox.data;
 			this->backgroundBox.data = new (std::nothrow) wchar_t[this->backgroundBox.data_size];
 			if(this->backgroundBox.data == NULL) return false;
+			for(int i=0; i<this->backgroundBox.data_size; i++) this->backgroundBox.data[i] = 0x00;
 			return true;
 		}
 	public:
