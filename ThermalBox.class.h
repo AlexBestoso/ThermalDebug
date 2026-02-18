@@ -584,11 +584,32 @@ class ThermalBox{
 			for(int i=(w*2)-1; i<dst_s-w; i+=w)
 				dst[i] = this->verticalLine(box->edge_left);
 
-			for(int i=0; i<dst_s; i++){
-				wprintf(L"%lc", dst[i]);
+			return true;
+		}
+
+		bool mapString(thermbox_t *box, int x, int y, std::string str){
+			if(box == NULL) return false;
+			if(box->data == NULL || box->data_size <= 0) return false;
+			int str_s = str.length();
+			if(str_s <= 0) return true;
+
+			int w = box->width;
+			int h = box->height;
+			wchar_t *dst = box->data;
+			size_t dst_s = box->data_size;
+
+			if(x >= w) return true;
+			if((x+str_s) < 0) return true;
+			if(y < 0 || y >= h) return true;
+
+			int stringOffset = (x < 0) ? str_s - (-1 * x) : 0;
+			int injectionPosition = (y * w) + ((stringOffset == 0) ? x : 0);
+			
+			for(int i=injectionPosition, s=0; i<dst_s && s<str_s; i++, s++){
+				if((i%(w+1)) == w) break;
+				dst[i] = (wchar_t)str[s];
 			}
 			
-		
 			return true;
 		}
 };

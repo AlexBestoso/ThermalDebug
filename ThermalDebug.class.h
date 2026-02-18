@@ -128,10 +128,17 @@ class ThermalDebug{
 		}
 
 		bool loadDisplay(void){
+			std::string tmp = "Thermal Debug - 0.0.0 Alpha";
 			if(!this->initBackgroundBox()) return false;
 			if(!this->display.initBackground(&this->backgroundBox))
 				return false;
+			if(!this->display.mapString(&this->backgroundBox, 2, 1, tmp))
+				return false;
+			tmp = "Algorithm Count : " + std::to_string(this->algoCache.algorithmsCount);
+			if(!this->display.mapString(&this->backgroundBox, 2, 2, tmp))
+				return false;
 
+			this->display.printBox(&this->backgroundBox);
 			return true;
 		}
 
