@@ -1,3 +1,4 @@
+#include "./UI/ThermalUI.h"
 #include "./ThermalDebugErrorStruct.class.h"
 #include "./ThermalDebugDisplay.class.h"
 #include "./ThermalDebugAlgorithmCache.class.h"
@@ -5,7 +6,7 @@
 class ThermalDebug{
 	private:
 		ThermalDebugDisplay display;
-		thermbox_t backgroundBox;
+		ThermalBackgroundBox bgBox;
 		thermerr_t error;
 		thermalgo_t algoCache;
 		ThermalEmissionDump dumper;
@@ -25,7 +26,7 @@ class ThermalDebug{
 			return true;
 		}
 
-		bool initBackgroundBox(void){
+		/*bool initBackgroundBox(void){
 			// TODO: Add xml config file loading here.
 			this->backgroundBox.corner_top_left = THERMAL_BOXLINE_CORNER_TL_LIGHT;
 			this->backgroundBox.corner_top_right = THERMAL_BOXLINE_CORNER_TR_LIGHT;
@@ -45,7 +46,7 @@ class ThermalDebug{
 			if(this->backgroundBox.data == NULL) return false;
 			for(int i=0; i<this->backgroundBox.data_size; i++) this->backgroundBox.data[i] = 0x00;
 			return true;
-		}
+		}*/
 	public:
 		bool hasError(thermerr_t *out){
 			out = &this->error;
@@ -62,7 +63,7 @@ class ThermalDebug{
 			this->algoCache.algorithms = NULL;
 			this->algoCache.algorithmsCount = 0;
 
-			this->backgroundBox.corner_top_left = 0;
+		/*	this->backgroundBox.corner_top_left = 0;
 			this->backgroundBox.corner_top_right = 0;
 			this->backgroundBox.corner_bottom_left = 0;
 			this->backgroundBox.corner_bottom_right = 0;
@@ -75,15 +76,15 @@ class ThermalDebug{
 			this->backgroundBox.height = 0;
 
 			this->backgroundBox.data_size = 0;
-			this->backgroundBox.data = NULL;
+			this->backgroundBox.data = NULL;*/
 	
 		
 			this->clearError();
 		}
 
 		~ThermalDebug(){
-			if(this->backgroundBox.data != NULL)
-				delete[] this->backgroundBox.data;
+			/*if(this->backgroundBox.data != NULL)
+				delete[] this->backgroundBox.data;*/
 
 			if(this->algoCache.algorithms != NULL){
 				delete[] this->algoCache.algorithms;
@@ -130,16 +131,34 @@ class ThermalDebug{
 
 		bool loadDisplay(void){
 			std::string tmp = "Thermal Debug - 0.0.0 Alpha";
-			if(!this->initBackgroundBox()) return false;
-			if(!this->display.initBackground(&this->backgroundBox))
+			if(!this->bgBox.setBoxArea(this->display.getWidth(), this->display.getHeight())){
+				printf("Failed to set background box area.\n");
 				return false;
-			if(!this->display.mapString(&this->backgroundBox, 2, 1, tmp))
+			}
+			if(!this->bgBox.generateData()){
+				printf("Failed to generate data.\n");
 				return false;
+			}
+			if(!this->bgBox.mapString(2, 1, tmp)){
+				printf("Failed to map string to background box.\n");
+				return false;
+			}
 			tmp = "Algorithm Count : " + std::to_string(this->algoCache.algorithmsCount);
-			if(!this->display.mapString(&this->backgroundBox, 2, 2, tmp))
+			if(!this->bgBox.mapString(2, 2, tmp)){
+				printf("Failed to map algorithm count string to background box.\n");
 				return false;
+			}
+			this->bgBox.printBox();
+			//if(!this->initBackgroundBox()) return false;
+			//if(!this->display.initBackground(&this->backgroundBox))
+			//	return false;
+			//if(!this->display.mapString(&this->backgroundBox, 2, 1, tmp))
+			//	return false;
+			//tmp = "Algorithm Count : " + std::to_string(this->algoCache.algorithmsCount);
+			//if(!this->display.mapString(&this->backgroundBox, 2, 2, tmp))
+			//	return false;
 
-			this->display.printBox(&this->backgroundBox);
+			//this->display.printBox(&this->backgroundBox);
 			return true;
 		}
 

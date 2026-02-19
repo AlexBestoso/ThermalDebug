@@ -1,4 +1,3 @@
-#include "./ThermalBox.class.h"
 struct thermalDebugDisplayStruct{
 	int display_width;
 	int display_height;
@@ -49,33 +48,6 @@ class ThermalDebugDisplay{
 			}
 		}
 
-		bool initBackground(thermbox_t *box){
-			if(box == NULL){
-				printf("thermbox_t *box is null\n");
-				return false;
-			}
-			if(box->data == NULL || box->data_size <= 0){
-				printf("thermbox_t *box->data isn't allocated\n");
-				return false;
-			}
-
-			if(!this->thermalBox.generateBoxData(box)){
-				printf("ThermalBox::generateBoxData() failed to generate background data.\n");
-				return false;
-			}
-
-
-			
-			return true;
-		}
-
-		bool mapString(thermbox_t *box, int x, int y, std::string str){
-			if(!this->thermalBox.mapString(box, x, y, str)){
-				printf("ThermalBox::mapString() failed to map string to box.\n");
-				return false;
-			}
-			return true;
-		}
 
 		void printBox(thermbox_t *box){
 			if(box == NULL) return;
