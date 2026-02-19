@@ -185,6 +185,7 @@ typedef struct thermalBoxStruct thermbox_t;
 
 class ThermalBox{
 	private:
+		thermbox_t data;
 
 	public:
 		ThermalBox(){
@@ -193,6 +194,10 @@ class ThermalBox{
 
 		~ThermalBox(){
 
+		}
+
+		thermbox_t *getData(){
+			return &this->data;
 		}
 		wchar_t horizontalLine(int style){
 			switch(style){
@@ -547,14 +552,13 @@ class ThermalBox{
 			}
 		}
 	
-		bool generateBoxData(thermbox_t *box){
-			if(box == NULL) return false;
-			if(box->data == NULL || box->data_size <= 0) return false;
+		bool generateBoxData(void){
+			if(this->data.data == NULL || this->data.data_size <= 0) return false;
 
-			wchar_t *dst = box->data;
-			size_t dst_s = box->data_size;
-			int w = box->width;
-			int h = box->height;
+			wchar_t *dst = this->data.data;
+			size_t dst_s = this->data.data_size;
+			int w = this->data.width;
+			int h = this->data.height;
 			
 			int pos_corner_tl=0; 		// top left
 			int pos_corner_tr=w-1;		// top right
@@ -568,27 +572,78 @@ class ThermalBox{
 			)return false;
 
 			for(int i=0; i<dst_s; i++)
-				dst[i] = this->blockFill(box->fill);
+				dst[i] = this->blockFill(this->data.fill);
 			
-			dst[pos_corner_tl] = this->cornerLine(box->corner_top_left);
-			dst[pos_corner_tr] = this->cornerLine(box->corner_top_right);
-			dst[pos_corner_bl] = this->cornerLine(box->corner_bottom_left);
-			dst[pos_corner_br] = this->cornerLine(box->corner_bottom_right);
+			dst[pos_corner_tl] = this->cornerLine(this->data.corner_top_left);
+			dst[pos_corner_tr] = this->cornerLine(this->data.corner_top_right);
+			dst[pos_corner_bl] = this->cornerLine(this->data.corner_bottom_left);
+			dst[pos_corner_br] = this->cornerLine(this->data.corner_bottom_right);
 
 			for(int i=1; i<w-1; i++)
-				dst[i] = this->horizontalLine(box->edge_top);
+				dst[i] = this->horizontalLine(this->data.edge_top);
 			for(int i=dst_s-w+1; i<dst_s-1; i++)
-				dst[i] = this->horizontalLine(box->edge_bottom);
+				dst[i] = this->horizontalLine(this->data.edge_bottom);
 			for(int i=w; i<dst_s-w; i+=w)
-				dst[i] = this->verticalLine(box->edge_left);
+				dst[i] = this->verticalLine(this->data.edge_left);
 			for(int i=(w*2)-1; i<dst_s-w; i+=w)
-				dst[i] = this->verticalLine(box->edge_left);
+				dst[i] = this->verticalLine(this->data.edge_left);
 
-			for(int i=0; i<dst_s; i++){
-				wprintf(L"%lc", dst[i]);
-			}
-			
-		
 			return true;
 		}
+
+		bool mapString(int x, int y, std::string str){
+			if(this->data.data == NULL || this->data.data_size <= 0) return false;
+			int str_s = str.length();
+			if(str_s <= 0) return true;
+
+			int w = this->data.width;
+			int h = this->data.height;
+			wchar_t *dst = this->data.data;
+			size_t dst_s = this->data.data_size;
+
+			if(x >= w) return true;
+			if((x+str_s) < 0) return true;
+			if(y < 0 || y >= h) return true;
+
+			int stringOffset = (x < 0) ? str_s - (-1 * x) : 0;
+			int injectionPosition = (y * w) + ((stringOffset == 0) ? x : 0);
+			
+			for(int i=injectionPosition, s=0; i<dst_s && s<str_s; i++, s++){
+				if((i%(w+1)) == w) break;
+				dst[i] = (wchar_t)str[s];
+			}
+			
+			return true;
+		}
+
+		bool setBoxArea(int w, int h){
+			if(w < 0) w = 0;
+			if(h < 0) h = 0;
+			if(w == 0 || h == 0){
+				this->data.width = 0;
+				this->data.height = 0;
+				this->data.data_size = 0;
+				if(this->data.data != NULL) delete[] this->data.data;
+				this->data.data = NULL;
+				return false;
+			}
+			
+			this->data.width = w;
+			this->data.height = h;
+			this->data.data_size = w * h;
+			if(this->data.data != NULL) delete[] this->data.data;
+			this->data.data = new (std::nothrow) wchar_t[this->data.data_size];
+			if(this->data.data == NULL){
+				return false;
+			}
+			for(int i=0; i<this->data.data_size; i++) this->data.data[i] = 0x00;
+			return true;
+		}
+		
+		void printBox(void){
+                        if(this->data.data == NULL || this->data.data_size <= 0) return;
+                        for(int i=0; i<this->data.data_size; i++){
+                                wprintf(L"%lc", this->data.data[i]);
+                        }
+                }
 };

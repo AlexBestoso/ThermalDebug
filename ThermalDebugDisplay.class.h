@@ -1,4 +1,3 @@
-#include "./ThermalBox.class.h"
 struct thermalDebugDisplayStruct{
 	int display_width;
 	int display_height;
@@ -11,7 +10,6 @@ typedef struct thermalDebugDisplayStruct thermdisp_t;
 class ThermalDebugDisplay{
 	private:
 		thermdisp_t data;
-		ThermalBox thermalBox;
 		/*
 		 * This function works only in linux terminals.
 		 * A #ifdef statement can be used to implement windows
@@ -24,17 +22,30 @@ class ThermalDebugDisplay{
 			this->data.display_height = w.ws_row;
 		}
 
+		void alternateScreen(bool enable){
+			if(enable){
+				wprintf(L"\033[?1049h");
+			}else{
+				wprintf(L"\033[?1049l");
+			}
+		}
+
 	public:
 		ThermalDebugDisplay(void){
 			setlocale(LC_ALL, "en_US.UTF-8");
 			this->data.display_buffer = NULL;
 			this->data.display_buffer_size = 0;
 			this->fetchWidthHeight();
-			//for(int i=0; i<4; i++)
-			//wprintf(L"%ls", this->box.crossLine(THERMAL_BOXLINE_CROSS_LIGHT));
 
+		}	
+
+		~ThermalDebugDisplay(){
+			if(this->data.display_buffer != NULL){
+				delete[] this->data.display_buffer;
+				this->data.display_buffer = NULL;
+			}
 		}
-	
+
 		int getWidth(void){
 			this->fetchWidthHeight();
 			return this->data.display_width;
@@ -44,28 +55,20 @@ class ThermalDebugDisplay{
 			return this->data.display_height;
 		}
 
-		~ThermalDebugDisplay(){
-			if(this->data.display_buffer != NULL){
-				delete[] this->data.display_buffer;
-				this->data.display_buffer = NULL;
-			}
-		}
-
-		bool initBackground(thermbox_t *box){
-			if(box == NULL){
-				printf("thermbox_t *box is null\n");
-				return false;
-			}
-			if(box->data == NULL || box->data_size <= 0){
-				printf("thermbox_t *box->data isn't allocated\n");
-				return false;
-			}
-
-			if(!this->thermalBox.generateBoxData(box)){
-				printf("ThermalBox::generateBoxData() failed to generate background data.\n");
-				return false;
-			}
+		bool startDisplay(void){
+			this->alternateScreen(true);
 
 			return true;
 		}
+
+		bool stopDisplay(void){
+			this->alternateScreen(false);
+			return true;
+		}
+
+		bool draw(void){
+			
+			return true;	
+		}
+
 };
