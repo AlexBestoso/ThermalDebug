@@ -10,7 +10,6 @@ typedef struct thermalDebugDisplayStruct thermdisp_t;
 class ThermalDebugDisplay{
 	private:
 		thermdisp_t data;
-		ThermalBox thermalBox;
 		/*
 		 * This function works only in linux terminals.
 		 * A #ifdef statement can be used to implement windows
@@ -23,6 +22,14 @@ class ThermalDebugDisplay{
 			this->data.display_height = w.ws_row;
 		}
 
+		void alternateScreen(bool enable){
+			if(enable){
+				wprintf(L"\033[?1049h");
+			}else{
+				wprintf(L"\033[?1049l");
+			}
+		}
+
 	public:
 		ThermalDebugDisplay(void){
 			setlocale(LC_ALL, "en_US.UTF-8");
@@ -30,8 +37,15 @@ class ThermalDebugDisplay{
 			this->data.display_buffer_size = 0;
 			this->fetchWidthHeight();
 
+		}	
+
+		~ThermalDebugDisplay(){
+			if(this->data.display_buffer != NULL){
+				delete[] this->data.display_buffer;
+				this->data.display_buffer = NULL;
+			}
 		}
-	
+
 		int getWidth(void){
 			this->fetchWidthHeight();
 			return this->data.display_width;
@@ -41,19 +55,20 @@ class ThermalDebugDisplay{
 			return this->data.display_height;
 		}
 
-		~ThermalDebugDisplay(){
-			if(this->data.display_buffer != NULL){
-				delete[] this->data.display_buffer;
-				this->data.display_buffer = NULL;
-			}
+		bool startDisplay(void){
+			this->alternateScreen(true);
+
+			return true;
 		}
 
-
-		void printBox(thermbox_t *box){
-			if(box == NULL) return;
-			if(box->data == NULL || box->data_size <= 0) return;
-			for(int i=0; i<box->data_size; i++){
-				wprintf(L"%lc", box->data[i]);
-			}
+		bool stopDisplay(void){
+			this->alternateScreen(false);
+			return true;
 		}
+
+		bool draw(void){
+			
+			return true;	
+		}
+
 };

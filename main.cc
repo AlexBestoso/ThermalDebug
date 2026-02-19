@@ -3,6 +3,7 @@
 #include <typeinfo>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
+#include <signal.h>
 #include <wchar.h>
 #include <locale.h>
 #include <fcntl.h>
@@ -13,11 +14,12 @@
 
 int main(int argc, char *argv[]){
 	fwide(stdout, 1);
-	wprintf(L"\033[?1049h");
 
 	if(thermalDbg.loadAlgorithms(argc, argv) == false) return 1;
 	if(thermalDbg.loadDisplay() == false) return 1;
-	fflush(stdout);
-	sleep(5);
-	wprintf(L"\033[?1049l");
+
+	// TODO: define how we will loop.
+	thermalDbg.run();
+
+	thermalDbg.killDisplay();
 }
