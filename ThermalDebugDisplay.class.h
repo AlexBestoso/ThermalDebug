@@ -128,6 +128,7 @@ class ThermalDebugDisplay{
 			int boxXOffset = 0;
 			int boxYOffset = 0;
 			
+			// TODO: Update offsets here to allow for x and y pos to be negative.
 			if(xpos < 0){
 				xpos *= -1;
 				xpos = bwidth - xpos;
@@ -143,21 +144,21 @@ class ThermalDebugDisplay{
 				ypos = 0;
 			}
 
-			this->setCursorPos(0, 0);
 
 			int pos = xpos + (swidth * ypos);
-			for(int i=pos, lineI = xpos, b=0, lineB=boxXOffset; i<this->data.display_buffer_size && b<bDataSize; i++, b++){
+			int bpos = (bwidth * boxYOffset);
+			for(int i=pos, lineI = xpos, b=bpos, lineB=boxXOffset; i<this->data.display_buffer_size && b<bDataSize; i++, b++){
+				
 				this->data.display_buffer[i] = bData[b];
-				lineI++;
 				lineB++;
-				if(lineB >= bwidth){
-					b += boxXOffset;
+				lineI++;
+				if(lineI >= swidth && lineB<bwidth){
+					b+= bwidth - lineB;
+					i+= bwidth - lineB;
 					lineB = boxXOffset;
-				}
-				if(lineI >= swidth){
-					i += xpos;
 					lineI = xpos;
 				}
+				
 			}
 
 			
