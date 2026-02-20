@@ -20,6 +20,7 @@ int main(int argc, char *argv[]){
 
 	// TODO: define how we will loop.
 	thermalDbg.run();
+sleep(2);
 
 	thermalDbg.killDisplay();
 }

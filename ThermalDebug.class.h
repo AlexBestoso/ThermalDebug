@@ -126,7 +126,6 @@ class ThermalDebug{
 		bool run(void){
 			this->bgBox.printBox();
 			this->display.draw();
-			wprintf(L"\033[5A");
 			fflush(stdout);
 			return true;
 		}
