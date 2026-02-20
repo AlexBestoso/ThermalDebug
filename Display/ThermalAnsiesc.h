@@ -15,7 +15,7 @@
  * Cursor Control Codes
 \* */
 #define THERMAL_ANSIESC_CURSOR_HOME L"\x1b[H"	// Go to position 0,0
-#define THERMAL_ANSIESC_CURSOR_GOTO(l, c) L"\x1b[" #l L";" #c L"H"	// go to arbitrary position
+#define THERMAL_ANSIESC_CURSOR_GOTO(row, col) L"\x1b[" #row L";" #col L"H"	// go to arbitrary position
 #define THERMAL_ANSIESC_CURSOR_JUMPTO(l, c) L"\x1b[" #l L";" #c L"f"	// go to arbitrary position
 #define THERMAL_ANSIESC_CURSOR_UP(amt) L"\x1b[" #amt L"A"	// Move cursor up x amount
 #define THERMAL_ANSIESC_CURSOR_DOWN(amt) L"\x1b[" #amt L"B"	// Move cursor down x amount

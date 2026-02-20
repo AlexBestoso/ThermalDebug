@@ -89,6 +89,10 @@ class ThermalDebugDisplay{
 			wprintf(L"%ls%ls", THERMAL_ANSIESC_CURSOR_HOME, THERMAL_ANSIESC_ERASE_SCREEN);
 		}
 
+		void setCursorPos(int x, int y){
+			wprintf(L"\x1b[%d;%dH", x, y);
+		}
+
 		void refreshDisplaySize(void){
 			this->fetchWidthHeight();	
 		}
@@ -105,10 +109,24 @@ class ThermalDebugDisplay{
 		}
 
 		bool mapBox(ThermalBox src, int xpos, int ypos){
+			if(xpos >= this->data.display_width || ypos >= this->data.display_height) return false;
+
+			thermbox_t *box = src.getData();
+			if(box == NULL) return false;
+
+			size_t bDataSize = box->data_size;
+			wchar_t *bData = box->data;
+			if(bData == NULL || bDataSize <= 0) return false;
+
+			int bwidth = box->width;
+			int bheight = box->height;
+			
+				
 			return true;
 		}
 
 		bool draw(void){
+			this->setCursorPos(25, 25);
 			for(int i=0; i<this->data.display_buffer_size; i++)
 				wprintf(L"%lc", this->data.display_buffer[i]);
 			return true;	
