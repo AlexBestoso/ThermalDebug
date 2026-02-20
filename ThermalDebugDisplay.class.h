@@ -31,7 +31,18 @@
 #define THERMAL_ANSIESC_CURSOR_SAVEPOS_SCO L"\x1b[s"	// Compatibility alternative for the above 2
 #define THERMAL_ANSIESC_CURSOR_RESTORPOS_SCO L"\x1b[u"	// Compatibility alternative for the above 2
 
-
+/* *\
+ * Erase Function Codes
+\* */
+#define THERMAL_ANSIESC_ERASE_IN_DISPLAY L"\x1b[J"
+#define THERMAL_ANSIESC_ERASE_CURSOR_TO_EOS L"\x1b[0J"
+#define THERMAL_ANSIESC_ERASE_CURSOR_TO_BOS L"\x1b[1J"
+#define THERMAL_ANSIESC_ERASE_SCREEN L"\x1b[2J"
+#define THERMAL_ANSIESC_ERASE_SAVED_LINES L"\x1b[3J"
+#define THERMAL_ANSIESC_ERASE_IN_LINE L"\x1b[K"
+#define THERMAL_ANSIESC_ERASE_CURSOR_TO_EOL L"\x1b[0K"
+#define THERMAL_ANSIESC_ERASE_CURSOR_TO_SOL L"\x1b[1K"
+#define THERMAL_ANSIESC_ERASE_LINE L"\x1b[2K"
 
 struct thermalDebugDisplayStruct{
 	int display_width;
