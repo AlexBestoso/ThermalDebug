@@ -29,7 +29,9 @@ class ThermalDebugDisplay{
 			if(this->data.display_width <= 0 || this->data.display_height <= 0) return false;
 			this->data.display_buffer_size = this->data.display_width * this->data.display_height;
 			this->data.display_buffer = new (std::nothrow) wchar_t[this->data.display_buffer_size];
-			if(data.display_buffer == NULL) return false;
+			if(this->data.display_buffer == NULL) return false;
+			for(int i=0; i<this->data.display_buffer_size; i++)
+				this->data.display_buffer[i] = L' ';
 			return true;
 		}
 
@@ -120,13 +122,50 @@ class ThermalDebugDisplay{
 
 			int bwidth = box->width;
 			int bheight = box->height;
+			int swidth = this->data.display_width;
+			int sheight = this->data.display_height;
+
+			int boxXOffset = 0;
+			int boxYOffset = 0;
 			
-				
+			if(xpos < 0){
+				xpos *= -1;
+				xpos = bwidth - xpos;
+				if(xpos < 0) return false;
+				boxXOffset = xpos - 1;
+				xpos = 0;
+			}
+			if(ypos < 0){
+				ypos *= -1;
+				ypos = bheight - ypos;
+				if(ypos < 0) return false;
+				boxYOffset = ypos - 1;
+				ypos = 0;
+			}
+
+			this->setCursorPos(0, 0);
+
+			int pos = xpos + (swidth * ypos);
+			for(int i=pos, lineI = xpos, b=0, lineB=boxXOffset; i<this->data.display_buffer_size && b<bDataSize; i++, b++){
+				this->data.display_buffer[i] = bData[b];
+				lineI++;
+				lineB++;
+				if(lineB >= bwidth){
+					b += boxXOffset;
+					lineB = boxXOffset;
+				}
+				if(lineI >= swidth){
+					i += xpos;
+					lineI = xpos;
+				}
+			}
+
+			
 			return true;
 		}
 
 		bool draw(void){
-			this->setCursorPos(25, 25);
+			this->setCursorPos(0, 0);
 			for(int i=0; i<this->data.display_buffer_size; i++)
 				wprintf(L"%lc", this->data.display_buffer[i]);
 			return true;	
