@@ -5,6 +5,7 @@
 
 class ThermalDebug{
 	private:
+		bool running;
 		ThermalDebugDisplay display;
 		ThermalBackgroundBox bgBox;
 		thermerr_t error;
@@ -61,6 +62,7 @@ class ThermalDebug{
 		}
 
 		ThermalDebug(){
+			this->running = false;
 			this->algoCache.algorithms = NULL;
 			this->algoCache.algorithmsCount = 0;
 		
@@ -124,9 +126,12 @@ class ThermalDebug{
 		}
 
 		bool run(void){
-			this->bgBox.printBox();
-			this->display.draw();
-			fflush(stdout);
+			this->running = true;
+			while(this->running){
+				//this->bgBox.printBox();
+				this->display.clearScreen();
+				fflush(stdout);
+			}
 			return true;
 		}
 		

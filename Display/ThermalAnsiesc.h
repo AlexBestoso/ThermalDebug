@@ -105,11 +105,11 @@
 #define THERMAL_ANSIESC_GRAPHICS_BRIGHT_BGWHITE L"107"
 
 
-#define THERMAL_ANSIESC_GRAPHICS_CELL(mode, fg, bg) L"\x1b[" #mode L";" #fg L";" #bg L"m"
-#define THERMAL_ANSIESC_GRAPHICS_BGCOLOR_256(color_id) L"\x1b[48;5;" #color_id L"m"
-#define THERMAL_ANSIESC_GRAPHICS_FGCOLOR_256(color_id) L"\x1b[38;5;" #color_id L"m"
-#define THERMAL_ANSIESC_GRAPHICS_FGCOLOR_RGB(r, g, b) L"\x1b[38;2;" #r L";" #g L";" #b L"m"
-#define THERMAL_ANSIESC_GRAPHICS_BGCOLOR_RGB(r, g, b) L"\x1b[48;2;" #r L";" #g L";" #b L"m"
+#define THERMAL_ANSIESC_GRAPHICS_CELL(mode, fg, bg) L"\x1b[" mode L";" fg L";" bg L"m"
+#define THERMAL_ANSIESC_GRAPHICS_BGCOLOR_256(color_id) L"\x1b[48;5;" color_id L"m"
+#define THERMAL_ANSIESC_GRAPHICS_FGCOLOR_256(color_id) L"\x1b[38;5;" color_id L"m"
+#define THERMAL_ANSIESC_GRAPHICS_FGCOLOR_RGB(r, g, b) L"\x1b[38;2;" r L";" g L";" b L"m"
+#define THERMAL_ANSIESC_GRAPHICS_BGCOLOR_RGB(r, g, b) L"\x1b[48;2;" r L";" g L";" b L"m"
 
 /* *\
  * Screen Mode Codes
