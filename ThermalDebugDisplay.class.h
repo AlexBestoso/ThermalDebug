@@ -13,6 +13,14 @@ void THERMAL_DISPLAY_FUNC_RESIZE(int i){
 	THERMAL_DISPLAY_FLAG_RESIZE = true;
 }
 
+void THERMAL_CLEANUP(void){
+	wprintf(L"%ls%ls%ls", THERMAL_ANSIESC_ERASE_SCREEN, THERMAL_ANSIESC_NONSTD_ALTERNATE_BUFFER_DIS, THERMAL_ANSIESC_NONSTD_CURSOR_VISIBLE);
+	
+}
+void THERMAL_DIE(int i){
+	exit(1);
+}
+
 class ThermalDebugDisplay{
 	private:
 		thermdisp_t data;

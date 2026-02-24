@@ -15,6 +15,9 @@
 int main(int argc, char *argv[]){
 	fwide(stdout, 1);
 	signal(SIGWINCH, THERMAL_DISPLAY_FUNC_RESIZE);
+	atexit(THERMAL_CLEANUP);
+	signal(SIGTERM, THERMAL_DIE);
+	signal(SIGINT, THERMAL_DIE);
 
 	if(thermalDbg.loadAlgorithms(argc, argv) == false) return 1;
 	if(thermalDbg.loadDisplay() == false) return 1;
