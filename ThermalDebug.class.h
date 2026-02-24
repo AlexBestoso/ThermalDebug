@@ -5,6 +5,7 @@
 
 class ThermalDebug{
 	private:
+		bool running;
 		ThermalDebugDisplay display;
 		ThermalBackgroundBox bgBox;
 		thermerr_t error;
@@ -61,6 +62,7 @@ class ThermalDebug{
 		}
 
 		ThermalDebug(){
+			this->running = false;
 			this->algoCache.algorithms = NULL;
 			this->algoCache.algorithmsCount = 0;
 		
@@ -124,73 +126,32 @@ class ThermalDebug{
 		}
 
 		bool run(void){
-			this->bgBox.printBox();
+			this->running = true;
+			this->loadBackground();
+			this->display.clearScreen();
+			this->display.mapBox(this->bgBox, 0, 0);	
+		
+			wprintf(L"Testing keystroke. Press any key: \n");
+			wprintf(L"You pressed %c\n", this->display.getKeyPress());
+			sleep(1);
+
 			this->display.draw();
-			wprintf(L"\033[5A");
 			fflush(stdout);
+			while(this->running){
+				if(this->display.resizeReady()){
+                        		fflush(stdout);
+					this->display.refreshDisplaySize();
+					this->display.setCursorPos(0,0);
+					this->loadBackground();
+					this->display.clearScreen();
+                        		this->display.mapBox(this->bgBox, 0, 0);
+					this->display.draw();
+					THERMAL_DISPLAY_FLAG_RESIZE = false;
+                        		fflush(stdout);
+					
+				}
+			}
 			return true;
 		}
 		
-
-		void color_reset(void){
-			printf("\033[0m");
-		}
-		void color_bright(void){
-			printf("\033[1m");
-		}
-		void color_underline(void){
-			printf("\033[4m");
-		}
-		void color_flashing(void){
-			printf("\033[5m");
-		}
-		void color_blackFg(void){
-			printf("\033[30m");
-		}
-		void color_redFg(void){
-			printf("\033[31m");	
-		}
-		void color_greenFg(void){
-			printf("\033[32m");
-		}
-		void color_yellowFg(void){
-			printf("\033[33m");
-		}
-		void color_blueFg(void){
-			printf("\033[34m");
-		}
-		void color_purpleFg(void){
-			printf("\033[35m");
-		}
-		void color_cyanFg(void){
-			printf("\033[36m");
-		}
-		void color_whiteFg(void){
-			printf("\033[37m");
-		}
-		void color_blackBg(void){
-			printf("\033[40m");
-		}
-		void color_redBg(void){
-			printf("\033[41m");
-		}
-		void color_greenBg(void){
-			printf("\033[42m");
-		}
-		void color_yellowBg(void){
-			printf("\033[43m");
-		}
-		void color_blueBg(void){
-			printf("\033[44m");
-		}
-		void color_purpleBg(void){
-			printf("\033[45m");
-		}
-		void color_cyanBg(void){
-			printf("\033[46m");
-		}
-		void color_whiteBg(void){
-			printf("\033[47m");
-		}
-
 }thermalDbg;

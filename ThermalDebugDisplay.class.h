@@ -1,3 +1,5 @@
+#include "./Display/ThermalAnsiesc.h"
+
 struct thermalDebugDisplayStruct{
 	int display_width;
 	int display_height;
@@ -6,9 +8,26 @@ struct thermalDebugDisplayStruct{
 };
 typedef struct thermalDebugDisplayStruct thermdisp_t;
 
+bool THERMAL_DISPLAY_FLAG_RESIZE = false;
+void THERMAL_DISPLAY_FUNC_RESIZE(int i){
+	THERMAL_DISPLAY_FLAG_RESIZE = true;
+}
+
+struct termios termInitSrc;
+
+void THERMAL_CLEANUP(void){
+	tcsetattr(1, TCSANOW, &termInitSrc);
+	wprintf(L"%ls%ls%ls", THERMAL_ANSIESC_ERASE_SCREEN, THERMAL_ANSIESC_NONSTD_ALTERNATE_BUFFER_DIS, THERMAL_ANSIESC_NONSTD_CURSOR_VISIBLE);
+	
+}
+void THERMAL_DIE(int i){
+	exit(1);
+}
+
 
 class ThermalDebugDisplay{
 	private:
+		bool drawReady;
 		thermdisp_t data;
 		/*
 		 * This function works only in linux terminals.
@@ -22,13 +41,25 @@ class ThermalDebugDisplay{
 			this->data.display_height = w.ws_row;
 		}
 
+		bool allocateDisplay(void){
+			if(this->data.display_buffer != NULL) delete[] this->data.display_buffer;
+			if(this->data.display_width <= 0 || this->data.display_height <= 0) return false;
+			this->data.display_buffer_size = this->data.display_width * this->data.display_height;
+			this->data.display_buffer = new (std::nothrow) wchar_t[this->data.display_buffer_size];
+			if(this->data.display_buffer == NULL) return false;
+			for(int i=0; i<this->data.display_buffer_size; i++)
+				this->data.display_buffer[i] = L' ';
+			return true;
+		}
+
 		void alternateScreen(bool enable){
 			if(enable){
-				wprintf(L"\033[?1049h");
+				wprintf(THERMAL_ANSIESC_NONSTD_ALTERNATE_BUFFER_EN);
 			}else{
-				wprintf(L"\033[?1049l");
+				wprintf(THERMAL_ANSIESC_NONSTD_ALTERNATE_BUFFER_DIS);
 			}
 		}
+
 
 	public:
 		ThermalDebugDisplay(void){
@@ -36,6 +67,8 @@ class ThermalDebugDisplay{
 			this->data.display_buffer = NULL;
 			this->data.display_buffer_size = 0;
 			this->fetchWidthHeight();
+			this->allocateDisplay();
+			this->drawReady = true;
 
 		}	
 
@@ -47,28 +80,137 @@ class ThermalDebugDisplay{
 		}
 
 		int getWidth(void){
-			this->fetchWidthHeight();
 			return this->data.display_width;
 		}
 		int getHeight(void){
-			this->fetchWidthHeight();
 			return this->data.display_height;
+		}
+		size_t getSize(void){
+			return this->data.display_buffer_size;
+		}
+		wchar_t *getDisplayBuffer(void){
+			return this->data.display_buffer;
+		}
+
+		bool rawWrite(wchar_t *rawData, size_t rawDataSize, int offset){
+			if(rawData == NULL) return false;
+			if(rawDataSize <= 0) return false;
+			if(offset < 0) return false;
+			if(offset >= this->data.display_buffer_size) return false;
+			if(this->data.display_buffer == NULL) return false;
+			if(this->data.display_buffer_size <= 0) return false;
+
+			for(int i=offset, r=0; i<this->data.display_buffer_size && r<rawDataSize; i++, r++){
+				this->data.display_buffer[i] = rawData[r];
+			}
+			return true;
+		}
+
+		void clearScreen(void){
+			wprintf(L"%ls%ls", THERMAL_ANSIESC_CURSOR_HOME, THERMAL_ANSIESC_ERASE_SCREEN);
+		}
+
+		void setCursorPos(int x, int y){
+			wprintf(L"\x1b[%d;%dH", x, y);
+		}
+
+		void setCursorVisible(bool visible){
+			if(visible)
+				wprintf(L"%ls", THERMAL_ANSIESC_NONSTD_CURSOR_VISIBLE);
+			else
+				wprintf(L"%ls", THERMAL_ANSIESC_NONSTD_CURSOR_INVISIBLE);
+		}
+
+		void refreshDisplaySize(void){
+			this->fetchWidthHeight();	
+			this->allocateDisplay();
 		}
 
 		bool startDisplay(void){
 			this->alternateScreen(true);
+			this->setCursorVisible(false);
 
 			return true;
 		}
 
 		bool stopDisplay(void){
 			this->alternateScreen(false);
+			this->setCursorVisible(true);
 			return true;
 		}
 
-		bool draw(void){
+		bool mapBox(ThermalBox src, int xpos, int ypos){
+			if(xpos >= this->data.display_width || ypos >= this->data.display_height) return false;
+
+			thermbox_t *box = src.getData();
+			if(box == NULL) return false;
+
+			size_t bDataSize = box->data_size;
+			wchar_t *bData = box->data;
+			if(bData == NULL || bDataSize <= 0) return false;
+
+			int bwidth = box->width;
+			int bheight = box->height;
+			int swidth = this->data.display_width;
+			int sheight = this->data.display_height;
+
+			int boxXOffset = 0;
+			int boxYOffset = 0;
 			
+			// TODO: Update offsets here to allow for x and y pos to be negative.
+			if(xpos < 0){
+				xpos *= -1;
+				xpos = bwidth - xpos;
+				if(xpos < 0) return false;
+				boxXOffset = xpos - 1;
+				xpos = 0;
+			}
+			if(ypos < 0){
+				ypos *= -1;
+				ypos = bheight - ypos;
+				if(ypos < 0) return false;
+				boxYOffset = ypos - 1;
+				ypos = 0;
+			}
+
+
+			int pos = xpos + (swidth * ypos);
+			int bpos = (bwidth * boxYOffset);
+			for(int i=pos, lineI = xpos, b=bpos, lineB=boxXOffset; i<this->data.display_buffer_size && b<bDataSize; i++, b++){
+				
+				this->data.display_buffer[i] = bData[b];
+				lineB++;
+				lineI++;
+				if(lineI >= swidth && lineB<bwidth){
+					b+= bwidth - lineB;
+					i+= bwidth - lineB;
+					lineB = boxXOffset;
+					lineI = xpos;
+				}
+				
+			}
+
+			
+			return true;
+		}
+
+		bool resizeReady(void){
+			bool ret = THERMAL_DISPLAY_FLAG_RESIZE;
+			THERMAL_DISPLAY_FLAG_RESIZE = false;
+			return ret;
+		}
+
+		bool draw(void){
+			this->setCursorPos(0, 0);
+			for(int i=0; i<this->data.display_buffer_size; i++)
+				wprintf(L"%lc", this->data.display_buffer[i]);
 			return true;	
+		}
+
+		char getKeyPress(void){
+			char ret;
+			read(1, &ret, 1);
+			return ret;
 		}
 
 };
