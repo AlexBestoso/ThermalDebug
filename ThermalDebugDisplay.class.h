@@ -27,6 +27,7 @@ void THERMAL_DIE(int i){
 
 class ThermalDebugDisplay{
 	private:
+		bool drawReady;
 		thermdisp_t data;
 		/*
 		 * This function works only in linux terminals.
@@ -67,6 +68,7 @@ class ThermalDebugDisplay{
 			this->data.display_buffer_size = 0;
 			this->fetchWidthHeight();
 			this->allocateDisplay();
+			this->drawReady = true;
 
 		}	
 
