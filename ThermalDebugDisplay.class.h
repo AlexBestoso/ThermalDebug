@@ -13,13 +13,17 @@ void THERMAL_DISPLAY_FUNC_RESIZE(int i){
 	THERMAL_DISPLAY_FLAG_RESIZE = true;
 }
 
+struct termios termInitSrc;
+
 void THERMAL_CLEANUP(void){
+	tcsetattr(1, TCSANOW, &termInitSrc);
 	wprintf(L"%ls%ls%ls", THERMAL_ANSIESC_ERASE_SCREEN, THERMAL_ANSIESC_NONSTD_ALTERNATE_BUFFER_DIS, THERMAL_ANSIESC_NONSTD_CURSOR_VISIBLE);
 	
 }
 void THERMAL_DIE(int i){
 	exit(1);
 }
+
 
 class ThermalDebugDisplay{
 	private:
@@ -199,6 +203,12 @@ class ThermalDebugDisplay{
 			for(int i=0; i<this->data.display_buffer_size; i++)
 				wprintf(L"%lc", this->data.display_buffer[i]);
 			return true;	
+		}
+
+		char getKeyPress(void){
+			char ret;
+			read(1, &ret, 1);
+			return ret;
 		}
 
 };

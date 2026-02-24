@@ -130,6 +130,10 @@ class ThermalDebug{
 			this->loadBackground();
 			this->display.clearScreen();
 			this->display.mapBox(this->bgBox, 0, 0);	
+		
+			wprintf(L"Testing keystroke. Press any key: \n");
+			wprintf(L"You pressed %c\n", this->display.getKeyPress());
+			sleep(1);
 
 			this->display.draw();
 			fflush(stdout);
