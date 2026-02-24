@@ -134,8 +134,18 @@ class ThermalDebug{
 			this->display.draw();
 			fflush(stdout);
 			while(this->running){
-				//this->bgBox.printBox();
-				fflush(stdout);
+				if(this->display.resizeReady()){
+                        		fflush(stdout);
+					this->display.refreshDisplaySize();
+					this->display.setCursorPos(0,0);
+					this->loadBackground();
+					this->display.clearScreen();
+                        		this->display.mapBox(this->bgBox, 0, 0);
+					this->display.draw();
+					THERMAL_DISPLAY_FLAG_RESIZE = false;
+                        		fflush(stdout);
+					
+				}
 			}
 			return true;
 		}

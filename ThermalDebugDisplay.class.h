@@ -8,6 +8,10 @@ struct thermalDebugDisplayStruct{
 };
 typedef struct thermalDebugDisplayStruct thermdisp_t;
 
+bool THERMAL_DISPLAY_FLAG_RESIZE = false;
+void THERMAL_DISPLAY_FUNC_RESIZE(int i){
+	THERMAL_DISPLAY_FLAG_RESIZE = true;
+}
 
 class ThermalDebugDisplay{
 	private:
@@ -42,6 +46,7 @@ class ThermalDebugDisplay{
 				wprintf(THERMAL_ANSIESC_NONSTD_ALTERNATE_BUFFER_DIS);
 			}
 		}
+
 
 	public:
 		ThermalDebugDisplay(void){
@@ -97,6 +102,7 @@ class ThermalDebugDisplay{
 
 		void refreshDisplaySize(void){
 			this->fetchWidthHeight();	
+			this->allocateDisplay();
 		}
 
 		bool startDisplay(void){
@@ -163,6 +169,12 @@ class ThermalDebugDisplay{
 
 			
 			return true;
+		}
+
+		bool resizeReady(void){
+			bool ret = THERMAL_DISPLAY_FLAG_RESIZE;
+			THERMAL_DISPLAY_FLAG_RESIZE = false;
+			return ret;
 		}
 
 		bool draw(void){

@@ -564,6 +564,7 @@ class ThermalBox{
 			int pos_corner_tr=w-1;		// top right
 			int pos_corner_bl=dst_s-w;	// bot left
 			int pos_corner_br=dst_s-1;	// bot right
+		
 			
 			if( !(pos_corner_tr < dst_s) ||
 			    pos_corner_tr < 0 	     ||
