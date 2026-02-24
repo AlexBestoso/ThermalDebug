@@ -100,6 +100,13 @@ class ThermalDebugDisplay{
 			wprintf(L"\x1b[%d;%dH", x, y);
 		}
 
+		void setCursorVisible(bool visible){
+			if(visible)
+				wprintf(L"%ls", THERMAL_ANSIESC_NONSTD_CURSOR_VISIBLE);
+			else
+				wprintf(L"%ls", THERMAL_ANSIESC_NONSTD_CURSOR_INVISIBLE);
+		}
+
 		void refreshDisplaySize(void){
 			this->fetchWidthHeight();	
 			this->allocateDisplay();
@@ -107,12 +114,14 @@ class ThermalDebugDisplay{
 
 		bool startDisplay(void){
 			this->alternateScreen(true);
+			this->setCursorVisible(false);
 
 			return true;
 		}
 
 		bool stopDisplay(void){
 			this->alternateScreen(false);
+			this->setCursorVisible(true);
 			return true;
 		}
 
