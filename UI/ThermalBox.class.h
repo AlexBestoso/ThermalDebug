@@ -167,7 +167,10 @@
 
 #define THERMAL_BOXELEMENT_EMPTY 777
 
-struct thermalBoxStruct{
+struct thermalBoxStruct{	
+	int pos_offset_x;
+	int pos_offset_y;
+
 	int pos_corner_top_left;
 	int pos_corner_top_right;
 	int pos_corner_bottom_left;
@@ -625,231 +628,231 @@ class ThermalBox{
 			}
 		}
 	
-bool generateBoxDarkSolid(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
+		bool generateBoxDarkSolid(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
 
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DARK);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DARK);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DARK);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DARK);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DARK);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DARK);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DARK);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DARK);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DARK);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DARK);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DARK);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DARK);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
+
+			return true;
 		}
-	}
+		bool generateBoxLight3Dot(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
 
-	return true;
-}
-bool generateBoxLight3Dot(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_LIGHT);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_LIGHT);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_LIGHT);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_LIGHT);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_LIGHT3DOT);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_LIGHT3DOT);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
 
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_LIGHT);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_LIGHT);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_LIGHT);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_LIGHT);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_LIGHT3DOT);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_LIGHT3DOT);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			return true;
 		}
-	}
+		bool generateBoxDark3Dot(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
+			
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DARK);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DARK);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DARK);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DARK);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DARK3DOT);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DARK3DOT);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
 
-	return true;
-}
-bool generateBoxDark3Dot(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
-	
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DARK);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DARK);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DARK);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DARK);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DARK3DOT);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DARK3DOT);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			return true;
 		}
-	}
+		bool generateBoxLight4Dot(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
 
-	return true;
-}
-bool generateBoxLight4Dot(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_LIGHT);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_LIGHT);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_LIGHT);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_LIGHT);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_LIGHT4DOT);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_LIGHT4DOT);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
 
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_LIGHT);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_LIGHT);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_LIGHT);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_LIGHT);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_LIGHT4DOT);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_LIGHT4DOT);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			return true;
 		}
-	}
+		bool generateBoxDark4Dot(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
 
-	return true;
-}
-bool generateBoxDark4Dot(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DARK);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DARK);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DARK);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DARK);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DARK4DOT);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DARK4DOT);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
 
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DARK);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DARK);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DARK);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DARK);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DARK4DOT);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DARK4DOT);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			return true;
 		}
-	}
+		bool generateBoxDoubleLine(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
 
-	return true;
-}
-bool generateBoxDoubleLine(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DOUBLE);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DOUBLE);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DOUBLE);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DOUBLE);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DOUBLELINE);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DOUBLELINE);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
 
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DOUBLE);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DOUBLE);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DOUBLE);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DOUBLE);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DOUBLELINE);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DOUBLELINE);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			return true;
 		}
-	}
+		bool generateBoxLight2Dot(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
 
-	return true;
-}
-bool generateBoxLight2Dot(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_LIGHT);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_LIGHT);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_LIGHT);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_LIGHT);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_LIGHT2DOT);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_LIGHT2DOT);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
 
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_LIGHT);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_LIGHT);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_LIGHT);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_LIGHT);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_LIGHT2DOT);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_LIGHT2DOT);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			return true;
 		}
-	}
+		bool generateBoxDark2Dot(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
 
-	return true;
-}
-bool generateBoxDark2Dot(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DARK);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DARK);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DARK);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DARK);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DARK2DOT);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DARK2DOT);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
 
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_DARK);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_DARK);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_DARK);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_DARK);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_DARK2DOT);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_DARK2DOT);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			return true;
 		}
-	}
+		bool generateBoxLightSolid(void){
+			if(!this->validateCornerPositions()){
+				return false;
+			}
 
-	return true;
-}
-bool generateBoxLightSolid(void){
-	if(!this->validateCornerPositions()){
-		return false;
-	}
+			for(int i=0; i<this->data.data_size; i++){
+				if(i == this->data.pos_corner_top_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_LIGHT);
+				}else if(i == this->data.pos_corner_top_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_LIGHT);
+				}else if(i == this->data.pos_corner_bottom_left){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_LIGHT);
+				}else if(i == this->data.pos_corner_bottom_right){
+					this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_LIGHT);
+				}else if(this->positionIsVertical(i)){
+					this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_LIGHT);
+				}else if(this->positionIsHorizontal(i)){
+					this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_LIGHT);
+				}else{ // it's a body position
+					this->data.data[i] = this->blockFill(this->data.fill); 
+				}
+			}
 
-	for(int i=0; i<this->data.data_size; i++){
-		if(i == this->data.pos_corner_top_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TL_LIGHT);
-		}else if(i == this->data.pos_corner_top_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_TR_LIGHT);
-		}else if(i == this->data.pos_corner_bottom_left){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BL_LIGHT);
-		}else if(i == this->data.pos_corner_bottom_right){
-			this->data.data[i] = this->cornerLine(THERMAL_BOXLINE_CORNER_BR_LIGHT);
-		}else if(this->positionIsVertical(i)){
-			this->data.data[i] = this->verticalLine(THERMAL_BOXLINE_VER_LIGHT);
-		}else if(this->positionIsHorizontal(i)){
-			this->data.data[i] = this->horizontalLine(THERMAL_BOXLINE_HOR_LIGHT);
-		}else{ // it's a body position
-			this->data.data[i] = this->blockFill(this->data.fill); 
+			return true;
 		}
-	}
-
-	return true;
-}
 		
 		bool generateBoxData(void){
 			if(!this->validateCornerPositions()){
