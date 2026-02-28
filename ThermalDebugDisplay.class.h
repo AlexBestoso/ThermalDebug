@@ -60,6 +60,10 @@ class ThermalDebugDisplay{
 			}
 		}
 
+		int extractBit(int in, int bitPos){
+			return (in & (1<<bitPos)) >> bitPos;
+		}
+
 
 	public:
 		ThermalDebugDisplay(void){
@@ -154,43 +158,88 @@ class ThermalDebugDisplay{
 			int swidth = this->data.display_width;
 			int sheight = this->data.display_height;
 
-			int boxXOffset = 0;
-			int boxYOffset = 0;
-			
-			// TODO: Update offsets here to allow for x and y pos to be negative.
-			if(xpos < 0){
-				xpos *= -1;
-				xpos = bwidth - xpos;
-				if(xpos < 0) return false;
-				boxXOffset = xpos - 1;
-				xpos = 0;
-			}
-			if(ypos < 0){
-				ypos *= -1;
-				ypos = bheight - ypos;
-				if(ypos < 0) return false;
-				boxYOffset = ypos - 1;
-				ypos = 0;
-			}
+			if((xpos+bwidth) < 0) return true;
+			if((ypos+bheight) < 0) return true;
 
-
-			int pos = xpos + (swidth * ypos);
-			int bpos = (bwidth * boxYOffset);
-			for(int i=pos, lineI = xpos, b=bpos, lineB=boxXOffset; i<this->data.display_buffer_size && b<bDataSize; i++, b++){
-				
-				this->data.display_buffer[i] = bData[b];
-				lineB++;
-				lineI++;
-				if(lineI >= swidth && lineB<bwidth){
-					b+= bwidth - lineB;
-					i+= bwidth - lineB;
-					lineB = boxXOffset;
-					lineI = xpos;
+			int yChange = 0;
+			if(ypos != 0){
+				if(ypos < 0){
+					yChange = (bwidth-1) * ((-1) * ypos);
+				}else{
+					yChange = (bwidth-1) * ypos;
 				}
-				
 			}
 
-			
+			int xChange = 0;
+			if(xpos != 0){
+				if(xpos < 0){
+					xChange = xpos * -1;
+				}else{
+					xChange = xpos;
+				}
+			}
+
+			// x,y position of a theoretical cursors that would place the box
+			// This is supposed to be manipulated once per iteration in the following for loop.
+			int hyperCursorRowPos=xpos;
+			int hyperCursorColPos=ypos;
+
+			int iStart = 0;
+			if(ypos > 0) iStart += (ypos * swidth);
+			if(xpos > 0) iStart += xpos;
+			int iOffset = iStart % swidth;
+
+			for(int j=0, i=iStart; j<bDataSize && i<this->data.display_buffer_size; j++){
+				// x,y position of j within the box data buffer
+				int boxRowPos    = j % (bwidth);
+				int boxColPos = bheight == 0 ? 0 : j / bheight;
+
+				// x,y position of i within the screen data buffer.
+				int screenRowPos = i % swidth;
+				int screenColPos = sheight == 0 ? 0 : i / sheight;
+
+				int magicViewNumber = (hyperCursorRowPos >= 0) & 0b1111;
+				magicViewNumber += ((hyperCursorRowPos <= swidth)<<1) & 0b1111; 
+				magicViewNumber += ((hyperCursorColPos >= 0)<<2) & 0b1111;
+				magicViewNumber += ((hyperCursorColPos <= sheight)<<3) & 0b1111;
+
+				if(magicViewNumber == 0b1111){
+					this->data.display_buffer[i] = bData[j];
+					if((j%bwidth) == bwidth-1){
+						hyperCursorRowPos = xpos;
+						hyperCursorColPos++;
+						int diff = swidth - screenRowPos;
+						i+=diff;
+					}else{
+						i++;
+						hyperCursorRowPos++;
+					}
+				}else{ // not in view...
+					wprintf(L"J coords (%d, %d)\n", boxRowPos, boxColPos);
+					wprintf(L"I coords (%d, %d)\n", screenRowPos, screenColPos);
+					wprintf(L"mgk:%x rowPos:%d, colPos:%d\n", magicViewNumber, hyperCursorRowPos, hyperCursorColPos);
+					bool hyperEOL=false;
+					if(!this->extractBit(magicViewNumber, 0)){// rowPos is before the screen
+						if((j%bwidth) == bwidth-1 && j!=0){
+							hyperCursorRowPos = xpos;
+                                                	hyperCursorColPos++;
+							int diff = swidth - screenRowPos;
+							i+=diff;
+						}else{
+							hyperCursorRowPos++;
+						}
+					}else if(!this->extractBit(magicViewNumber, 1)){// rowPos is beyond the screen
+
+					}
+
+					if(!this->extractBit(magicViewNumber, 2)){// colPos is before the screen
+
+					}else if(this->extractBit(magicViewNumber, 4)){// colPos is beyond the screen
+						
+					}
+				}
+
+			}	
 			return true;
 		}
 
