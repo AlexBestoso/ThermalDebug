@@ -191,7 +191,7 @@ class ThermalDebugDisplay{
 
 			for(int j=0, i=iStart; j<bDataSize && i<this->data.display_buffer_size; j++){
 				// x,y position of j within the box data buffer
-				int boxRowPos    = j % (bwidth);
+				int boxRowPos    = j % bwidth;
 				int boxColPos = bheight == 0 ? 0 : j / bheight;
 
 				// x,y position of i within the screen data buffer.
@@ -199,7 +199,7 @@ class ThermalDebugDisplay{
 				int screenColPos = sheight == 0 ? 0 : i / sheight;
 
 				int magicViewNumber = (hyperCursorRowPos >= 0) & 0b1111;
-				magicViewNumber += ((hyperCursorRowPos <= swidth)<<1) & 0b1111; 
+				magicViewNumber += ((hyperCursorRowPos < swidth)<<1) & 0b1111; 
 				magicViewNumber += ((hyperCursorColPos >= 0)<<2) & 0b1111;
 				magicViewNumber += ((hyperCursorColPos <= sheight)<<3) & 0b1111;
 
@@ -209,30 +209,37 @@ class ThermalDebugDisplay{
 						hyperCursorRowPos = xpos;
 						hyperCursorColPos++;
 						int diff = swidth - screenRowPos;
-						i+=diff;
+						i+=diff+iOffset;
 					}else{
 						i++;
 						hyperCursorRowPos++;
 					}
 				}else{ // not in view...
-					wprintf(L"J coords (%d, %d)\n", boxRowPos, boxColPos);
-					wprintf(L"I coords (%d, %d)\n", screenRowPos, screenColPos);
-					wprintf(L"mgk:%x rowPos:%d, colPos:%d\n", magicViewNumber, hyperCursorRowPos, hyperCursorColPos);
 					bool hyperEOL=false;
 					if(!this->extractBit(magicViewNumber, 0)){// rowPos is before the screen
-						if((j%bwidth) == bwidth-1 && j!=0){
+						if((j%bwidth) == bwidth-1){
 							hyperCursorRowPos = xpos;
                                                 	hyperCursorColPos++;
 							int diff = swidth - screenRowPos;
-							i+=diff;
+							i+=diff+iOffset;
 						}else{
 							hyperCursorRowPos++;
 						}
 					}else if(!this->extractBit(magicViewNumber, 1)){// rowPos is beyond the screen
 
+						while((j%bwidth) != 0) j++;
+						j--;
+						while((i%swidth) != 0) i++;
+						i+= iOffset;	
+						hyperCursorRowPos = xpos;
+                                                hyperCursorColPos++;
+						
 					}
 
 					if(!this->extractBit(magicViewNumber, 2)){// colPos is before the screen
+						wprintf(L"J coords (%d, %d)\n", boxRowPos, boxColPos);
+						wprintf(L"I coords (%d, %d)\n", screenRowPos, screenColPos);
+						wprintf(L"mgk:%x rowPos:%d, colPos:%d\n", magicViewNumber, hyperCursorRowPos, hyperCursorColPos);
 
 					}else if(this->extractBit(magicViewNumber, 4)){// colPos is beyond the screen
 						
