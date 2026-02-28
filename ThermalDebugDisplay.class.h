@@ -237,15 +237,15 @@ class ThermalDebugDisplay{
 					}
 
 					if(!this->extractBit(magicViewNumber, 2)){// colPos is before the screen
-						wprintf(L"J coords (%d, %d)\n", boxRowPos, boxColPos);
-						wprintf(L"I coords (%d, %d)\n", screenRowPos, screenColPos);
-						wprintf(L"mgk:%x rowPos:%d, colPos:%d\n", magicViewNumber, hyperCursorRowPos, hyperCursorColPos);
 						j += bwidth;
 						j--;
 						hyperCursorRowPos = xpos;
                                                 hyperCursorColPos++;
 
 					}else if(this->extractBit(magicViewNumber, 4)){// colPos is beyond the screen
+						wprintf(L"J coords (%d, %d)\n", boxRowPos, boxColPos);
+						wprintf(L"I coords (%d, %d)\n", screenRowPos, screenColPos);
+						wprintf(L"mgk:%x rowPos:%d, colPos:%d\n", magicViewNumber, hyperCursorRowPos, hyperCursorColPos);
 						
 					}
 				}
