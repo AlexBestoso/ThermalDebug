@@ -15,7 +15,8 @@ class ThermalBackgroundBox : public ThermalBox{
 			this->_data->edge_bottom = THERMAL_BOXLINE_HOR_LIGHT;
 			this->_data->edge_left = THERMAL_BOXLINE_VER_LIGHT;
 			this->_data->edge_right = THERMAL_BOXLINE_VER_LIGHT;
-			this->_data->fill = THERMAL_BOXFILL_SHADE_DARK;
+			this->_data->fill = THERMAL_BOXELEMENT_EMPTY;
+
 			this->_data->width = 0;
 			this->_data->height = 0;
 			this->_data->data_size = 0;
