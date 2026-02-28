@@ -33,10 +33,18 @@ class ThermalDebug{
 				printf("Failed to set background box area.\n");
 				return false;
 			}
+	
+			/*   // cusotm box borders and fills
 			if(!this->bgBox.generateData()){
 				printf("Failed to generate data.\n");
 				return false;
+			}*/
+
+			if(!this->bgBox.generateBoxDoubleLine()){
+				printf("Failed to generate data.\n");
+				return false;
 			}
+	
 			if(!this->bgBox.mapString(2, 1, tmp)){
 				printf("Failed to map string to background box.\n");
 				return false;
