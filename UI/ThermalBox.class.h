@@ -1,3 +1,4 @@
+#define THERMAL_MASK_BORERTYPE 0x000ff000
 #define THERMAL_BOXLINE 0x000010000
 
 #define THERMAL_BOXLINE_HOR THERMAL_BOXLINE + 0x00001000
@@ -1248,7 +1249,30 @@ class ThermalBox{
 			
 			return true;
 		}
+
+		bool macroIsCorner(int target){	
+			if((target & THERMAL_MASK_BORERTYPE) == THERMAL_BOXLINE_CORNER)
+				return true;
+			return false;
+		}
+
+		bool macroIsHorizontal(int target){
+			if((target & THERMAL_MASK_BORDERTYPE) == THERMAL_BOXLINE_HOR)
+				return true;
+			return false;
+		}
 		
+		bool macroIsVertical(int target){
+			if((target & THERMAL_MASK_BORDERTYPE) == THERMAL_BOXLINE_VER)
+				return true;
+			return false;
+		}
+
+		bool positionIsAtIntersect(int x, int y){
+			
+			return false;
+		}
+
 		bool fuseByEdge(ThermalBox src, int edgeTarget, int originOffset){
 			thermbox_t *srcData = src.getData();
 			if(srcData == NULL) return false; 
@@ -1291,25 +1315,43 @@ class ThermalBox{
 						int x = j % srcData->width;
 						int y = j / srcData->width;
 						if(y == srcData->height-1){ // border row
-							if(x == 0){ // left bottom corner
-								/*
-								convert cell data.data[i] into it's macro representation.
-								
-								if data[i] is a corner, we will use a left edge T
+							int dstBorderType = this->getBorderMacro(this->data.data[i]);
+							int srcBorderType = this->getBorderMacro(srcData->data[j]);
+							if(this->macroIsCorner(dstBorderType)){
+								if(this->macroIsCorner(srcBorderType)){
+									// if dst x-1 is valid and a border, 
+									// inject a cross
+									// else a T in form |-
+								}else if(this->macroIsHorizontal(srcBorderType)){
+									
+								}else if(this->macroIsVertical(srcBorderType)){
 
-								if data[i] is a horizontal border, and if the cell y+1 is a vertical border,
-									we will use a cross
-								
-								if data[i] is a horizontal border, and y+1 is NOT a vertical, 
-									we will use a bottom edge T
+								}else{
+									// unknown border type
+								}
+							}else if(this->macroIsHorizontal(dstBorderType)){
+								if(this->macroIsCorner(srcBorderType)){
 
-								
-								*/
-								int borderInfo = this->getBorderMacro(this->data.data[i]);
-							}else if(x == srcData->width-1){ // right bottom corner
-								
+								}else if(this->macroIsHorizontal(srcBorderType)){
+									
+								}else if(this->macroIsVertical(srcBorderType)){
+
+								}else{
+									// unknown border type
+								}
+							}else if(this->macroIsVertical(dstBorderType)){
+								if(this->macroIsCorner(srcBorderType)){
+
+								}else if(this->macroIsHorizontal(srcBorderType)){
+
+								}else if(this->macroIsVertical(srcBorderType)){
+
+								}else{
+									// unknown border type
+								}
+							}else{
+								// unknown border type
 							}
-
 						}else{
 							this->data.data[i] = srcData->data[j];
 							if(((j+1) % srcData->width) == 0){
