@@ -1,4 +1,4 @@
-#define THERMAL_MASK_BORERTYPE 0x000ff000
+#define THERMAL_MASK_BORDERTYPE 0x000ff000
 #define THERMAL_BOXLINE 0x000010000
 
 #define THERMAL_BOXLINE_HOR THERMAL_BOXLINE + 0x00001000
@@ -182,6 +182,12 @@
 #define THERMAL_BOXEDGE_BOTTOM THERMAL_BOXEDGE + 1
 #define THERMAL_BOXEDGE_LEFT THERMAL_BOXEDGE + 2
 #define THERMAL_BOXEDGE_RIGHT THERMAL_BOXEDGE + 3
+
+#define THERMAL_INTERSECT_ERR 0x10000
+#define THERMAL_INTERSECT_ERR_LEFT 0x01000
+#define THERMAL_INTERSECT_ERR_RIGHT 0x00100
+#define THERMAL_INTERSECT_ERR_UP 0x00010
+#define THERMAL_INTERSECT_ERR_DOWN 0x00001
 
 struct thermalBoxStruct{	
 	int pos_offset_x;
@@ -1250,7 +1256,7 @@ class ThermalBox{
 		}
 
 		bool macroIsCorner(int target){	
-			if((target & THERMAL_MASK_BORERTYPE) == THERMAL_BOXLINE_CORNER)
+			if((target & THERMAL_MASK_BORDERTYPE) == THERMAL_BOXLINE_CORNER)
 				return true;
 			return false;
 		}
@@ -1621,10 +1627,11 @@ class ThermalBox{
 			return false;
 		}
 
-		bool positionIsAtIntersect(int x, int y){
+		int positionIsAtIntersect(int x, int y){
+			int ret = THERMAL_INTERSECT_ERR;
 			// Coords of the point to my left
-			if(y <= 0 || y >= this->data.height) return false;
-			if(x <= 0 || x >= this->data.width) return false;
+			if(y <= 0 || y >= this->data.height) return ret;
+			if(x <= 0 || x >= this->data.width) return ret;
 
 			int a_x = x-1;
 			int a_y = y;
@@ -1647,13 +1654,32 @@ class ThermalBox{
 			int bi = b_x + (b_y * this->data.width);
 			int ci = c_x + (c_y * this->data.width);
 			int di = d_x + (d_y * this->data.width);
+			ret = 0;
+			
+			bool isntRightward = true;
+			bool isntLeftward = true;
+			bool isntDownward = true;
+			bool isntUpward = true;
 
-			if(!this->cellIsRightwardLinked(this->getBorderMacro(this->data.data[ai]))) return false;
-			if(!this->cellIsLeftwardwardLinked(this->getBorderMacro(this->data.data[bi]))) return false;
-			if(!this->cellIsDownwardLinked(this->getBorderMacro(this->data.data[ci]))) return false;
-			if(!this->cellIsUpwardLinked(this->getBorderMacro(this->data.data[di]))) return false;
+			if(ai >= 0 && ai < this->data.data_size)
+				isntRightward = (!this->cellIsRightwardLinked(this->getBorderMacro(this->data.data[ai])));
+			if(bi >= 0 && bi < this->data.data_size)
+				isntLeftward = (!this->cellIsLeftwardLinked(this->getBorderMacro(this->data.data[bi])));
+			if(ci >= 0 && ci < this->data.data_size)
+				isntDownward = (!this->cellIsDownwardLinked(this->getBorderMacro(this->data.data[ci])));
+			if(di >= 0 && di < this->data.data_size)
+				isntUpward = (!this->cellIsUpwardLinked(this->getBorderMacro(this->data.data[di])));
 
-			return true;
+			if(isntRightward)
+				ret += THERMAL_INTERSECT_ERR_RIGHT;
+			if(isntLeftward)
+				ret += THERMAL_INTERSECT_ERR_LEFT;
+			if(isntDownward)
+				ret += THERMAL_INTERSECT_ERR_DOWN;
+			if(isntUpward)
+				ret += THERMAL_INTERSECT_ERR_UP;
+
+			return ret;
 		}
 
 		bool fuseByEdge(ThermalBox src, int edgeTarget, int originOffset){
@@ -1702,11 +1728,11 @@ class ThermalBox{
 						if(y == srcData->height-1){ // border row
 							int dstBorderType = this->getBorderMacro(this->data.data[i]);
 							int srcBorderType = this->getBorderMacro(srcData->data[j]);
+							int masterPos = positionIsAtIntersect(i_x, i_y);
+						/*	
 							if(this->macroIsCorner(dstBorderType)){
 								if(this->macroIsCorner(srcBorderType)){
-									// if dst x-1 is valid and a border, 
-									// inject a cross
-									// else a T in form |-
+									
 								}else if(this->macroIsHorizontal(srcBorderType)){
 									
 								}else if(this->macroIsVertical(srcBorderType)){
@@ -1736,7 +1762,7 @@ class ThermalBox{
 								}
 							}else{
 								// unknown border type
-							}
+							}*/
 						}else{
 							this->data.data[i] = srcData->data[j];
 							if(((j+1) % srcData->width) == 0){
