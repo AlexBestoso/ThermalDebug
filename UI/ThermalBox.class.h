@@ -911,7 +911,125 @@ class ThermalBox{
 		}
 		
 		bool fuseByEdge(ThermalBox src, int edgeTarget, int originOffset){
+			thermbox_t *srcData = src.getData();
+			if(srcData == NULL) return false; 
+			int srcLength = (edgeTarget == THERMAL_BOXEDGE_TOP || edgeTarget == THERMAL_BOXEDGE_BOTTOM) ? 
+					srcData->width : (edgeTarget == THERMAL_BOXEDGE_RIGHT || edgeTarget == THERMAL_BOXEDGE_RIGHT) ? 
+					srcData->height : 0;
+
+			int dstLength = (edgeTarget == THERMAL_BOXEDGE_TOP || edgeTarget == THERMAL_BOXEDGE_BOTTOM) ? 
+                                        this->data.width : (edgeTarget == THERMAL_BOXEDGE_RIGHT || edgeTarget == THERMAL_BOXEDGE_RIGHT) ? 
+                                        this->data.height : 0;
+			
+			bool srcIsBigger = (srcLength > dstLength);
+			
+			// Reallocate the dst(current) box
+			if(this->data.data_size <= 0 || this->data.data == NULL) 
+				return false;
+			if(srcData->data_size <= 0 || srcData->data == NULL)
+				return false;
+			size_t transferBuffSize = this->data.data_size;
+			if(transferBuffSize <= 0) return false;
+			wchar_t *transferBuff = new (std::nothrow) wchar_t[transferBuffSize];
+			if(transferBuff == NULL) return false;
+			for(int i=0; i>transferBuffSize; i++)
+				transferBuff[i] = this->data.data[i];
+			delete[] this->data.data;
 		
+			switch(edgeTarget){
+				case THERMAL_BOXEDGE_TOP:{
+					// Allocate Buffer
+					this->data.data_size += srcData->height * this->data.width;
+					this->data.data = new (std::nothrow) wchar_t[this->data.data_size];
+					if(this->data.data == NULL) return false;
+			
+					// Reposition original data
+					for(int j=0, i=srcData->height * this->data.width; j<transferBuffSize && i<this->data.data_size; i++, j++)
+						this->data.data[i] = transferBuff[j];
+
+					// Inject Src Box Into Empty Space
+					for(int i=originOffset, j=0; i<this->data.data_size && j<srcData->data_size; i++, j++){
+						int x = j % srcData->width;
+						int y = j / srcData->width;
+						if(y == srcData->height-1){ // border row
+							if(x == 0){ // left bottom corner
+								/*
+								convert cell data.data[i] into it's macro representation.
+								
+								if data[i] is a corner, we will use a left edge T
+
+								if data[i] is a horizontal border, and if the cell y+1 is a vertical border,
+									we will use a cross
+								
+								if data[i] is a horizontal border, and y+1 is NOT a vertical, 
+									we will use a bottom edge T
+
+								
+								*/
+							}else if(x == srcData->width-1){ // right bottom corner
+								
+							}
+
+						}else{
+							this->data.data[i] = srcData->data[j];
+							if(((j+1) % srcData->width) == 0){
+								i += this->data.width  - (i % this->data.width) - 1 + originOffset;
+							}
+						}
+					}	
+					break;
+				}
+				case THERMAL_BOXEDGE_BOTTOM:{
+					// Allocate Buffer
+					this->data.data_size += srcData->height * this->data.width;
+					this->data.data = new (std::nothrow) wchar_t[this->data.data_size];
+					if(this->data.data == NULL) return false;
+
+					// Reposition original data
+					for(int i=0, j=0; i<this->data.data_size && j < transferBuffSize; i++, j++)
+						this->data.data[i] = transferBuff[j];
+
+					// Inject Src Box Into Empty Space
+					break;
+				}
+				case THERMAL_BOXEDGE_LEFT:{
+					// Allocate Buffer
+					this->data.data_size += srcData->width * this->data.height;
+					this->data.data = new (std::nothrow) wchar_t[this->data.data_size];
+					if(this->data.data == NULL) return false;
+
+					// Reposition original data
+					for(int j=0, i=srcData->width; i<this->data.data_size && j<transferBuffSize; j++, i++){
+						this->data.data[i] = transferBuff[j];
+						if(((i+1) % this->data.width) == 0){
+							// next iteration is a new line.
+							i+=srcData->width;
+						}	
+					}	
+
+					// Inject Src Box Into Empty Space
+					break;
+				}
+				case THERMAL_BOXEDGE_RIGHT:{
+					// Allocate Buffer
+					this->data.data_size += srcData->width * this->data.height;
+					this->data.data = new (std::nothrow) wchar_t[this->data.data_size];
+					if(this->data.data == NULL) return false;
+
+					// Reposition original data
+					for(int j=0, i=0; i<this->data.data_size && j<transferBuffSize; j++, i++){
+						this->data.data[i] = transferBuff[j];
+						if(((i+1) % this->data.width) == 0){
+							i+=srcData->width;
+						}
+					}
+
+					// Inject Src Box Into Empty Space
+					break;
+				}
+				default:
+					return false;
+			}
 			return true;
 		}
 
