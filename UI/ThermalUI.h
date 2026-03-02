@@ -3,3 +3,4 @@
 
 // Elements
 #include "ThermalBackgroundBox.class.h"
+#include "ThermalAlgoStreamBox.class.h"
