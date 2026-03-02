@@ -189,6 +189,12 @@
 #define THERMAL_INTERSECT_ERR_UP 0x00010
 #define THERMAL_INTERSECT_ERR_DOWN 0x00001
 
+#define THERMAL_INTERSECT_ERR_MASK 0xf0000
+#define THERMAL_INTERSECT_ERR_LEFT_MASK 0x0f000
+#define THERMAL_INTERSECT_ERR_RIGHT_MASK 0x00f00
+#define THERMAL_INTERSECT_ERR_UP_MASK 0x000f0
+#define THERMAL_INTERSECT_ERR_DOWN_MASK 0x0000f
+
 struct thermalBoxStruct{	
 	int pos_offset_x;
 	int pos_offset_y;
@@ -269,6 +275,101 @@ class ThermalBox{
 			}
 
 			return false;
+		}
+
+		// These positions are derived fromt he intersect calculation function
+		wchar_t deriveBorderChar(int dstMasterPos, int srcMasterPos){
+			wchar_t ret = L' ';
+			bool dstTruthTable[4] = {
+				(dstMasterPos & THERMAL_INTERSECT_ERR_LEFT_MASK) == THERMAL_INTERSECT_ERR_LEFT,
+				(dstMasterPos & THERMAL_INTERSECT_ERR_UP_MASK) == THERMAL_INTERSECT_ERR_UP,
+				(dstMasterPos & THERMAL_INTERSECT_ERR_RIGHT_MASK) == THERMAL_INTERSECT_ERR_RIGHT,
+				(dstMasterPos & THERMAL_INTERSECT_ERR_DOWN_MASK) == THERMAL_INTERSECT_ERR_DOWN,
+			};
+			bool srcTruthTable[4] = {
+				(srcMasterPos & THERMAL_INTERSECT_ERR_LEFT_MASK) == THERMAL_INTERSECT_ERR_LEFT,
+				(srcMasterPos & THERMAL_INTERSECT_ERR_UP_MASK) == THERMAL_INTERSECT_ERR_UP,
+				(srcMasterPos & THERMAL_INTERSECT_ERR_RIGHT_MASK) == THERMAL_INTERSECT_ERR_RIGHT,
+				(srcMasterPos & THERMAL_INTERSECT_ERR_DOWN_MASK) == THERMAL_INTERSECT_ERR_DOWN,
+			};
+			if(dstTruthTable[0] == false &&
+			   dstTruthTable[1] == false &&
+			   srcTruthTable[2] == false &&
+			   srcTruthTable[3] == false ){
+				ret = L'┼';
+			}else if(dstTruthTable[0] == true &&
+			   dstTruthTable[1] == false &&
+			   srcTruthTable[2] == false && 
+			   srcTruthTable[3] == false ){
+				ret = L'├';
+			}else if(dstTruthTable[0] == false &&
+			   dstTruthTable[1] == false &&
+			   srcTruthTable[2] == true &&
+			   srcTruthTable[3] == false ){
+				ret = L'┤';
+			}else if(dstTruthTable[0] == false &&
+			   dstTruthTable[1] == true &&
+			   srcTruthTable[2] == false &&
+			   srcTruthTable[3] == false){
+				ret = L'┬';
+			}else if(dstTruthTable[0] == false &&
+			   dstTruthTable[1] == false &&
+			   srcTruthTable[2] == false &&
+			   srcTruthTable[3] == true){
+				ret = L'┴';
+			}else if(dstTruthTable[0] == true &&
+			   dstTruthTable[1] == true &&
+			   srcTruthTable[2] == false &&
+			   srcTruthTable[3] == false){
+				ret = L'┌';
+			}else if(dstTruthTable[0] == false &&
+			   dstTruthTable[1] == true &&
+			   srcTruthTable[2] == true &&
+			   srcTruthTable[3] == false){
+				ret = L'┐';
+			}else if(dstTruthTable[0] == false &&
+			   dstTruthTable[1] == false &&
+			   srcTruthTable[2] == true &&
+			   srcTruthTable[3] == true){
+				ret = L'┘';
+			}else if(dstTruthTable[0] == true &&
+			   dstTruthTable[1] == false &&
+			   srcTruthTable[2] == false &&
+			   srcTruthTable[3] == true){
+				ret = L'└';
+			}else if(dstTruthTable[0] == false &&
+			   dstTruthTable[1] == true &&
+			   srcTruthTable[2] == false &&
+			   srcTruthTable[3] == true){
+				ret = L'─' ;
+			}else if(dstTruthTable[0] == true &&
+			   dstTruthTable[1] == false &&
+			   srcTruthTable[2] == true &&
+			   srcTruthTable[3] == false){
+				ret = L'│' ;
+			}else if(dstTruthTable[0] == false &&
+			   dstTruthTable[1] == true &&
+			   srcTruthTable[2] == true &&
+			   srcTruthTable[3] == true){
+				ret = L'╼' ;
+			}else if(dstTruthTable[0] == true &&
+			   dstTruthTable[1] == true &&
+			   srcTruthTable[2] == false &&
+			   srcTruthTable[3] == true){
+				ret = L'╾' ;
+			}else if(dstTruthTable[0] == true &&
+			   dstTruthTable[1] == false &&
+			   srcTruthTable[2] == true &&
+			   srcTruthTable[3] == true){
+				ret = L'╽' ;
+			}else if(dstTruthTable[0] == true &&
+			   dstTruthTable[1] == true &&
+			   srcTruthTable[2] == true &&
+			   srcTruthTable[3] == false){
+				ret = L'╿' ;
+			}
+
+			return ret;
 		}
 
 	public:
@@ -1728,41 +1829,10 @@ class ThermalBox{
 						if(y == srcData->height-1){ // border row
 							int dstBorderType = this->getBorderMacro(this->data.data[i]);
 							int srcBorderType = this->getBorderMacro(srcData->data[j]);
-							int masterPos = positionIsAtIntersect(i_x, i_y);
-						/*	
-							if(this->macroIsCorner(dstBorderType)){
-								if(this->macroIsCorner(srcBorderType)){
-									
-								}else if(this->macroIsHorizontal(srcBorderType)){
-									
-								}else if(this->macroIsVertical(srcBorderType)){
-
-								}else{
-									// unknown border type
-								}
-							}else if(this->macroIsHorizontal(dstBorderType)){
-								if(this->macroIsCorner(srcBorderType)){
-
-								}else if(this->macroIsHorizontal(srcBorderType)){
-									
-								}else if(this->macroIsVertical(srcBorderType)){
-
-								}else{
-									// unknown border type
-								}
-							}else if(this->macroIsVertical(dstBorderType)){
-								if(this->macroIsCorner(srcBorderType)){
-
-								}else if(this->macroIsHorizontal(srcBorderType)){
-
-								}else if(this->macroIsVertical(srcBorderType)){
-
-								}else{
-									// unknown border type
-								}
-							}else{
-								// unknown border type
-							}*/
+							int dstMasterPos = this->positionIsAtIntersect(i_x, i_y);
+							int srcMasterPos = this->positionIsAtIntersect(x, y);
+							wchar_t borderChar = this->deriveBorderChar(dstMasterPos, srcMasterPos);
+							this->data.data[i] = borderChar;
 						}else{
 							this->data.data[i] = srcData->data[j];
 							if(((j+1) % srcData->width) == 0){
