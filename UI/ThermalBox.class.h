@@ -643,10 +643,334 @@ class ThermalBox{
 			}
 		}
 
+		// TODO: delete this comment
 		int getBorderMacro(wchar_t target){
-			
-			return 0;	
-		}
+			if(target == L' ')
+				return THERMAL_BOXELEMENT_EMPTY;
+			else if(target == L'━')
+				return THERMAL_BOXLINE_HOR_DARK;
+			else if(target == L'┄')
+				return THERMAL_BOXLINE_HOR_LIGHT3DOT;
+			else if(target == L'┅')
+				return THERMAL_BOXLINE_HOR_DARK3DOT;
+			else if(target == L'┈')
+				return THERMAL_BOXLINE_HOR_LIGHT4DOT;
+			else if(target == L'┉')
+				return THERMAL_BOXLINE_HOR_DARK4DOT;
+			else if(target == L'═')
+				return THERMAL_BOXLINE_HOR_DOUBLELINE;
+			else if(target == L'╌')
+				return THERMAL_BOXLINE_HOR_LIGHT2DOT;
+			else if(target == L'╍')
+				return THERMAL_BOXLINE_HOR_DARK2DOT;
+			else if(target == L'╴')
+				return THERMAL_BOXLINE_HOR_LIGHTLEFT;
+			else if(target == L'╶')
+				return THERMAL_BOXLINE_HOR_LIGHTRIGHT;
+			else if(target == L'╸')
+				return THERMAL_BOXLINE_HOR_DARKLEFT;
+			else if(target == L'╺')
+				return THERMAL_BOXLINE_HOR_DARKRIGHT;
+			else if(target == L'╼')
+				return THERMAL_BOXLINE_HOR_TEARRIGHT;
+			else if(target == L'╾')
+				return THERMAL_BOXLINE_HOR_TEARLEFT;
+			else if(target == L'─')
+				return THERMAL_BOXLINE_HOR_LIGHT;
+			else if(target == L'┃')
+				return THERMAL_BOXLINE_VER_DARK;
+			else if(target == L'┆')
+				return THERMAL_BOXLINE_VER_LIGHT3DOT;
+			else if(target == L'┇')
+				return THERMAL_BOXLINE_VER_DARK3DOT;
+			else if(target == L'┊')
+				return THERMAL_BOXLINE_VER_LIGHT4DOT;
+			else if(target == L'┋')
+				return THERMAL_BOXLINE_VER_DARK4DOT;
+			else if(target == L'╎')
+				return THERMAL_BOXLINE_VER_LIGHT2DOT;
+			else if(target == L'╏')
+				return THERMAL_BOXLINE_VER_DARK2DOT;
+			else if(target == L'║')
+				return THERMAL_BOXLINE_VER_DOUBLELINE;
+			else if(target == L'╵')
+				return THERMAL_BOXLINE_VER_LIGHTTOP;
+			else if(target == L'╷')
+				return THERMAL_BOXLINE_VER_LIGHTBOTTOM;
+			else if(target == L'╹')
+				return THERMAL_BOXLINE_VER_DARKTOP;
+			else if(target == L'╻')
+				return THERMAL_BOXLINE_VER_DARK_BOTTOM;
+			else if(target == L'╽')
+				return THERMAL_BOXLINE_VER_TEARDOWN;
+			else if(target == L'╿')
+				return THERMAL_BOXLINE_VER_TEARUP;
+			else if(target == L'│')
+				return THERMAL_BOXLINE_VER_LIGHT;
+			else if(target == L'┍')
+				return THERMAL_BOXLINE_CORNER_TL_LVERDHOR;
+			else if(target == L'┎')
+				return THERMAL_BOXLINE_CORNER_TL_DVERLHOR;
+			else if(target == L'┏')
+				return THERMAL_BOXLINE_CORNER_TL_DARK;
+			else if(target == L'┐')
+				return THERMAL_BOXLINE_CORNER_TR_LIGHT;
+			else if(target == L'┑')
+				return THERMAL_BOXLINE_CORNER_TR_LVERDHOR;
+			else if(target == L'┒')
+				return THERMAL_BOXLINE_CORNER_TR_DVERLHOR;
+			else if(target == L'┓')
+				return THERMAL_BOXLINE_CORNER_TR_DARK;
+			else if(target == L'└')
+				return THERMAL_BOXLINE_CORNER_BL_LIGHT;
+			else if(target == L'┕')
+				return THERMAL_BOXLINE_CORNER_BL_LVERDHOR;
+			else if(target == L'┖')
+				return THERMAL_BOXLINE_CORNER_BL_DVERLHOR;
+			else if(target == L'┗')
+				return THERMAL_BOXLINE_CORNER_BL_DARK;
+			else if(target == L'┘')
+				return THERMAL_BOXLINE_CORNER_BR_LIGHT;
+			else if(target == L'┙')
+				return THERMAL_BOXLINE_CORNER_BR_LVERDHOR;
+			else if(target == L'┚')
+				return THERMAL_BOXLINE_CORNER_BR_DVERLHOR;
+			else if(target == L'┛')
+				return THERMAL_BOXLINE_CORNER_BR_DARK;
+			else if(target == L'╒')
+				return THERMAL_BOXLINE_CORNER_TL_1VER2HOR;
+			else if(target == L'╓')
+				return THERMAL_BOXLINE_CORNER_TL_2VER1HOR;
+			else if(target == L'╔')
+				return THERMAL_BOXLINE_CORNER_TL_DOUBLE;
+			else if(target == L'╕')
+				return THERMAL_BOXLINE_CORNER_TR_1VER_2HOR;
+			else if(target == L'╖')
+				return THERMAL_BOXLINE_CORNER_TR_2VER1HOR;
+			else if(target == L'╗')
+				return THERMAL_BOXLINE_CORNER_TR_DOUBLE;
+			else if(target == L'╘')
+				return THERMAL_BOXLINE_CORNER_BL_1VER2HOR;
+			else if(target == L'╙')
+				return THERMAL_BOXLINE_CORNER_BL_2VER1HOR;
+			else if(target == L'╚')
+				return THERMAL_BOXLINE_CORNER_BL_DOUBLE;
+			else if(target == L'╛')
+				return THERMAL_BOXLINE_CORNER_BR_1VER2HOR;
+			else if(target == L'╜')
+				return THERMAL_BOXLINE_CORNER_BR_2VER1HOR;
+			else if(target == L'╝')
+				return THERMAL_BOXLINE_CORNER_BR_DOUBLE;
+			else if(target == L'╭')
+				return THERMAL_BOXLINE_CORNER_TL_ROUND;
+			else if(target == L'╮')
+				return THERMAL_BOXLINE_CORNER_TR_ROUND;
+			else if(target == L'╯')
+				return THERMAL_BOXLINE_CORNER_BR_ROUND;
+			else if(target == L'╰')
+				return THERMAL_BOXLINE_CORNER_BL_ROUND;
+			else if(target == L'┌')
+				return THERMAL_BOXLINE_CORNER_TL_LIGHT;
+			else if(target == L' ')
+				return THERMAL_BOXELEMENT_EMPTY;
+			else if(target == L'┝')
+				return THERMAL_BOXLINE_T_LEFT_LIGHT_RD;
+			else if(target == L'┞')
+				return THERMAL_BOXLINE_T_LEFT_LIGHT_TD;
+			else if(target == L'┟')
+				return THERMAL_BOXLINE_T_LEFT_LGHT_BD;
+			else if(target == L'┠')
+				return THERMAL_BOXLINE_T_LEFT_DARK_RL;
+			else if(target == L'┡')
+				return THERMAL_BOXLINE_T_LEFT_DARK_BL;
+			else if(target == L'┢')
+				return THERMAL_BOXLINE_T_LEFT_DARK_TL;
+			else if(target == L'┣')
+				return THERMAL_BOXLINE_T_LEFT_DARK;
+			else if(target == L'┤')
+				return THERMAL_BOXLINE_T_RIGHT_LIGHT;
+			else if(target == L'┥')
+				return THERMAL_BOXLINE_T_RIGHT_LIGHT_LD;
+			else if(target == L'┦')
+				return THERMAL_BOXLINE_T_RIGHT_LIGHT_TD;
+			else if(target == L'┧')
+				return THERMAL_BOXLINE_T_RIGHT_LIGHT_BD;
+			else if(target == L'┨')
+				return THERMAL_BOXLINE_T_RIGHT_DARK_LL;
+			else if(target == L'┩')
+				return THERMAL_BOXLINE_T_RIGHT_DARK_BL;
+			else if(target == L'┪')
+				return THERMAL_BOXLINE_T_RIGHT_DARK_TL;
+			else if(target == L'┫')
+				return THERMAL_BOXLINE_T_RIGHT_DARK;
+			else if(target == L'┬')
+				return THERMAL_BOXLINE_T_TOP_LIGHT;
+			else if(target == L'┭')
+				return THERMAL_BOXLINE_T_TOP_LIGHT_LD;
+			else if(target == L'┮')
+				return THERMAL_BOXLINE_T_TOP_LIGHT_RD;
+			else if(target == L'┯')
+				return THERMAL_BOXLINE_T_TOP_TD_BL;
+			else if(target == L'┰')
+				return THERMAL_BOXLINE_T_TOP_TL_BD;
+			else if(target == L'┱')
+				return THERMAL_BOXLINE_T_TOP_DARK_RL;
+			else if(target == L'┲')
+				return THERMAL_BOXLINE_T_TOP_DARK_LL;
+			else if(target == L'┳')
+				return THERMAL_BOXLINE_T_TOP_DARK;
+			else if(target == L'┴')
+				return THERMAL_BOXLINE_T_BOTTOM_LIGHT;
+			else if(target == L'┵')
+				return THERMAL_BOXLINE_T_BOTTOM_LIGHT_LD;
+			else if(target == L'┶')
+				return THERMAL_BOXLINE_T_BOTTOM_LUIGHT_RD;
+			else if(target == L'┷')
+				return THERMAL_BOXLINE_T_BOTTOM_TL_BD;
+			else if(target == L'┸')
+				return THERMAL_BOXLINE_T_BOTTOM_TD_BL;
+			else if(target == L'┹')
+				return THERMAL_BOXLINE_T_BOTTOM_DARK_RL;
+			else if(target == L'┺')
+				return THERMAL_BOXLINE_T_BOTTOM_DARK_LL;
+			else if(target == L'┻')
+				return THERMAL_BOXLINE_T_BOTTOM_DARK;
+			else if(target == L'╞')
+				return THERMAL_BOXLINE_T_LEFT_LL_RDUB;
+			else if(target == L'╟')
+				return THERMAL_BOXLINE_T_LEFT_LDUB_RL;
+			else if(target == L'╠')
+				return THERMAL_BOXLINE_T_LEFT_DOUBLE;
+			else if(target == L'╡')
+				return THERMAL_BOXLINE_T_RIGHT_LDUB_RL;
+			else if(target == L'╢')
+				return THERMAL_BOXLINE_T_RIGHT_LL_RDUB;
+			else if(target == L'╣')
+				return THERMAL_BOXLINE_T_RIGHT_DOUBLE;
+			else if(target == L'╤')
+				return THERMAL_BOXLINE_T_TOP_TDUB_BL;
+			else if(target == L'╥')
+				return THERMAL_BOXLINE_T_TOP_TL_BDUB;
+			else if(target == L'╦')
+				return THERMAL_BOXLINE_T_TOP_DOUBLE;
+			else if(target == L'╧')
+				return THERMAL_BOXLINE_T_BOTTOM_TL_BDUB;
+			else if(target == L'╨')
+				return THERMAL_BOXLINE_T_BOTTOM_TDUB_BL;
+			else if(target == L'╩')
+				return THERMAL_BOXLINE_T_BOTTOM_DOUBLE;
+			else if(target == L'├')
+				return THERMAL_BOXLINE_T_LEFT_LIGHT;
+			else if(target == L'┽')
+				return THERMAL_BOXLINE_CROSS_LIGHT_LD;
+			else if(target == L'┾')
+				return THERMAL_BOXLINE_CROSS_LIGHT_RD;
+			else if(target == L'┿')
+				return THERMAL_BOXLINE_CROSS_LIGHT_HD;
+			else if(target == L'╀')
+				return THERMAL_BOXLINE_CROSS_LIGHT_TD;
+			else if(target == L'╁')
+				return THERMAL_BOXLINE_CROSS_LIGHT_BD;
+			else if(target == L'╂')
+				return THERMAL_BOXLINE_CROSS_LIGHT_VD;
+			else if(target == L'╃')
+				return THERMAL_BOXLINE_CROSS_LIGHTBR_DARKTL;
+			else if(target == L'╄')
+				return THERMAL_BOXLINE_CROSS_LIGHTBL_DARKTR;
+			else if(target == L'╅')
+				return THERMAL_BOXLINE_CROSS_LIGHTTL_DARKBR;
+			else if(target == L'╆')
+				return THERMAL_BOXLINE_CROSS_LIGHTTR_DARK_BL;
+			else if(target == L'╇')
+				return THERMAL_BOXLINE_CROSS_DARK_BL;
+			else if(target == L'╈')
+				return THERMAL_BOXLINE_CROSS_DARK_TL;
+			else if(target == L'╉')
+				return THERMAL_BOXLINE_CROSS_DARK_RL;
+			else if(target == L'╊')
+				return THERMAL_BOXLINE_CROSS_DARK_LL;
+			else if(target == L'╋')
+				return THERMAL_BOXLINE_CROSS_DARK;
+			else if(target == L'╪')
+				return THERMAL_BOXLINE_CROSS_LIGHT_DUBHOR;
+			else if(target == L'╫')
+				return THERMAL_BOXLINE_CROSS_LIGHT_DUBVER;
+			else if(target == L'╬')
+				return THERMAL_BOXLINE_CROSS_DOUBLE;
+			else if(target == L'┼')
+				return THERMAL_BOXLINE_CROSS_LIGHT;
+			else if(target == L'▁')
+				return THERMAL_BOXFILL_LOWER_EIGHTH;
+			else if(target == L'▂')
+				return THERMAL_BOXFILL_LOWER_QUARTER;
+			else if(target == L'▃')
+				return THERMAL_BOXFILL_LOWER_3EIGHTH;
+			else if(target == L'▄')
+				return THERMAL_BOXFILL_LOWER_HALF;
+			else if(target == L'▆')
+				return THERMAL_BOXFILL_LOWER_5EIGHTH;
+			else if(target == L'▇')
+				return THERMAL_BOXFILL_LOWER_3QUARTER;
+			else if(target == L'█')
+				return THERMAL_BOXFILL_LOWER_7EIGHTH;
+			else if(target == L'▉')
+				return THERMAL_BOXFILL_FULL;
+			else if(target == L'▊')
+				return THERMAL_BOXFILL_LEFT_7EIGHTH;
+			else if(target == L'▋')
+				return THERMAL_BOXFILL_LEFT_3QUARTER;
+			else if(target == L'▌')
+				return THERMAL_BOXFILL_LEFT_5EIGHTH;
+			else if(target == L'▍')
+				return THERMAL_BOXFILL_LEFT_HALF;
+			else if(target == L'▎')
+				return THERMAL_BOXFILL_LEFT_3EIGHTH;
+			else if(target == L'▏')
+				return THERMAL_BOXFILL_LEFT_EIGHTH;
+			else if(target == L'▐')
+				return THERMAL_BOXFILL_RIGHT_HALF;
+			else if(target == L'░')
+				return THERMAL_BOXFILL_SHADE_LIGHT;
+			else if(target == L'▒')
+				return THERMAL_BOXFILL_SHADE_MEDIUM;
+			else if(target == L'▓')
+				return THERMAL_BOXFILL_SHADE_DARK;
+			else if(target == L'▔')
+				return THERMAL_BOXFILL_UPPER_EIGHTH;
+			else if(target == L'▕')
+				return THERMAL_BOXFILL_RIGHT_EIGHTH;
+			else if(target == L'▖')
+				return THERMAL_BOXFILL_QUAD_LEFT_LOWER;
+			else if(target == L'▗')
+				return THERMAL_BOXFILL_QUAD_RIGHT_LOWER;
+			else if(target == L'▘')
+				return THERMAL_BOXFILL_QUAD_LEFT_UPPER;
+			else if(target == L'▙')
+				return THERMAL_BOXFILL_QUAD_NO_RIGHT_TOP;
+			else if(target == L'▚')
+				return THERMAL_BOXFILL_QUAD_LEFT_DIAG;
+			else if(target == L'▛')
+				return THERMAL_BOXFILL_QUAD_NO_RIGHT_BOTTOM;
+			else if(target == L'▜')
+				return THERMAL_BOXFILL_QUAD_NO_LEFT_BOTTOM;
+			else if(target == L'▝')
+				return THERMAL_BOXFILL_QUAD_RIGHT_UPPER;
+			else if(target == L'▞')
+				return THERMAL_BOXFILL_QUAD_RIGHT_DIAG;
+			else if(target == L'▟')
+				return THERMAL_BOXFILL_QUAD_NO_LEFT_TOP;
+			else if(target == L'▀')
+				return THERMAL_BOXFILL_UPPER_HALF;
+			else if(target == L' ')
+				return THERMAL_BOXELEMENT_EMPTY;
+			else if(target == L'╲')
+				return THERMAL_BOXLINE_MISC_BACKSLASH;
+			else if(target == L'╳')
+				return THERMAL_BOXLINE_MISC_X;
+			else if(target == L'╱')
+				return THERMAL_BOXLINE_MISC_FORWARDSLASH;
+			return -1;	
+		} // TODO: delete this comment
 	
 		bool generateBoxDarkSolid(void){
 			if(!this->validateCornerPositions()){
@@ -981,6 +1305,7 @@ class ThermalBox{
 
 								
 								*/
+								int borderInfo = this->getBorderMacro(this->data.data[i]);
 							}else if(x == srcData->width-1){ // right bottom corner
 								
 							}
