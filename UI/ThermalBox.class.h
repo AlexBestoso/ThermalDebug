@@ -167,6 +167,11 @@
 
 #define THERMAL_BOXELEMENT_EMPTY 777
 
+#define THERMAL_BOXEDGE_TOP 0
+#define THERMAL_BOXEDGE_BOTTOM 1
+#define THERMAL_BOXEDGE_LEFT 2
+#define THERMAL_BOXEDGE_RIGHT 3
+
 struct thermalBoxStruct{	
 	int pos_offset_x;
 	int pos_offset_y;
@@ -902,6 +907,11 @@ class ThermalBox{
 				dst[i] = (wchar_t)str[s];
 			}
 			
+			return true;
+		}
+		
+		bool fuseByEdge(ThermalBox src, int edgeTarget, int originOffset){
+		
 			return true;
 		}
 
