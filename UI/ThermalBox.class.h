@@ -1853,6 +1853,28 @@ class ThermalBox{
 						this->data.data[i] = transferBuff[j];
 
 					// Inject Src Box Into Empty Space
+					int startPos = originOffset + (this->data.width * this->data.height);
+					for(int i=0, j=0; j<srcData->data_size && i<this->data.data_size; i++, j++){
+						int srcX = j % srcData->width;
+						int srcY = j / srcData->width;
+						int dstX = i % this->data.width;
+						int dstY = i / this->data.width;
+
+						if(srcY == 0){ // border row					
+							int dstMasterPosition = this->positionIsAtIntersect(dstX, dstY);
+							int srcMasterPosition = this->positionIsAtIntersect(srcX, srcY);
+							wchar_t borderChar = this->deriveBorderChar(dstMasterPosition, srcMasterPosition);
+							this->data.data[i] = borderChar;
+							if(((j+1) % srcData->width) == 0){
+								i += this->data.width  - (i % this->data.width) - 1 + originOffset;
+							}
+						}else{
+							this->data.data[i] = srcData->data[j];
+							if(((j+1) % srcData->width) == 0){
+								i += this->data.width  - (i % this->data.width) - 1 + originOffset;
+							}
+						}
+					}
 					break;
 				}
 				case THERMAL_BOXEDGE_LEFT:{
@@ -1871,6 +1893,23 @@ class ThermalBox{
 					}	
 
 					// Inject Src Box Into Empty Space
+					int startPos = originOffset * this->data.width;
+                                        for(int i=startPos, j=0; j<srcData->data_size && i<this->data.data_size; i++, j++){
+                                                int srcX = j % srcData->width;
+                                                int srcY = j / srcData->width;
+                                                int dstX = i % this->data.width;
+                                                int dstY = i / this->data.width;
+
+                                                if(srcX == srcData->width-1){ // border col 
+                                                        int dstMasterPosition = this->positionIsAtIntersect(dstX, dstY);
+                                                        int srcMasterPosition = this->positionIsAtIntersect(srcX, srcY);
+                                                        wchar_t borderChar = this->deriveBorderChar(dstMasterPosition, srcMasterPosition);
+                                                        this->data.data[i] = borderChar;
+                                                        i += this->data.width  - (i % this->data.width) - 1;
+                                                }else{
+                                                        this->data.data[i] = srcData->data[j];
+                                                }
+                                        }
 					break;
 				}
 				case THERMAL_BOXEDGE_RIGHT:{
@@ -1888,6 +1927,26 @@ class ThermalBox{
 					}
 
 					// Inject Src Box Into Empty Space
+					int startPos = (this->data.width - 1) + (originOffset * this->data.width);
+                                        for(int i=startPos, j=0; j<srcData->data_size && i<this->data.data_size; i++, j++){
+                                                int srcX = j % srcData->width;
+                                                int srcY = j / srcData->width;
+                                                int dstX = i % this->data.width;
+                                                int dstY = i / this->data.width;
+
+                                                if(srcX == 0){ // border col
+                                                        int dstMasterPosition = this->positionIsAtIntersect(dstX, dstY);
+                                                        int srcMasterPosition = this->positionIsAtIntersect(srcX, srcY);
+                                                        wchar_t borderChar = this->deriveBorderChar(dstMasterPosition, srcMasterPosition);
+                                                        this->data.data[i] = borderChar;
+                                                }else{
+                                                        this->data.data[i] = srcData->data[j];
+							if(((j+1) % srcData->width) == 0){
+								i += this->data.width  - (i % this->data.width) - 1 + (this->data.width - 1);
+							}
+                                                }
+                                        }
+
 					break;
 				}
 				default:
