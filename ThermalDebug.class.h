@@ -1,11 +1,16 @@
+#include "./UI/ThermalUI.h"
 #include "./ThermalDebugErrorStruct.class.h"
 #include "./ThermalDebugDisplay.class.h"
 #include "./ThermalDebugAlgorithmCache.class.h"
 
 class ThermalDebug{
 	private:
+		bool running;
 		ThermalDebugDisplay display;
-		thermbox_t backgroundBox;
+		ThermalBackgroundBox bgBox;
+		ThermalAlgoStreamBox *algoStreamBoxes;
+		size_t algoStreamBoxes_s;
+
 		thermerr_t error;
 		thermalgo_t algoCache;
 		ThermalEmissionDump dumper;
@@ -25,27 +30,59 @@ class ThermalDebug{
 			return true;
 		}
 
-		bool initBackgroundBox(void){
-			// TODO: Add xml config file loading here.
-			this->backgroundBox.corner_top_left = THERMAL_BOXLINE_CORNER_TL_LIGHT;
-			this->backgroundBox.corner_top_right = THERMAL_BOXLINE_CORNER_TR_LIGHT;
-			this->backgroundBox.corner_bottom_left = THERMAL_BOXLINE_CORNER_BL_LIGHT;
-			this->backgroundBox.corner_bottom_right = THERMAL_BOXLINE_CORNER_BR_LIGHT;
-			this->backgroundBox.edge_top = THERMAL_BOXLINE_HOR_LIGHT;
-			this->backgroundBox.edge_bottom = THERMAL_BOXLINE_HOR_LIGHT;
-			this->backgroundBox.edge_left = THERMAL_BOXLINE_VER_LIGHT;
-			this->backgroundBox.edge_right = THERMAL_BOXLINE_VER_LIGHT;
-			this->backgroundBox.fill = THERMAL_BOXFILL_SHADE_DARK;
-			this->backgroundBox.width = display.getWidth();
-			this->backgroundBox.height = display.getHeight();
+		bool loadStreams(void){
+			if(this->algoStreamBoxes != NULL){
+				delete[] this->algoStreamBoxes;
+				this->algoStreamBoxes = NULL;
+			}
 
-			this->backgroundBox.data_size = this->backgroundBox.width * this->backgroundBox.height;
-			if(this->backgroundBox.data != NULL) delete[] this->backgroundBox.data;
-			this->backgroundBox.data = new (std::nothrow) wchar_t[this->backgroundBox.data_size];
-			if(this->backgroundBox.data == NULL) return false;
-			for(int i=0; i<this->backgroundBox.data_size; i++) this->backgroundBox.data[i] = 0x00;
+			this->algoStreamBoxes_s = this->algoCache.algorithmsCount;
+			if(this->algoStreamBoxes_s <= 0) return false;
+			
+			this->algoStreamBoxes = new (std::nothrow) ThermalAlgoStreamBox[this->algoStreamBoxes_s];
+			if(this->algoStreamBoxes == NULL){
+				// TODO: implement error handling.
+				return false;
+			}
+
+			for(int i=0; i<this->algoStreamBoxes_s; i++){
+				this->algoStreamBoxes[i].setArea(this->display.getWidth(), this->display.getHeight());
+				this->algoStreamBoxes[i].mapAlgorithmName(1, 2, (const char *)this->algoCache.algorithms[i].algorithmName);
+				this->algoStreamBoxes[i].buildBox();
+			}
 			return true;
 		}
+
+		bool loadBackground(void){
+			std::string tmp = "Thermal Debug - 0.0.0 Alpha";
+			if(!this->bgBox.setBoxArea(this->display.getWidth(), this->display.getHeight())){
+				printf("Failed to set background box area.\n");
+				return false;
+			}
+	
+			/*   // cusotm box borders and fills
+			if(!this->bgBox.generateData()){
+				printf("Failed to generate data.\n");
+				return false;
+			}*/
+
+			if(!this->bgBox.generateBoxDoubleLine()){
+				printf("Failed to generate data.\n");
+				return false;
+			}
+	
+			if(!this->bgBox.mapString(2, 1, tmp)){
+				printf("Failed to map string to background box.\n");
+				return false;
+			}
+			tmp = "Algorithm Count : " + std::to_string(this->algoCache.algorithmsCount);
+			if(!this->bgBox.mapString(2, 2, tmp)){
+				printf("Failed to map algorithm count string to background box.\n");
+				return false;
+			}
+			return true;
+		}
+
 	public:
 		bool hasError(thermerr_t *out){
 			out = &this->error;
@@ -59,34 +96,23 @@ class ThermalDebug{
 		}
 
 		ThermalDebug(){
+			this->running = false;
 			this->algoCache.algorithms = NULL;
 			this->algoCache.algorithmsCount = 0;
-
-			this->backgroundBox.corner_top_left = 0;
-			this->backgroundBox.corner_top_right = 0;
-			this->backgroundBox.corner_bottom_left = 0;
-			this->backgroundBox.corner_bottom_right = 0;
-			this->backgroundBox.edge_top = 0;
-			this->backgroundBox.edge_bottom = 0;
-			this->backgroundBox.edge_left = 0;
-			this->backgroundBox.edge_right = 0;
-			this->backgroundBox.fill = 0;
-			this->backgroundBox.width = 0;
-			this->backgroundBox.height = 0;
-
-			this->backgroundBox.data_size = 0;
-			this->backgroundBox.data = NULL;
-	
+			this->algoStreamBoxes = NULL;
+			this->algoStreamBoxes_s = 0;
 		
 			this->clearError();
 		}
 
 		~ThermalDebug(){
-			if(this->backgroundBox.data != NULL)
-				delete[] this->backgroundBox.data;
-
 			if(this->algoCache.algorithms != NULL){
 				delete[] this->algoCache.algorithms;
+			}
+
+			if(this->algoStreamBoxes != NULL){
+				delete[] this->algoStreamBoxes;
+				this->algoStreamBoxes = NULL;
 			}
 		}
 
@@ -129,81 +155,57 @@ class ThermalDebug{
 		}
 
 		bool loadDisplay(void){
-			std::string tmp = "Thermal Debug - 0.0.0 Alpha";
-			if(!this->initBackgroundBox()) return false;
-			if(!this->display.initBackground(&this->backgroundBox))
-				return false;
-			if(!this->display.mapString(&this->backgroundBox, 2, 1, tmp))
-				return false;
-			tmp = "Algorithm Count : " + std::to_string(this->algoCache.algorithmsCount);
-			if(!this->display.mapString(&this->backgroundBox, 2, 2, tmp))
-				return false;
+			this->display.startDisplay();
+			this->loadBackground();
 
-			this->display.printBox(&this->backgroundBox);
 			return true;
 		}
 
+		bool killDisplay(void){
+			this->display.stopDisplay();
+			return true;
+		}
+
+		bool run(void){
+			this->running = true;
+			this->loadBackground();
+			this->loadStreams();
+			this->display.clearScreen();
 		
+			if(!this->display.mapBox(this->bgBox, 0, 0)){
+				return false;
+			}
+			
+			for(int i=0; i<this->algoCache.algorithmsCount; i++){
+				this->display.setCursorPos(0,0);
+				if(!this->display.mapBox(this->algoStreamBoxes[i], 1, 5)){
+					return false;
+				}
+			}
+		
+			wprintf(L"Testing keystroke. Press any key: \n");
+			wprintf(L"You pressed %c\n", this->display.getKeyPress());
+			sleep(1);
 
-		void color_reset(void){
-			printf("\033[0m");
+			this->display.draw();
+			fflush(stdout);
+			while(this->running){
+				if(this->display.resizeReady()){
+                        		fflush(stdout);
+					this->display.refreshDisplaySize();
+					this->display.setCursorPos(0,0);
+					this->loadBackground();
+					this->display.clearScreen();
+                        		this->display.mapBox(this->bgBox, 0, 0);
+					for(int i=0; i<this->algoCache.algorithmsCount; i++)
+						this->display.mapBox(this->algoStreamBoxes[i], 1, 5);
+					this->display.draw();
+					THERMAL_DISPLAY_FLAG_RESIZE = false;
+                        		fflush(stdout);
+					
+				}
+			}
+			return true;
 		}
-		void color_bright(void){
-			printf("\033[1m");
-		}
-		void color_underline(void){
-			printf("\033[4m");
-		}
-		void color_flashing(void){
-			printf("\033[5m");
-		}
-		void color_blackFg(void){
-			printf("\033[30m");
-		}
-		void color_redFg(void){
-			printf("\033[31m");	
-		}
-		void color_greenFg(void){
-			printf("\033[32m");
-		}
-		void color_yellowFg(void){
-			printf("\033[33m");
-		}
-		void color_blueFg(void){
-			printf("\033[34m");
-		}
-		void color_purpleFg(void){
-			printf("\033[35m");
-		}
-		void color_cyanFg(void){
-			printf("\033[36m");
-		}
-		void color_whiteFg(void){
-			printf("\033[37m");
-		}
-		void color_blackBg(void){
-			printf("\033[40m");
-		}
-		void color_redBg(void){
-			printf("\033[41m");
-		}
-		void color_greenBg(void){
-			printf("\033[42m");
-		}
-		void color_yellowBg(void){
-			printf("\033[43m");
-		}
-		void color_blueBg(void){
-			printf("\033[44m");
-		}
-		void color_purpleBg(void){
-			printf("\033[45m");
-		}
-		void color_cyanBg(void){
-			printf("\033[46m");
-		}
-		void color_whiteBg(void){
-			printf("\033[47m");
-		}
-
+		
 }thermalDbg;
