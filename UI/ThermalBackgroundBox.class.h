@@ -21,11 +21,6 @@ class ThermalBackgroundBox : public ThermalBox{
 			this->_data->height = 0;
 			this->_data->data_size = 0;
 			this->_data->data = NULL;
-			/*this->_data->data_size = this->_data->width * this->_data->height;
-			if(this->_data->data != NULL) delete[] this->_data->data;
-			this->_data->data = new (std::nothrow) wchar_t[this->_data->data_size];
-			if(this->_data->data == NULL) return;
-			for(int i=0; i<this->_data->data_size; i++) this->_data->data[i] = 0x00;*/
 		}
 		
 		bool generateData(void){

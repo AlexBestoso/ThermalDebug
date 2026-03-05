@@ -8,6 +8,9 @@ class ThermalDebug{
 		bool running;
 		ThermalDebugDisplay display;
 		ThermalBackgroundBox bgBox;
+		ThermalAlgoStreamBox *algoStreamBoxes;
+		size_t algoStreamBoxes_s;
+
 		thermerr_t error;
 		thermalgo_t algoCache;
 		ThermalEmissionDump dumper;
@@ -27,7 +30,30 @@ class ThermalDebug{
 			return true;
 		}
 
-		bool loadBackground(){
+		bool loadStreams(void){
+			if(this->algoStreamBoxes != NULL){
+				delete[] this->algoStreamBoxes;
+				this->algoStreamBoxes = NULL;
+			}
+
+			this->algoStreamBoxes_s = this->algoCache.algorithmsCount;
+			if(this->algoStreamBoxes_s <= 0) return false;
+			
+			this->algoStreamBoxes = new (std::nothrow) ThermalAlgoStreamBox[this->algoStreamBoxes_s];
+			if(this->algoStreamBoxes == NULL){
+				// TODO: implement error handling.
+				return false;
+			}
+
+			for(int i=0; i<this->algoStreamBoxes_s; i++){
+				this->algoStreamBoxes[i].setArea(this->display.getWidth(), this->display.getHeight());
+				this->algoStreamBoxes[i].mapAlgorithmName(1, 2, (const char *)this->algoCache.algorithms[i].algorithmName);
+				this->algoStreamBoxes[i].buildBox();
+			}
+			return true;
+		}
+
+		bool loadBackground(void){
 			std::string tmp = "Thermal Debug - 0.0.0 Alpha";
 			if(!this->bgBox.setBoxArea(this->display.getWidth(), this->display.getHeight())){
 				printf("Failed to set background box area.\n");
@@ -73,6 +99,8 @@ class ThermalDebug{
 			this->running = false;
 			this->algoCache.algorithms = NULL;
 			this->algoCache.algorithmsCount = 0;
+			this->algoStreamBoxes = NULL;
+			this->algoStreamBoxes_s = 0;
 		
 			this->clearError();
 		}
@@ -80,6 +108,11 @@ class ThermalDebug{
 		~ThermalDebug(){
 			if(this->algoCache.algorithms != NULL){
 				delete[] this->algoCache.algorithms;
+			}
+
+			if(this->algoStreamBoxes != NULL){
+				delete[] this->algoStreamBoxes;
+				this->algoStreamBoxes = NULL;
 			}
 		}
 
@@ -136,8 +169,19 @@ class ThermalDebug{
 		bool run(void){
 			this->running = true;
 			this->loadBackground();
+			this->loadStreams();
 			this->display.clearScreen();
-			this->display.mapBox(this->bgBox, 0, 0);	
+		
+			if(!this->display.mapBox(this->bgBox, 0, 0)){
+				return false;
+			}
+			
+			for(int i=0; i<this->algoCache.algorithmsCount; i++){
+				this->display.setCursorPos(0,0);
+				if(!this->display.mapBox(this->algoStreamBoxes[i], 1, 5)){
+					return false;
+				}
+			}
 		
 			wprintf(L"Testing keystroke. Press any key: \n");
 			wprintf(L"You pressed %c\n", this->display.getKeyPress());
@@ -153,6 +197,8 @@ class ThermalDebug{
 					this->loadBackground();
 					this->display.clearScreen();
                         		this->display.mapBox(this->bgBox, 0, 0);
+					for(int i=0; i<this->algoCache.algorithmsCount; i++)
+						this->display.mapBox(this->algoStreamBoxes[i], 1, 5);
 					this->display.draw();
 					THERMAL_DISPLAY_FLAG_RESIZE = false;
                         		fflush(stdout);

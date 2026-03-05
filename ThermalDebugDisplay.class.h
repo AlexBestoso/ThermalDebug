@@ -147,11 +147,15 @@ class ThermalDebugDisplay{
 			if(xpos >= this->data.display_width || ypos >= this->data.display_height) return false;
 
 			thermbox_t *box = src.getData();
-			if(box == NULL) return false;
+			if(box == NULL){
+				return false;
+			}
 
 			size_t bDataSize = box->data_size;
 			wchar_t *bData = box->data;
-			if(bData == NULL || bDataSize <= 0) return false;
+			if(bData == NULL || bDataSize <= 0){
+				return false;
+			}
 
 			int bwidth = box->width;
 			int bheight = box->height;
