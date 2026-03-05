@@ -1,4 +1,5 @@
-# ThermalDebug - Private Repository
+# ThermalDebug
+Version: Alphicus 0.0.6d261f01
 
 Issue : We need the Algorithm Stream box containers to be built out.
 
